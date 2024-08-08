@@ -20,7 +20,7 @@ function Ad() {
           alt=""
         />
       </div>
-      <div className="absolute bottom-[120px] left-[20px] rounded-[10px] w-[calc(100%-40px)] h-[64px] bg-gradient-to-r from-[#5097EE] from-[0%] to-[#5CC9FF] to-[100%] flex items-center justify-center text-[#fff] font-[600] text-[24px] leading-[24px]">
+      <div className="fixed-button fixed bottom-[120px] left-[20px] right-[20px] rounded-[10px] w-[calc(100%-40px)] h-[64px] bg-gradient-to-r from-[#5097EE] from-[0%] to-[#5CC9FF] to-[100%] flex items-center justify-center text-[#fff] font-[600] text-[24px] leading-[24px]">
         Связаться
       </div>
     </>

@@ -34,7 +34,7 @@ function Airdrop() {
           <img className="ton w-[65.14%] mx-auto mt-[15px] pb-[38px]" src={tonImage} alt="" />
         </div>
       </div>
-      <div className="absolute bottom-[120px] left-[20px] rounded-[10px] w-[calc(100%-40px)] h-[64px] bg-[#0088CC] flex items-center justify-center text-[#fff] font-[600] text-[24px] leading-[24px]">
+      <div className="fixed-button fixed bottom-[120px] left-[20px] right-[20px] rounded-[10px] w-[calc(100%-40px)] h-[64px] bg-[#0088CC] flex items-center justify-center text-[#fff] font-[600] text-[24px] leading-[24px]">
         Подключить
       </div>
     </>

@@ -363,7 +363,7 @@ button:focus-visible {
     margin: auto;
   }
 
-  .menu, .boost {
+  .menu, .boost, .fixed-button {
     max-width: 350px;
     margin: auto;
   }
