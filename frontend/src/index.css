@@ -218,6 +218,21 @@
   font-style: italic;
 }
 
+/* Для WebKit-based браузеров (Chrome, Safari, Opera 15+) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Для Firefox */
+html {
+  scrollbar-width: none; /* Firefox 64+ */
+}
+
+/* Для IE и Edge */
+body {
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
 img {
   -webkit-user-drag: none;
   user-drag: none;
@@ -348,7 +363,7 @@ button:focus-visible {
     margin: auto;
   }
 
-  .menu {
+  .menu, .boost {
     max-width: 350px;
     margin: auto;
   }
