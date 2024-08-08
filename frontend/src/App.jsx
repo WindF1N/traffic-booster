@@ -43,7 +43,7 @@ function App() {
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
-    localStorage.setItem('onboardingComplete', 'true'); // Сохраняем состояние onboarding в localStorage
+    // localStorage.setItem('onboardingComplete', 'true'); // Сохраняем состояние onboarding в localStorage
   };
 
   return (
