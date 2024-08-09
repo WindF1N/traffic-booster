@@ -330,7 +330,7 @@ button:focus-visible {
   pointer-events: none;
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -341,7 +341,7 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
 
 /* Медиа-запрос для смартфонов */
 @media (max-width: 600px) {
