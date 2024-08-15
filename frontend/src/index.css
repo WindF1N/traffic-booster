@@ -245,6 +245,7 @@ body {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
+  overflow-x: hidden;
 }
 
 :root {
@@ -330,19 +331,6 @@ button:focus-visible {
   pointer-events: none;
 }
 
-/* @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
-
 /* Медиа-запрос для смартфонов */
 @media (max-width: 600px) {
   #root {
@@ -353,10 +341,10 @@ button:focus-visible {
 }
 
 /* Медиа-запрос для компьютеров */
-@media (min-width: 601px) {
+@media (min-width: 420px) {
   #root {
     position: relative;
-    width: 390px; /* Максимальная ширина контента */
+    width: 420px; /* Максимальная ширина контента */
     /* border-left: 1px solid #fff; */
     /* border-right: 1px solid #fff; */
     overflow: hidden;
@@ -364,7 +352,7 @@ button:focus-visible {
   }
 
   .menu, .boost, .fixed-button {
-    max-width: 350px;
+    max-width: 380px;
     margin: auto;
   }
 }
@@ -373,25 +361,32 @@ button:focus-visible {
   .ad-image {
     margin-top: 20%;
   }
+  .boostpopup {
+    height: 66%;
+  }
+  .taskpopup {
+    height: 62%;
+  }
 }
 
 @media (max-height: 780px) {
   .tron {
-    transform: scale(1.5)
+    bottom: 4%;
   }
   .pers {
-    transform: scale(1.1);
-    bottom: 19%;
+    bottom: 22%;
+  }
+  .boostpopup {
+    height: 70%;
+  }
+  .taskpopup {
+    height: 70%;
   }
 }
 
 @media (max-height: 680px) {
-  .tron {
-    transform: scale(1.4)
-  }
   .pers {
-    transform: scale(1);
-    bottom: 19%;
+    bottom: 24%;
   }
   .ad-image {
     width: 75%;
@@ -400,5 +395,26 @@ button:focus-visible {
   }
   .ton {
     width: 45%;
+  }
+  .boostpopup {
+    height: 80%;
+  }
+  .taskpopup {
+    height: 78%;
+  }
+}
+
+@media (max-height: 665px) {
+  .tron {
+    bottom: -8%;
+  }
+  .pers {
+    bottom: 12%;
+  }
+  .boostpopup {
+    height: 90%;
+  }
+  .taskpopup {
+    height: 85%;
   }
 }
