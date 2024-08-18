@@ -1,6 +1,87 @@
+import { useState, useEffect, useRef } from 'react';
 import Boost from '../components/Boost';
+import useAuthStore from '../hooks/useAuthStore';
+import useAccount from '../hooks/useAccount';
+import useLocalBalance from '../hooks/useLocalBalance';
+
+import bigLeon1Image from '../assets/bigleon1.png';
+import bigLeon2Image from '../assets/bigleon2.png';
+import bigLeon3Image from '../assets/bigleon3.png';
+
+import raster3dIcon from '../assets/3d-raster-small.png';
 
 function Home() {
+  const imgRef = useRef(null);
+  const token = useAuthStore((state) => state.token);
+  const account = useAccount((state) => state.account);
+  const [ shakeAnimation, setShakeAnimation ] = useState("shake1");
+  const [ plusOnes, setPlusOnes ] = useState([]);
+  const { setAccount } = useAccount();
+  const { setLocalBalance } = useLocalBalance();
+  const localBalance = useLocalBalance((state) => state.localBalance);
+  const [ personage, setPersonage ] = useState(() => {
+    if (account?.character.type == 'standart') {
+      return bigLeon1Image;
+    } else if (account?.character.type == 'silver') {
+      return bigLeon2Image;
+    } else if (account?.character.type == 'gold') {
+      return bigLeon3Image;
+    }
+  });
+  useEffect(() => {
+    if (account?.character.type == 'standart') {
+      setPersonage(bigLeon1Image);
+    } else if (account?.character.type == 'silver') {
+      setPersonage(bigLeon2Image);
+    } else if (account?.character.type == 'gold') {
+      setPersonage(bigLeon3Image);
+    }
+  }, [account])
+  useEffect(() => {
+    if (token) {
+      fetch('http://127.0.0.1:8000/me/', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        setAccount(data);
+        if (data.character.type == 'standart') {
+          setPersonage(bigLeon1Image);
+        } else if (data.character.type == 'silver') {
+          setPersonage(bigLeon2Image);
+        } else if (data.character.type == 'gold') {
+          setPersonage(bigLeon3Image);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  }, [token]);
+  const handleClick = (event) => {
+    imgRef.current.classList.add(shakeAnimation);
+    if (shakeAnimation === 'shake1') {
+      setShakeAnimation('shake2');
+    } else if (shakeAnimation === 'shake2') {
+      setShakeAnimation('shake3');
+    } else if (shakeAnimation === 'shake3') {
+      setShakeAnimation('shake1');
+    }
+    setTimeout(() => {
+      imgRef.current.classList.remove(shakeAnimation);
+    }, 200); // 200ms соответствует длительности анимации
+
+    // Добавление надписи +1 с небольшим случайным смещением
+    const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
+    const y = event.clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
+    const newPlusOne = { x, y, id: Date.now() };
+    setPlusOnes(prevPlusOnes => [...prevPlusOnes, newPlusOne].slice(-10)); // Обрезаем массив до последних 10 элементов
+
+    // Увеличение локального баланса
+    setLocalBalance(localBalance + Number(account?.character?.multiplier));
+  };
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-hidden">
@@ -12,15 +93,20 @@ function Home() {
         <div className="flex gap-[10px] px-[20px] mt-[5.07%]">
           <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] backdrop-blur-[40px]">
             <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Уровень:</div>
-            <div className="text-[20px] leading-[25.8px] font-[600] text-[#319BFF] mt-[11px]">Новичок</div>
+            {account?.character?.type == "standart" &&
+            <div className="text-[20px] leading-[25.8px] font-[600] text-[#319BFF] mt-[11px]">{account?.character?.name}</div>}
+            {account?.character?.type == "silver" &&
+            <div className="text-[20px] leading-[25.8px] font-[600] text-[#9CFF11] mt-[11px]">{account?.character?.name}</div>}
+            {account?.character?.type == "gold" &&
+            <div className="text-[20px] leading-[25.8px] font-[600] text-[#FF11DF] mt-[11px]">{account?.character?.name}</div>}
           </div>
           <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] w-[100%] backdrop-blur-[40px]">
             <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Баланс:</div>
-            <div className="text-[28px] leading-[36.12px] font-[600] text-[#FFD900] mt-[6px] flex items-center">
-              450.021.210
+            <div className="text-[28px] leading-[36.12px] font-[600] text-[#FFD900] mt-[6px] flex items-center gap-[5px]">
+              {account?.balance?.amount && (Number(account?.balance?.amount) + localBalance).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
               <img
-                className="flex w-[28px] h-[28px] mt-[-4px] ml-[2px]"
-                src={'https://s3-alpha-sig.figma.com/img/cbc2/3ceb/9b95b97ebd472070f82e2df8b8194e31?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=l2xqYGEWNFt4LNpJAPN79NafqW-y7KzBbK83oOMYrFBG5YRDreYJoWh6riLTjalmSxuIrobtzRl9dNUNMDRwIQkMw1iOVJ-7MOhYsYtSn-WE-nY0ZQF4bIfpxwJYStr77igKr0e8tzwCIYYHahtCgaDBSVw-nDy4Le93-0flcB--0CEAm5h8O~RMnOkxfRh4~aiIVudm-ABApSsTVAdsvB9ybE5SEvxJSwPe5O0OsSslNmcXqVnonADD4~ZvXHsv6psla6172evw~4FxTIzogdOAyG2vSBVjBEnWpRnR9XqPOOyU8eeIMLLvaELczYuUBAnRKx1GGxo0wTi33O51Vw__'}
+                className="flex w-[20px] h-[20px] mt-[-4px]"
+                src={raster3dIcon}
                 alt=""
               />
             </div>
@@ -34,10 +120,21 @@ function Home() {
           alt=""
         />
         <img 
-          className="pers absolute z-[-1] bottom-[21.06%] w-[100%] scale-[1.236]"
-          src="https://s3-alpha-sig.figma.com/img/7fea/f4c8/9dff153ddaaf94cfd45c4a4b09f6a80a?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=FQ5-SBznRkkJ4Y4JEkBfTy4Cpfqk1BxMHzQWkyZzNsfBrMFbMV6N-f2B8Hv71ADUpOUO0uyRHLcoWC8P907cnUqdfn0g~BGfRm4e~0SxseC31qt6PAII2XsNnTUZkpl38uRGPU-epo95enekrOBOJYKgZBPoKZsPsieJowO7EJAxenGiuU4wzKkfp1L5SFrOt1Fxn3Ker2sryKnYRzPj7aWk1WL5ywAJlbFo5WmpW9iJs1fTsKL5itjcGdbwDPE4HLAqrMTXvar~L19ppPAco8Gy0cKeZBQWcLgltbZI9~XmyvMEhZ5LjARLOoCcjUyLOVT8m5xTrT1-R2Mcf~-TlQ__"
+          ref={imgRef}
+          className="pers absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236]"
+          src={personage}
           alt=""
+          onClick={handleClick}
         />
+        {plusOnes.map(plusOne => (
+          <div 
+            key={plusOne.id}
+            className="plusOne"
+            style={{ left: `${plusOne.x}px`, top: `${plusOne.y}px` }}
+          >
+            +{Number(account?.character?.multiplier)}
+          </div>
+        ))}
       </div>
       <Boost />
     </>

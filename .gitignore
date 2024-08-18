@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 *.pem
+
+venv/
+__pycache__
+static/
+media/
