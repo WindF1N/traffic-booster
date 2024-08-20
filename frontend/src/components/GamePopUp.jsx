@@ -12,7 +12,7 @@ function GamePopUp({ setIsOpen }) {
                 Ваше вознаграждение <span className="text-[#FFD900]">1 000 000 монет</span>
             </div>
             <div className="flex mt-auto">
-                <div className="text-[#494949] text-[20px] font-[600] leading-[20px] rounded-[10px] bg-[#fff] p-[15px]" onClick={() => setIsOpen(false)}>
+                <div className="cursor-pointer text-[#494949] text-[20px] font-[600] leading-[20px] rounded-[10px] bg-[#fff] p-[15px]" onClick={() => setIsOpen(false)}>
                     Забрать
                 </div>
             </div>

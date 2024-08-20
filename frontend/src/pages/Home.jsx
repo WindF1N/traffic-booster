@@ -9,6 +9,7 @@ import bigLeon2Image from '../assets/bigleon2.png';
 import bigLeon3Image from '../assets/bigleon3.png';
 
 import raster3dIcon from '../assets/3d-raster-small.png';
+import bgImage from '../assets/bg.png';
 
 function Home() {
   const imgRef = useRef(null);
@@ -87,7 +88,7 @@ function Home() {
       <div className="relative flex flex-col h-screen overflow-hidden">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src="https://s3-alpha-sig.figma.com/img/c2f0/e149/2a0988f8fbb8d9c554cdc72724b5246d?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jxUqVB-5U2vIKJ4HzKzSr6XtWYvwR8N8U8-DZuKOr9dECas1fz3Co2IsG3hO55T0HRC9g~Neq~cVkYX-BZ1vOTeNHEgeqFbsdA0slQVeoQrgu2rlP3bHVThX5hBNLFjyNAckFIdWVU20Nm~hEtwNQEEtJnlXii-KSj~t1ATlpQVrBQlgXx8IMDVJxCuCNrD4bJ0gkRsr7qzlMRQTEZ8PtO-RpIrVXqQ1-hMTBpqz6MBj6b9DyV-5cj9CWP77cq0SRAcQorbyAu8hxX-4A~NGQ4PefYevFg~BJ5dt6Ufi1IBkgaNIF87NAOGNspQO1B124i0pSohCJcHlLjQ0yJInFg__"
+          src={bgImage}
           alt=""
         />
         <div className="flex gap-[10px] px-[20px] mt-[5.07%]">

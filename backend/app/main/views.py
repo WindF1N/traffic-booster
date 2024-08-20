@@ -12,7 +12,7 @@ import string
 from django.conf import settings
 import json
 import traceback
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks
+from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 from .serializers import (
     CustomUserSerializer, CharactersSerializer, TasksSerializer, BalancesSerializer,
     AdvertisersSerializer, TariffsSerializer, WalletsSerializer, GameKeysSerializer, GamesSerializer,
@@ -227,7 +227,7 @@ class TasksView(APIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         tasks = Tasks.objects.all().order_by('limit_type')
-        tasks_serializer = TasksSerializer(tasks, many=True)
+        tasks_serializer = TasksSerializer(tasks, context={'user': user}, many=True)
         return Response({
             "tasks": tasks_serializer.data
         }, status=status.HTTP_200_OK)
@@ -266,14 +266,17 @@ class TasksView(APIView):
             if completed_task.status == "awarded":
                 balance.amount += task.reward
                 balance.save()
+            task.limit_count_reserved += 1
+            task.save()
+            task_serializer = TasksSerializer(task, context={'user': user})
             completed_task_serializer = CompletedTasksSerializer(completed_task)
             balance_serializer = BalancesSerializer(balance)
             return Response({
-                'completed_task': completed_task_serializer.data,
-                'new_balance': balance_serializer.data
+                'new_balance': balance_serializer.data,
+                'task': task_serializer.data
             }, status=status.HTTP_200_OK)
-    
-class CompletedTasksView(APIView):
+
+class GamesView(APIView):
     def get(self, request):
         token = request.headers.get('Authorization', '').split(' ')[-1]
         if not token:
@@ -289,12 +292,54 @@ class CompletedTasksView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        completed_tasks = CompletedTasks.objects.filter(user=user)
-        completed_tasks_serializer = CompletedTasksSerializer(completed_tasks, many=True)
+        games = Games.objects.all()
+        games_serializer = GamesSerializer(games, context={'user': user}, many=True)
         return Response({
-            "completed_tasks": completed_tasks_serializer.data
+            "games": games_serializer.data
         }, status=status.HTTP_200_OK)
-        
+    
+class CheckKeyView(APIView):
+    def post(self, request):
+        token = request.headers.get('Authorization', '').split(' ')[-1]
+        if not token:
+            return Response({'error': 'Token not provided'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            user = User.objects.get(id=user_id)
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        data = json.loads(request.body)
+        try:
+            balance = Balances.objects.get(user=user)
+            game = Games.objects.get(id=data["game_id"])
+            game_key = GameKeys.objects.get(value=data["key"], game=game, used=False)
+        except Balances.DoesNotExist:
+            return Response({'error': 'Balance not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Games.DoesNotExist:
+            return Response({'error': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
+        except GameKeys.DoesNotExist:
+            return Response({'error': 'Game key not found'}, status=status.HTTP_404_NOT_FOUND)
+        if UsedGameKeys.objects.filter(user=user, game_key=game_key).exists():
+            return Response({'error': 'Game key already used'}, status=status.HTTP_400_BAD_REQUEST)
+        used_game_keys = UsedGameKeys.objects.filter(user=user, game_key__game=game)
+        if used_game_keys.count() < 3:
+            UsedGameKeys.objects.create(user=user, game_key=game_key)
+            game_key.used = True
+            game_key.save()
+        if used_game_keys.count() == 3:
+            balance.amount += 1000000
+            balance.save()
+        balance_serializer = BalancesSerializer(balance)
+        return Response({
+            "new_balance": balance_serializer.data,
+            "used_game_keys_count": used_game_keys.count()
+        }, status=status.HTTP_200_OK)
+
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer

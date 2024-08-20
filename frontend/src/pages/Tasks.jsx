@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import tasksImage from '../assets/tasks-image.png';
 import raster3dIcon from '../assets/3d-raster-small.png';
+import bgImage from '../assets/bg.png';
 import TaskPopUp from '../components/TaskPopUp';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
@@ -32,7 +33,7 @@ function Tasks() {
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src="https://s3-alpha-sig.figma.com/img/c2f0/e149/2a0988f8fbb8d9c554cdc72724b5246d?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jxUqVB-5U2vIKJ4HzKzSr6XtWYvwR8N8U8-DZuKOr9dECas1fz3Co2IsG3hO55T0HRC9g~Neq~cVkYX-BZ1vOTeNHEgeqFbsdA0slQVeoQrgu2rlP3bHVThX5hBNLFjyNAckFIdWVU20Nm~hEtwNQEEtJnlXii-KSj~t1ATlpQVrBQlgXx8IMDVJxCuCNrD4bJ0gkRsr7qzlMRQTEZ8PtO-RpIrVXqQ1-hMTBpqz6MBj6b9DyV-5cj9CWP77cq0SRAcQorbyAu8hxX-4A~NGQ4PefYevFg~BJ5dt6Ufi1IBkgaNIF87NAOGNspQO1B124i0pSohCJcHlLjQ0yJInFg__"
+          src={bgImage}
           alt=""
         />
         <div className="relative min-h-[206px] px-[20px] bg-[rgba(117,117,117,0.1)] backdrop-blur-[40px] overflow-hidden flex flex-col justify-end">
@@ -46,57 +47,82 @@ function Tasks() {
         </div>
         {tasks &&
         <div className="flex flex-wrap gap-[10px] px-[20px] pt-[10px] mt-[20px]">
-          {tasks.map((task, index) => (
-            <>
-              {task.limit_type == "limited" &&
-              <div className="cursor-pointer w-[100%]">
-                <div className="bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] flex justify-between relative overflow-hidden" onClick={() => {
-                  setSelectedTask(task);
-                  setIsOpen(true);
-                }}>
-                  <div>
-                    <div className="text-[10px] font-[400] leading-[12.9px] text-[#646464] mb-[3px]">{task.category}</div>
-                    <div className="text-[16px] font-[500] leading-[20.64px] text-[#fff] pb-[3px]">{task.title}</div>
+          {tasks.map((task, index) => {
+            if (task.limit_type === "limited") {
+              return (
+                <div className="cursor-pointer w-[100%]" key={index}>
+                  <div
+                    className="bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] flex justify-between relative overflow-hidden"
+                    onClick={() => {
+                      setSelectedTask(task);
+                      setIsOpen(true);
+                    }}
+                  >
+                    <div>
+                      <div className="text-[10px] font-[400] leading-[12.9px] text-[#646464] mb-[3px]">{task.category}</div>
+                      <div className="text-[16px] font-[500] leading-[20.64px] text-[#fff] pb-[3px]">{task.title}</div>
+                    </div>
+                    <div className="text-[#FFD900] font-[600] text-[28px] leading-[36.12px] flex items-center gap-[5px]">
+                      {Number(task.reward)}
+                      <img
+                        className="w-[20px] h-[20px] mt-[-4px]"
+                        src={raster3dIcon}
+                        alt=""
+                      />
+                    </div>
+                    <div
+                      className="absolute bottom-0 left-0 h-[8px] bg-[#B331FF]"
+                      style={{
+                        width: (100 - ((task.limit_count - task.limit_count_reserved) / task.limit_count * 100)).toString() + "%",
+                      }}
+                    ></div>
                   </div>
-                  <div className="text-[#FFD900] font-[600] text-[28px] leading-[36.12px] flex items-center gap-[5px]">
-                    {Number(task.reward)} 
+                  <div
+                    className="mt-[5px] flex items-center justify-between gap-[10px]"
+                    style={{
+                      width: (100 - ((task.limit_count - task.limit_count_reserved) / task.limit_count * 100)).toString() + "%",
+                    }}
+                  >
+                    <div className="text-[#B331FF] text-[12px] font-[400] whitespace-nowrap ">Мест осталось</div>
+                    <div className="text-[#B331FF] text-[12px] font-[400]">{task.limit_count - task.limit_count_reserved}/{task.limit_count}</div>
+                  </div>
+                </div>
+              );
+            } else if (task.limit_type === "unlimited") {
+              return (
+                <div
+                  className="cursor-pointer relative overflow-hidden bg-[rgba(117,117,117,0.1)] rounded-[10px] p-[10px] w-[calc(50%-5px)]"
+                  key={index}
+                  onClick={() => {
+                    setSelectedTask(task);
+                    setIsOpen(true);
+                  }}
+                >
+                  <div className="text-[#646464] text-[10px] font-[400] leading-[12.9px]">{task.category}</div>
+                  <div className="text-[#FFD900] font-[600] text-[14px] leading-[18.06px] flex items-center mt-[5px] gap-[3px]">
+                    {Number(task.reward)}
                     <img
-                      className="w-[20px] h-[20px] mt-[-4px]"
+                      className="w-[10px] h-[10px] mt-[-2px]"
                       src={raster3dIcon}
                       alt=""
                     />
                   </div>
-                  <div className="absolute bottom-0 left-0 h-[8px] bg-[#B331FF]" style={{width: (100 - (75 / task.limit_count * 100)).toString() + "%"}}></div>
-                </div>
-                <div className="mt-[5px] flex items-center justify-between gap-[10px]" style={{width: (100 - (75 / task.limit_count * 100)).toString() + "%"}}>
-                  <div className="text-[#B331FF] text-[12px] font-[400] whitespace-nowrap ">Мест осталось</div>
-                  <div className="text-[#B331FF] text-[12px] font-[400]">75/{task.limit_count}</div>
-                </div>
-              </div>}
-              {task.limit_type == "unlimited" &&
-              <div className="cursor-pointer relative overflow-hidden bg-[rgba(117,117,117,0.1)] rounded-[10px] p-[10px] w-[calc(50%-5px)]" onClick={() => {
-                setSelectedTask(task);
-                setIsOpen(true);
-              }}>
-                <div className="text-[#646464] text-[10px] font-[400] leading-[12.9px]">{task.category}</div>
-                <div className="text-[#FFD900] font-[600] text-[14px] leading-[18.06px] flex items-center mt-[5px] gap-[3px]">
-                  {Number(task.reward)} 
+                  <div className="text-[#fff] font-[500] text-[14px] leading-[18.06px] mt-[5px] w-[68.82%] line-clamp-2">
+                    {task.title}
+                  </div>
                   <img
-                    className="w-[10px] h-[10px] mt-[-2px]"
-                    src={raster3dIcon}
+                    className="w-[44.7%] absolute bottom-[-25%] right-[-10%]"
+                    src={"http://127.0.0.1:8000" + task.picture}
                     alt=""
                   />
                 </div>
-                <div className="text-[#fff] font-[500] text-[14px] leading-[18.06px] mt-[5px] w-[68.82%] line-clamp-2">
-                 {task.title}
-                </div>
-                <img className="w-[44.7%] absolute bottom-[-25%] right-[-10%]" src={"http://127.0.0.1:8000"+task.picture} alt="" />
-              </div>}
-            </>
-          ))}
+              );
+            }
+            return null;
+          })}
         </div>}
       </div>
-      {isOpen && <TaskPopUp setIsOpen={setIsOpen} selectedTask={selectedTask} />}
+      {isOpen && <TaskPopUp setIsOpen={setIsOpen} selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTasks={setTasks}  />}
     </>
   );
 }

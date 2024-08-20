@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks
+from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 from django.forms import Textarea, TextInput
 
 # Регистрация моделей с настройками отображения
@@ -87,3 +87,8 @@ class PurchasesCharactersAdmin(admin.ModelAdmin):
 class CompletedTasksAdmin(admin.ModelAdmin):
     list_display = ('user', 'task', 'amount_reward', 'status', 'complete_date')
     search_fields = ('user', 'task', 'amount_reward', 'status')
+
+@admin.register(UsedGameKeys)
+class UsedGameKeysAdmin(admin.ModelAdmin):
+    list_display = ('user', 'game_key', 'use_date')
+    search_fields = ('user', 'game_key')

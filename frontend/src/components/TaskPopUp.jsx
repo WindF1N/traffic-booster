@@ -1,9 +1,12 @@
 import closeIcon from '../assets/close.svg';
 import raster3dIcon from '../assets/3d-raster-small.png';
 import useAuthStore from '../hooks/useAuthStore';
+import useAccount from '../hooks/useAccount';
 
-function TaskPopUp({ setIsOpen, selectedTask }) {
+function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
     const token = useAuthStore((state) => state.token);
+    const account = useAccount((state) => state.account);
+    const { setAccount } = useAccount();
     const startTask = () => {
         fetch('http://127.0.0.1:8000/tasks/', {
             method: 'POST',
@@ -17,9 +20,22 @@ function TaskPopUp({ setIsOpen, selectedTask }) {
         })
         .then(response => response.json())
         .then(data => {
-            // setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
-            // setIsOpen(false);
-            console.log(data);
+            setAccount({...account, balance: data.new_balance });
+            setTasks(prevState => {
+                const taskIndex = prevState.findIndex(task => task.id === selectedTask.id);
+                if (taskIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+            
+                const updatedTask = data.task;
+                return [
+                    ...prevState.slice(0, taskIndex),
+                    updatedTask,
+                    ...prevState.slice(taskIndex + 1)
+                ];
+            });
+            setSelectedTask(data.task);
+    
+            // Перенаправляем пользователя по ссылке из задания
+            window.open(selectedTask.link, '_blank');
         })
         .catch(error => console.error('Error:', error));
     }
@@ -32,10 +48,10 @@ function TaskPopUp({ setIsOpen, selectedTask }) {
                 </div>
                 {selectedTask.limit_type === "limited" &&
                 <div className="px-[20px] mt-[5px]">
-                    <div className="h-[8px] ml-[-20px] bg-[#B331FF]" style={{width: "calc(" + (100 - (75 / selectedTask.limit_count * 100)).toString() + "% + 20px)"}}></div>
-                    <div className="mt-[5px] flex items-center justify-between" style={{width: (100 - (75 / selectedTask.limit_count * 100)).toString() + "%"}}>
-                        <div className="text-[#B331FF] text-[12px] font-[400]">Мест осталось</div>
-                        <div className="text-[#B331FF] text-[12px] font-[400]">75/{selectedTask.limit_count}</div>
+                    <div className="h-[8px] ml-[-20px] bg-[#B331FF]" style={{width: "calc(" + (100 - ((selectedTask.limit_count - selectedTask.limit_count_reserved) / selectedTask.limit_count * 100)).toString() + "% + 20px)"}}></div>
+                    <div className="mt-[5px] flex items-center justify-between gap-[10px]" style={{width: (100 - ((selectedTask.limit_count - selectedTask.limit_count_reserved) / selectedTask.limit_count * 100)).toString() + "%"}}>
+                        <div className="text-[#B331FF] text-[12px] font-[400] whitespace-nowrap">Мест осталось</div>
+                        <div className="text-[#B331FF] text-[12px] font-[400]">{selectedTask.limit_count - selectedTask.limit_count_reserved}/{selectedTask.limit_count}</div>
                     </div>
                 </div>}
                 <div className="relative px-[20px] pt-[5.45%] pb-[20px] h-[100%] flex flex-col">
@@ -63,13 +79,31 @@ function TaskPopUp({ setIsOpen, selectedTask }) {
                         />
                     </div>
                     <div className="flex mt-auto">
-                        <div className="cursor-pointer text-[#494949] text-[20px] font-[600] leading-[20px] rounded-[10px] bg-[#fff] p-[15px] z-[4]" 
-                             onClick={() => {
+                    {!selectedTask.status ? (
+                        <div 
+                            className="cursor-pointer text-[#494949] text-[20px] font-[600] leading-[20px] rounded-[10px] bg-[#fff] p-[15px] z-[4]" 
+                            onClick={() => {
                                 // setIsOpen(false);
                                 startTask();
-                            }}>
+                            }}
+                        >
                             Выполнить
                         </div>
+                    ) : (
+                        selectedTask.status === "pending" ? (
+                            <div className="cursor-pointer text-[#494949] text-[20px] font-[600] leading-[20px] rounded-[10px] bg-[#fff] p-[15px] z-[5] brightness-[0.6]">
+                                Проверяется...
+                            </div>
+                        ) : (
+                            selectedTask.status === "awarded" && (
+                                <div 
+                                    className="text-[#bbb] text-[20px] font-[600] leading-[20px] z-[5]" 
+                                >
+                                    Выполнено
+                                </div>
+                            )
+                        )
+                    )}
                     </div>
                     <div className="absolute z-[3] bottom-[-7.09%] right-[-10.29%] w-[60.28%] h-[45.87%] rounded-[100%] blur-[100px]" style={{background: selectedTask.picture_color}}></div>
                     <img className="absolute z-[4] w-[62.86%] bottom-[-7.09%] right-[-12.86%]" src={"http://127.0.0.1:8000"+selectedTask.picture} alt="" />

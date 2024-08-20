@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from main.views import (
     CustomUserViewSet, CharactersViewSet, TasksViewSet, BalancesViewSet,
-    AdvertisersViewSet, TariffsViewSet, WalletsViewSet, GameKeysViewSet, GamesViewSet, TelegramAuthView, AccountInfoView, CharactersView, SyncBalanceView, TasksView
+    AdvertisersViewSet, TariffsViewSet, WalletsViewSet, GameKeysViewSet, GamesViewSet, TelegramAuthView, AccountInfoView, CharactersView, SyncBalanceView, TasksView, GamesView, CheckKeyView
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,7 +26,9 @@ urlpatterns = [
     path('me/', AccountInfoView.as_view(), name='account_info'),
     path('characters/', CharactersView.as_view(), name='characters'),
     path('tasks/', TasksView.as_view(), name='tasks'),
+    path('games/', GamesView.as_view(), name='games'),
     path('sync_balance/', SyncBalanceView.as_view(), name='sync_balance'),
+    path('check_key/', CheckKeyView.as_view(), name='check_key'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

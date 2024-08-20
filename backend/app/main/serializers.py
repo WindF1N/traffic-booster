@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks
+from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,9 +24,21 @@ class CharactersSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TasksSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+
     class Meta:
         model = Tasks
         fields = '__all__'
+
+    def get_status(self, obj):
+        user = self.context.get('user')
+        if user:
+            try:
+                completed_task = CompletedTasks.objects.get(user=user, task=obj)
+                return completed_task.status
+            except CompletedTasks.DoesNotExist:
+                return None
+        return None
 
 class BalancesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,9 +66,18 @@ class GameKeysSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GamesSerializer(serializers.ModelSerializer):
+    used_keys_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Games
         fields = '__all__'
+
+    def get_used_keys_count(self, obj):
+        user = self.context.get('user')
+        if user:
+            used_game_keys_count = UsedGameKeys.objects.filter(user=user, game_key__game=obj).count()
+            return used_game_keys_count
+        return 0
 
 class PurchasesCharactersSerializer(serializers.ModelSerializer):
     class Meta:

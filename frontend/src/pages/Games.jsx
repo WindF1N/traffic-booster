@@ -1,30 +1,101 @@
 import { useState, useEffect } from 'react';
+import useAccount from '../hooks/useAccount';
+import useAuthStore from '../hooks/useAuthStore';
 import keyIcon from '../assets/key.svg';
 import pasteIcon from '../assets/paste.svg';
+import bgImage from '../assets/bg.png';
 import GamePopUp from '../components/GamePopUp';
 
 function Games() {
   const [ isOpen, setIsOpen ] = useState(false);
-  const [ keyGame, setKeyGame ] = useState(null);
-  useEffect(() => {
-    if (keyGame === 'test-test-test') {
-      setIsOpen(true);
-    }
-  }, [keyGame]);
-  const handlePaste = async () => {
+  const account = useAccount((state) => state.account);
+  const { setAccount } = useAccount();
+  const token = useAuthStore((state) => state.token);
+  const [ games, setGames ] = useState(null);
+  const handleBlur = (value, game) => {
+    fetch('http://127.0.0.1:8000/check_key/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ 
+            game_id: game.id,
+            key: value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAccount({...account, balance: data.new_balance });
+      setGames(prevState => {
+        const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
+        if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+        const updatedGame = {...game, keyInput: null, used_keys_count: data.used_game_keys_count || 0};
+        return [
+            ...prevState.slice(0, gameIndex),
+            updatedGame,
+            ...prevState.slice(gameIndex + 1)
+        ];
+      });
+      if (data.used_game_keys_count === 3) {
+        setIsOpen(true);
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  };
+  const handlePaste = async (game) => {
     try {
       const text = await navigator.clipboard.readText();
-      setKeyGame(text);
+      setGames(prevState => {
+        const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
+        if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+    
+        const updatedGame = {...game, keyInput: text};
+        return [
+            ...prevState.slice(0, gameIndex),
+            updatedGame,
+            ...prevState.slice(gameIndex + 1)
+        ];
+      });
     } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
     }
   };
+  const handleChange = (value, game) => {
+    setGames(prevState => {
+      const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
+      if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+  
+      const updatedGame = {...game, keyInput: value};
+      return [
+          ...prevState.slice(0, gameIndex),
+          updatedGame,
+          ...prevState.slice(gameIndex + 1)
+      ];
+    });
+  }
+  useEffect(() => {
+    if (!games && token) {
+      fetch('http://127.0.0.1:8000/games/', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        setGames(data.games);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  }, [games, token]);
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src="https://s3-alpha-sig.figma.com/img/c2f0/e149/2a0988f8fbb8d9c554cdc72724b5246d?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jxUqVB-5U2vIKJ4HzKzSr6XtWYvwR8N8U8-DZuKOr9dECas1fz3Co2IsG3hO55T0HRC9g~Neq~cVkYX-BZ1vOTeNHEgeqFbsdA0slQVeoQrgu2rlP3bHVThX5hBNLFjyNAckFIdWVU20Nm~hEtwNQEEtJnlXii-KSj~t1ATlpQVrBQlgXx8IMDVJxCuCNrD4bJ0gkRsr7qzlMRQTEZ8PtO-RpIrVXqQ1-hMTBpqz6MBj6b9DyV-5cj9CWP77cq0SRAcQorbyAu8hxX-4A~NGQ4PefYevFg~BJ5dt6Ufi1IBkgaNIF87NAOGNspQO1B124i0pSohCJcHlLjQ0yJInFg__"
+          src={bgImage}
           alt=""
         />
         <div className="text-[24px] leading-[30.96px] mt-[10%] px-[20px] font-[600] text-[#fff]">
@@ -33,86 +104,38 @@ function Games() {
         <div className="text-[14px] leading-[18.06px] px-[20px] font-[400] mt-[20px]">
           В каждой игре по 3 ключа, активируй их и<br/>получи 1000000 монет.
         </div>
+        {games &&
         <div className="flex flex-col gap-[15px] px-[20px] mt-[20px]">
-          <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]">
-            <div className="flex justify-between items-start">
-              <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">Название игры</div>
-              <div className="flex items-center gap-[10px]">
-                <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
-                <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">1/3</span>
+          {games.map((game, index) => (
+            <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]" key={index}>
+              <div className="flex justify-between items-start">
+                <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">{game.name}</div>
+                <div className="flex items-center gap-[10px]">
+                  <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
+                  <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">{game.used_keys_count}/3</span>
+                </div>
+              </div>
+              <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
+                <div className="h-[100%] w-[100%] rounded-[26px] bg-[#FFD900]" style={{ transition: ".3s", transform: `translateX(-${100 * (3 - game.used_keys_count) / 3}%)` }}></div>
+              </div>
+              {game.used_keys_count < 3 &&
+              <div className="relative mt-[10px]">
+                <input type="text" name={"inputKey" + game.id} placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={game.keyInput || ""} onChange={(event) => handleChange(event.target.value, game)} onBlur={(event) => handleBlur(event.target.value, game)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] px-[10px] pt-[10px] pb-[9px] w-[100%]" />
+                <img className="cursor-pointer absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={() => handlePaste(game)} />
+              </div>}
+              <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
+                <img
+                  className="w-[100%]"
+                  src={"http://127.0.0.1:8000/" + game.picture}
+                  alt=""
+                />
+                <div onClick={() => window.open(game.link, '_blank')} className="cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
+                  Играть
+                </div>
               </div>
             </div>
-            <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
-              <div className="h-[100%] w-[33.33%] rounded-[26px] bg-[#FFD900]"></div>
-            </div>
-            <div className="relative mt-[10px]">
-              <input type="text" placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={keyGame} onChange={(event) => setKeyGame(event.target.value)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] p-[10px] w-[100%]" />
-              <img className="absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={handlePaste} />
-            </div>
-            <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
-              <img
-                className="w-[100%]"
-                src="https://s3-alpha-sig.figma.com/img/cd9e/872d/93de0bacbf9537d4058d7f1c69ff681b?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LU1d-Ja3krYs42DdiWgvG71tOhcj8u5YysmJ~-Om6KYFt11~4f8v7~61QfD~j74EOl-5OWhjoCjWJF49HgE9wrdwNb3bpjEgmZ8lPecMioCdKSH06jVCtP5m3PyjPlyMZ09rELVAu8pPBF8GonTEePRyCBjB0D9dlKc6UUzfvr2afxbFOWdSpJbnQQBWRm~jT-0DiOuREfFaXfrq6HPZuVpx5Sh9h3qf~dk-KStGWP-A6h5~WY0B1IzWuduN0qP91SywelbduvZuGaAF2IarmLFmEBL-0blkCJD7505L2mHX6gaQ4axqFC1zUL1g-RkR6spvsNiEwAJTUza33NZy-w__"
-                alt=""
-              />
-              <div className="absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] py-[15px]">
-                Играть
-              </div>
-            </div>
-          </div>
-          <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]">
-            <div className="flex justify-between items-start">
-              <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">Название игры</div>
-              <div className="flex items-center gap-[10px]">
-                <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
-                <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">1/3</span>
-              </div>
-            </div>
-            <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
-              <div className="h-[100%] w-[33.33%] rounded-[26px] bg-[#FFD900]"></div>
-            </div>
-            <div className="relative mt-[10px]">
-              <input type="text" placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={keyGame} onChange={(event) => setKeyGame(event.target.value)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] p-[10px] w-[100%]" />
-              <img className="absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={handlePaste} />
-            </div>
-            <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
-              <img
-                className="w-[100%]"
-                src="https://s3-alpha-sig.figma.com/img/cd9e/872d/93de0bacbf9537d4058d7f1c69ff681b?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LU1d-Ja3krYs42DdiWgvG71tOhcj8u5YysmJ~-Om6KYFt11~4f8v7~61QfD~j74EOl-5OWhjoCjWJF49HgE9wrdwNb3bpjEgmZ8lPecMioCdKSH06jVCtP5m3PyjPlyMZ09rELVAu8pPBF8GonTEePRyCBjB0D9dlKc6UUzfvr2afxbFOWdSpJbnQQBWRm~jT-0DiOuREfFaXfrq6HPZuVpx5Sh9h3qf~dk-KStGWP-A6h5~WY0B1IzWuduN0qP91SywelbduvZuGaAF2IarmLFmEBL-0blkCJD7505L2mHX6gaQ4axqFC1zUL1g-RkR6spvsNiEwAJTUza33NZy-w__"
-                alt=""
-              />
-              <div className="absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] py-[15px]">
-                Играть
-              </div>
-            </div>
-          </div>
-          <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]">
-            <div className="flex justify-between items-start">
-              <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">Название игры</div>
-              <div className="flex items-center gap-[10px]">
-                <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
-                <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">1/3</span>
-              </div>
-            </div>
-            <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
-              <div className="h-[100%] w-[33.33%] rounded-[26px] bg-[#FFD900]"></div>
-            </div>
-            <div className="relative mt-[10px]">
-              <input type="text" placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={keyGame} onChange={(event) => setKeyGame(event.target.value)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] p-[10px] w-[100%]" />
-              <img className="absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={handlePaste} />
-            </div>
-            <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
-              <img
-                className="w-[100%]"
-                src="https://s3-alpha-sig.figma.com/img/cd9e/872d/93de0bacbf9537d4058d7f1c69ff681b?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LU1d-Ja3krYs42DdiWgvG71tOhcj8u5YysmJ~-Om6KYFt11~4f8v7~61QfD~j74EOl-5OWhjoCjWJF49HgE9wrdwNb3bpjEgmZ8lPecMioCdKSH06jVCtP5m3PyjPlyMZ09rELVAu8pPBF8GonTEePRyCBjB0D9dlKc6UUzfvr2afxbFOWdSpJbnQQBWRm~jT-0DiOuREfFaXfrq6HPZuVpx5Sh9h3qf~dk-KStGWP-A6h5~WY0B1IzWuduN0qP91SywelbduvZuGaAF2IarmLFmEBL-0blkCJD7505L2mHX6gaQ4axqFC1zUL1g-RkR6spvsNiEwAJTUza33NZy-w__"
-                alt=""
-              />
-              <div className="absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] py-[15px]">
-                Играть
-              </div>
-            </div>
-          </div>
-        </div>
+          ))}
+        </div>}
       </div>
       {isOpen && <GamePopUp setIsOpen={setIsOpen} />}
     </>

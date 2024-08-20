@@ -107,19 +107,8 @@ class Wallets(models.Model):
         verbose_name = "Кошелек"
         verbose_name_plural = "Кошельки"
 
-class GameKeys(models.Model):
-    value = models.CharField(max_length=255, unique=True, verbose_name="Значение ключа")
-
-    def __str__(self):
-        return self.value
-
-    class Meta:
-        verbose_name = "Игровой ключ"
-        verbose_name_plural = "Игровые ключи"
-
 class Games(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
-    description = models.TextField(verbose_name="Описание")
     picture = models.ImageField(upload_to='games/', verbose_name="Картинка")
     link = models.CharField(max_length=255, verbose_name="Ссылка")
 
@@ -129,6 +118,31 @@ class Games(models.Model):
     class Meta:
         verbose_name = "Игра"
         verbose_name_plural = "Игры"
+
+class GameKeys(models.Model):
+    game = models.ForeignKey('Games', on_delete=models.CASCADE, verbose_name="Игра")
+    value = models.CharField(max_length=255, unique=True, verbose_name="Значение ключа")
+    used = models.BooleanField(default=False, verbose_name="Использован")
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    def __str__(self):
+        return self.value
+
+    class Meta:
+        verbose_name = "Игровой ключ"
+        verbose_name_plural = "Игровые ключи"
+
+class UsedGameKeys(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
+    game_key = models.ForeignKey('GameKeys', on_delete=models.CASCADE, verbose_name="Игровой ключ")
+    use_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата использования")
+
+    def __str__(self):
+        return f"Исппользованный ключ {self.game_key.value} пользователем {self.user.username} в {self.use_date}"
+
+    class Meta:
+        verbose_name = "Использованный ключ"
+        verbose_name_plural = "Использованные ключи"
 
 class PurchasesCharacters(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
