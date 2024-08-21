@@ -53,8 +53,6 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
         })
         .then(response => response.json())
         .then(data => {
-            setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
-            setIsOpen(false);
             if ('error' in data) {
                 addMessage({
                     type: 'error',
@@ -62,6 +60,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                     name: 'Ошибка:'
                 })
             } else {
+                setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
+                setIsOpen(false);
                 addMessage({
                     type: 'success',
                     text: 'Уровень '+ character.name +' получен',
