@@ -12,9 +12,10 @@ function Boost() {
   const [ characters, setCharacters ] = useState(null);
   const [ nextCharacter, setNextCharacter ] = useState(null);
   const [ nextCharacterIndex, setNextCharacterIndex ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
   useEffect(() => {
     if (!characters && token) {
-      fetch('http://127.0.0.1:8000/characters/', {
+      fetch(apiUrl+'/characters/', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',

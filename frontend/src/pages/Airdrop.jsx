@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import useAccount from '../hooks/useAccount';
 import tonIcon from '../assets/ton.svg';
 import tonImage from '../assets/ton.png';
@@ -9,7 +8,6 @@ import { TonConnectButton } from '@tonconnect/ui-react';
 function Airdrop() {
   const account = useAccount((state) => state.account);
   const { setAccount } = useAccount();
-  const buttonTonRef = useRef()
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-hidden">
@@ -18,7 +16,7 @@ function Airdrop() {
           src={bgImage}
           alt=""
         />
-        <TonConnectButton className="tonbutton hidden" ref={buttonTonRef} />
+        <TonConnectButton className="tonbutton hidden" />
         {account?.wallet.address ?
         <div className="relative mt-[10%] mx-[20px] px-[15px] py-[10px] rounded-[10px] bg-[rgba(117,117,117,0.1)] backdrop-blur-[20px]">
           <div className="text-[#F1F1F1] text-[14px] font-[400] leading-[18px]">Баланс кошелька:</div>

@@ -12,9 +12,10 @@ function Tasks() {
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
   const [ tasks, setTasks ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   useEffect(() => {
     if (!tasks && token) {
-      fetch('http://127.0.0.1:8000/tasks/', {
+      fetch(apiUrl+'/tasks/', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ function Tasks() {
                   </div>
                   <img
                     className="w-[44.7%] absolute bottom-[-25%] right-[-10%]"
-                    src={"http://127.0.0.1:8000" + task.picture}
+                    src={apiUrl + task.picture}
                     alt=""
                   />
                 </div>

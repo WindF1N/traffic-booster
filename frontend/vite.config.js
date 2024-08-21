@@ -5,6 +5,7 @@ import fs from 'fs'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  envDir: '../',
   server: {
     https: {
       key: fs.readFileSync('./127.0.0.1-key.pem'),

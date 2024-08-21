@@ -29,6 +29,7 @@ function Home() {
       return bigLeon3Image;
     }
   });
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   useEffect(() => {
     if (account?.character.type == 'standart') {
       setPersonage(bigLeon1Image);
@@ -40,7 +41,7 @@ function Home() {
   }, [account])
   useEffect(() => {
     if (token) {
-      fetch('http://127.0.0.1:8000/me/', {
+      fetch(apiUrl+'/me/', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',

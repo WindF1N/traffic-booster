@@ -7,8 +7,9 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
     const { setAccount } = useAccount();
+    const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
     const startTask = () => {
-        fetch('http://127.0.0.1:8000/tasks/', {
+        fetch(apiUrl+'/tasks/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
                     )}
                     </div>
                     <div className="absolute z-[3] bottom-[-7.09%] right-[-10.29%] w-[60.28%] h-[45.87%] rounded-[100%] blur-[100px]" style={{background: selectedTask.picture_color}}></div>
-                    <img className="absolute z-[4] w-[62.86%] bottom-[-7.09%] right-[-12.86%]" src={"http://127.0.0.1:8000"+selectedTask.picture} alt="" />
+                    <img className="absolute z-[4] w-[62.86%] bottom-[-7.09%] right-[-12.86%]" src={apiUrl+selectedTask.picture} alt="" />
                 </div>
             </div>
         </div>

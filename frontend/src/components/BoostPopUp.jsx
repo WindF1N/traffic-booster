@@ -21,6 +21,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
     const { setAccount } = useAccount();
     const messages = useMessages((state) => state.messages);
     const { addMessage } = useMessages();
+    const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
     const prevSlide = () => {
         if (currentSlide > 0) {
             setCurrentSlide(currentSlide - 1);
@@ -39,7 +40,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
     });
     const buyCharacter = (currency, character) => {
         console.log(currency)
-        fetch('http://127.0.0.1:8000/characters/', {
+        fetch(apiUrl+'/characters/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

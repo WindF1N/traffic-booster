@@ -22,11 +22,13 @@ function App() {
   const account = useAccount((state) => state.account);
   const localBalance = useLocalBalance((state) => state.localBalance);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
   useEffect(() => {
     if (isLoading) {
       const initData = window.Telegram?.WebApp?.initData || null;
       if (initData) {
-        fetch('http://127.0.0.1:8000/auth/telegram/', {
+        fetch(apiUrl + '/auth/telegram/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,7 +49,7 @@ function App() {
     const syncBalance = async () => {
       if (localBalance > 0) {
         try {
-          const response = await fetch('http://127.0.0.1:8000/sync_balance/', {
+          const response = await fetch(apiUrl+'sync_balance/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -15,11 +15,12 @@ function Games() {
   const messages = useMessages((state) => state.messages);
   const { addMessage } = useMessages();
   const [ games, setGames ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   const handleBlur = (value, game) => {
     if (value.length === 0) {
       return
     }
-    fetch('http://127.0.0.1:8000/check_key/', {
+    fetch(apiUrl+'/check_key/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ function Games() {
   }
   useEffect(() => {
     if (!games && token) {
-      fetch('http://127.0.0.1:8000/games/', {
+      fetch(apiUrl+'/games/', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -153,7 +154,7 @@ function Games() {
               <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
                 <img
                   className="w-[100%]"
-                  src={"http://127.0.0.1:8000/" + game.picture}
+                  src={apiUrl + game.picture}
                   alt=""
                 />
                 <div onClick={() => window.open(game.link, '_blank')} className="transform active:scale-[0.9] transition-transform cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
