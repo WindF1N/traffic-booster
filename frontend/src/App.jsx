@@ -57,7 +57,7 @@ function App() {
     const syncBalance = async () => {
       if (localBalance > 0) {
         try {
-          const response = await fetch(apiUrl+'sync_balance/', {
+          const response = await fetch(apiUrl+'/sync_balance/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
