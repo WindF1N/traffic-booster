@@ -10,6 +10,14 @@ import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
 
 function App() {
+  const [isTelegram, setIsTelegram] = useState("user" in window.Telegram.WebApp.initDataUnsafe);
+  useEffect(() => {
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        // Отключаем вертикальные свайпы
+        tg.disableVerticalSwipes(true);
+    }
+  }, [window.Telegram, window.Telegram.WebApp])
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(!localStorage.getItem('onboardingComplete'));
   const [currentPage, setCurrentPage] = useState('home');
