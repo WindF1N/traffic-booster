@@ -10,6 +10,7 @@ import bigLeon3Image from '../assets/bigleon3.png';
 
 import raster3dIcon from '../assets/3d-raster-small.png';
 import bgImage from '../assets/bg.png';
+import tronImage from '../assets/tron.png';
 
 function Home() {
   const imgRef = useRef(null);
@@ -117,8 +118,8 @@ function Home() {
         <div className="absolute left-0 right-0 bottom-[65.33%] mx-auto z-[-1] w-[53.84%] h-[10%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
         <div className="absolute left-0 right-0 bottom-[29.06%] mx-auto z-[-1] w-[75.64%] h-[6.4%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
         <img
-          className="tron absolute z-[-1] w-[100%] scale-[1.582] bottom-[2%] brightness-50"
-          src="https://s3-alpha-sig.figma.com/img/642c/b351/985fc6d91a135121d186f011a4769f6b?Expires=1724025600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=N9I7K8Xsa1kBTxEUeATgHu0J4WqosOg106oMI1Qv9UYU4GZRjRIBA-nIvC5-x1SFx68A6dGdeEI1tHf1y~xFx0Ga9~38h3G640fng8haMEENYfigq-gl9gzZjw0I3wdOGCcXsgPiY1IWLquLeLWxkxtFq4MloKUrwhM0OdgyEzLhmqLKnseTVhnZfplR20cr4neC~7MAvkX6tjRYPVeh9fxOEjHBxP5uRG~Zi5VvNHqcEJSfMvunA5PyJLlAT-YmrgIQBMs8~eCb3sj6dR3aixvl97em3AMFnsVhj7pAPpIPPWn7tQv0QC0XuTkLz6h0FP63xdmzDo1YpNy5D9c2Cw__"
+          className="tron absolute z-[-1] w-[100%] scale-[1.582] bottom-[2%]"
+          src={tronImage}
           alt=""
         />
         <img 
