@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 *.pem
+*.csr
 
 venv/
 __pycache__
