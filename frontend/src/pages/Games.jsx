@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
+import useMessages from '../hooks/useMessages';
 import keyIcon from '../assets/key.svg';
 import pasteIcon from '../assets/paste.svg';
 import bgImage from '../assets/bg.png';
@@ -11,8 +12,13 @@ function Games() {
   const account = useAccount((state) => state.account);
   const { setAccount } = useAccount();
   const token = useAuthStore((state) => state.token);
+  const messages = useMessages((state) => state.messages);
+  const { addMessage } = useMessages();
   const [ games, setGames ] = useState(null);
   const handleBlur = (value, game) => {
+    if (value.length === 0) {
+      return
+    }
     fetch('http://127.0.0.1:8000/check_key/', {
         method: 'POST',
         headers: {
@@ -26,22 +32,42 @@ function Games() {
     })
     .then(response => response.json())
     .then(data => {
-      setAccount({...account, balance: data.new_balance });
-      setGames(prevState => {
-        const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
-        if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
-        const updatedGame = {...game, keyInput: null, used_keys_count: data.used_game_keys_count || 0};
-        return [
-            ...prevState.slice(0, gameIndex),
-            updatedGame,
-            ...prevState.slice(gameIndex + 1)
-        ];
-      });
-      if (data.used_game_keys_count === 3) {
-        setIsOpen(true);
+      if ('new_balance' in data) {
+        setAccount({...account, balance: data.new_balance });
+        setGames(prevState => {
+          const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
+          if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+          const updatedGame = {...game, keyInput: null, used_keys_count: data.used_game_keys_count || 0};
+          return [
+              ...prevState.slice(0, gameIndex),
+              updatedGame,
+              ...prevState.slice(gameIndex + 1)
+          ];
+        });
+        addMessage({
+          type: 'success',
+          text: 'Ключ успешно активирован',
+          name: 'Успех:'
+        })
+        if (data.used_game_keys_count === 3) {
+          setIsOpen(true);
+        }
+      } else {
+        addMessage({
+          type: 'error',
+          text: data.error,
+          name: 'Ошибка:'
+        })
       }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      addMessage({
+        type: 'error',
+        text: error,
+        name: 'Ошибка:'
+      })
+      console.error('Error:', error);
+    });
   };
   const handlePaste = async (game) => {
     try {
@@ -57,6 +83,7 @@ function Games() {
             ...prevState.slice(gameIndex + 1)
         ];
       });
+      handleBlur(text, game);
     } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
     }
@@ -129,7 +156,7 @@ function Games() {
                   src={"http://127.0.0.1:8000/" + game.picture}
                   alt=""
                 />
-                <div onClick={() => window.open(game.link, '_blank')} className="cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
+                <div onClick={() => window.open(game.link, '_blank')} className="transform active:scale-[0.9] transition-transform cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
                   Играть
                 </div>
               </div>

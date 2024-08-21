@@ -43,7 +43,7 @@ function Boost() {
   if (nextCharacter) {
     return (
       <>
-        <div onClick={() => setIsOpen(true)} className="cursor-pointer boost overflow-hidden fixed bottom-[110px] left-[20px] right-[20px] flex justify-between bg-[rgba(117,117,117,0.1)] w-[calc(100% - 40px)] h-[50px] rounded-[10px] z-[3] backdrop-blur-[40px]">
+        <div onClick={() => setIsOpen(true)} className="transform active:scale-[0.9] transition-transform cursor-pointer boost overflow-hidden fixed bottom-[110px] left-[20px] right-[20px] flex justify-between bg-[rgba(117,117,117,0.1)] w-[calc(100% - 40px)] h-[50px] rounded-[10px] z-[3] backdrop-blur-[40px]">
           <div className="flex justify-center items-center px-[10px] py-[13px] text-[16px] font-[600] leading-[20.64px] bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF700] to-[103.28%]">
             Улучшить
             <img src={doubleArrowIcon} alt="" />

@@ -116,10 +116,18 @@ class AccountInfoView(APIView):
         character = user.character
         character_serializer = CharactersSerializer(character)
 
+        try:
+            wallet = Wallets.objects.get(user=user)
+        except:
+            wallet = None
+
+        wallet_serializer = WalletsSerializer(wallet)
+
         account_info = {
             'user': CustomUserSerializer(user).data,
             'balance': balance_serializer.data,
             'character': character_serializer.data,
+            'wallet': wallet_serializer.data,
         }
         return Response(account_info, status=status.HTTP_200_OK)
     
@@ -165,7 +173,7 @@ class CharactersView(APIView):
             balance = Balances.objects.get(user=user)
             character = Characters.objects.get(id=data["character_id"])
             if character.price_stars > balance.amount:
-                return Response({'error': 'Not enough stars'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Недостаточно монет на балансе'}, status=status.HTTP_400_BAD_REQUEST)
             balance.amount -= character.price_stars
             balance.save()
             user.character = character
@@ -323,9 +331,9 @@ class CheckKeyView(APIView):
         except Games.DoesNotExist:
             return Response({'error': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
         except GameKeys.DoesNotExist:
-            return Response({'error': 'Game key not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Ключ недействителен'}, status=status.HTTP_404_NOT_FOUND)
         if UsedGameKeys.objects.filter(user=user, game_key=game_key).exists():
-            return Response({'error': 'Game key already used'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Ключ недействителен'}, status=status.HTTP_400_BAD_REQUEST)
         used_game_keys = UsedGameKeys.objects.filter(user=user, game_key__game=game)
         if used_game_keys.count() < 3:
             UsedGameKeys.objects.create(user=user, game_key=game_key)

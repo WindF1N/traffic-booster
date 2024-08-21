@@ -3,6 +3,7 @@ import { useSwipeable } from 'react-swipeable';
 
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
+import useMessages from '../hooks/useMessages';
 
 import closeIcon from '../assets/close.svg';
 import tonIcon from '../assets/ton.svg';
@@ -18,6 +19,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
     const { setAccount } = useAccount();
+    const messages = useMessages((state) => state.messages);
+    const { addMessage } = useMessages();
     const prevSlide = () => {
         if (currentSlide > 0) {
             setCurrentSlide(currentSlide - 1);
@@ -51,83 +54,103 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
         .then(data => {
             setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
             setIsOpen(false);
+            if ('error' in data) {
+                addMessage({
+                    type: 'error',
+                    text: data.error,
+                    name: 'Ошибка:'
+                })
+            } else {
+                addMessage({
+                    type: 'success',
+                    text: 'Уровень '+ character.name +' получен',
+                    name: 'Успех:'
+                })
+            }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            addMessage({
+                type: 'error',
+                text: error,
+                name: 'Ошибка:'
+            })
+            console.error('Error:', error);
+        });
     }
     return (
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
-            <div className="boostpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[61.33%] m-auto overflow-hidden" {...handlers}>
-                <div className="bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF600] to-[103.28%] px-[20px] py-[12px]">
-                    <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Улучшение</div>
-                    <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={closeIcon} alt="" onClick={() => setIsOpen(false)} />
-                </div>
-                <div className="relative w-[100%] h-[100%]">
-                    <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-                        {characters.map((character, index) => (
-                            <div className="relative overflow-hidden h-[100%] w-[100%] flex-shrink-0" key={index}>
-                                {character.type == "standart" &&
-                                <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#319BFF]">{character.name}</span></div>}
-                                {character.type == "silver" &&
-                                <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#9CFF11]">{character.name}</span></div>}
-                                {character.type == "gold" &&
-                                <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#FF11DF]">{character.name}</span></div>}
-                                {Number(character.multiplier) !== 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Зарабатывай со всех заданий в {Number(character.multiplier)} раза больше!</div>}
-                                {Number(character.multiplier) === 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Стандартный персонаж, стандартный заработок...</div>}
-                                {character.type == "standart" &&
+        <div className="boostpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[61.33%] m-auto overflow-hidden" {...handlers}>
+        <div className="bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF600] to-[103.28%] px-[20px] py-[12px]">
+        <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Улучшение</div>
+        <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={closeIcon} alt="" onClick={() => setIsOpen(false)} />
+        </div>
+        <div className="relative w-[100%] h-[100%]">
+        <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+        {characters.map((character, index) => (
+            <div className="relative overflow-hidden h-[100%] w-[100%] flex-shrink-0" key={index}>
+            {character.type == "standart" &&
+                <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#319BFF]">{character.name}</span></div>}
+                {character.type == "silver" &&
+                    <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#9CFF11]">{character.name}</span></div>}
+                    {character.type == "gold" &&
+                        <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#FF11DF]">{character.name}</span></div>}
+                        {Number(character.multiplier) !== 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Зарабатывай со всех заданий в {Number(character.multiplier)} раза больше!</div>}
+                        {Number(character.multiplier) === 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Стандартный персонаж, стандартный заработок...</div>}
+                        {character.type == "standart" &&
+                            <>
+                            <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#319BFF]'></div>
+                            <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon1Image} alt="" />
+                            </>}
+                            {character.type == "silver" &&
                                 <>
-                                    <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#319BFF]'></div>
-                                    <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon1Image} alt="" />
+                                <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#9CFF11]'></div>
+                                <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon2Image} alt="" />
                                 </>}
-                                {character.type == "silver" &&
-                                <>
-                                    <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#9CFF11]'></div>
-                                    <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon2Image} alt="" />
-                                </>}
                                 {character.type == "gold" &&
-                                <>
+                                    <>
                                     <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#FF11DF]'></div>
                                     <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon3Image} alt="" />
-                                </>}
-                                {index >= nextCharacterIndex ?
-                                <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
-                                    <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Улучшить за:</div>
-                                    <div className="flex gap-[7px] items-center">
-                                        <div className="cursor-pointer flex gap-[5px] justify-center text-[#FFD900] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#262626] rounded-[10px] border border-[#FFD900]"
-                                             onClick={() => buyCharacter("stars", character)}>
-                                            {Number(character.price_stars)}
-                                            <img
-                                                className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
-                                                src={raster3dIcon}
-                                                alt=""
-                                            />
+                                    </>}
+                                    {index >= nextCharacterIndex ?
+                                        <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
+                                        <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Улучшить за:</div>
+                                        <div className="flex gap-[7px] items-center">
+                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#FFD900] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#262626] rounded-[10px] border border-[#FFD900]"
+                                        onClick={() => buyCharacter("stars", character)}>
+                                        {Number(character.price_stars)}
+                                        <img
+                                        className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
+                                        src={raster3dIcon}
+                                        alt=""
+                                        />
                                         </div>
                                         <div className="text-[14px] leading-[16px] font-[400] text-[#A7A7A7]">/</div>
-                                        <div className="cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]">
-                                            {Number(character.price_ton)}
-                                            <img
-                                                className="flex w-[16px] h-[16px] mt-[-2.5px]"
-                                                src={tonIcon}
-                                                alt=""
-                                            />
+                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]">
+                                        {Number(character.price_ton)}
+                                        <img
+                                        className="flex w-[16px] h-[16px] mt-[-2.5px]"
+                                        src={tonIcon}
+                                        alt=""
+                                        />
                                         </div>
+                                        </div>
+                                        </div>
+                                        : (index === nextCharacterIndex - 1 &&
+                                            <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
+                                            <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Используется</div>
+                                            </div>
+                                        )}
+                                        </div>
+                                    ))}
                                     </div>
-                                </div>
-                                : (index === nextCharacterIndex - 1 &&
-                                    <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
-                                        <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Используется</div>
+                                    <div className="fixed top-0 bottom-0 left-[20px] right-[20px] m-auto flex items-center justify-between h-[48px]">
+                                    <div>{currentSlide > 0 && <img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} />}</div>
+                                    <div>{currentSlide < characters.length - 1 && <img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} />}</div>
                                     </div>
-                                  )}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="fixed top-0 bottom-0 left-[20px] right-[20px] m-auto flex items-center justify-between h-[48px]">
-                        <div>{currentSlide > 0 && <img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} />}</div>
-                        <div>{currentSlide < characters.length - 1 && <img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} />}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+                                    </div>
+                                    </div>
+                                    </div>
+                                );
+                            }
                             
-export default BoostPopUp;
+                            export default BoostPopUp;

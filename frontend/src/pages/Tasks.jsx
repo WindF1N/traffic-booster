@@ -40,7 +40,7 @@ function Tasks() {
           <img className="absolute right-0 bottom-0 z-[-1] w-[50%]" src={tasksImage} alt="" />
           <div className="font-[600] text-[20px] leading-[25.8px] text-[#fff] pt-[10%]">Приглашай друзей и получай по 100.000 тыс монет за каждого</div>
           <a className="flex w-[54.35%]" href={"https://t.me/share/url?url=https://t.me/traffic_booster_dev_bot/dev?startapp="+account?.user?.referral_code+"&text=Приглашаю тебя вместе со мной принять участие в Traffic Booster"}>
-            <div className="cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]">
+            <div className="transform active:scale-[0.9] transition-transform cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]">
               Пригласить
             </div>
           </a>
@@ -50,7 +50,7 @@ function Tasks() {
           {tasks.map((task, index) => {
             if (task.limit_type === "limited") {
               return (
-                <div className="cursor-pointer w-[100%]" key={index}>
+                <div className="transform active:scale-[0.9] transition-transform cursor-pointer w-[100%]" key={index}>
                   <div
                     className="bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] flex justify-between relative overflow-hidden"
                     onClick={() => {
@@ -91,7 +91,7 @@ function Tasks() {
             } else if (task.limit_type === "unlimited") {
               return (
                 <div
-                  className="cursor-pointer relative overflow-hidden bg-[rgba(117,117,117,0.1)] rounded-[10px] p-[10px] w-[calc(50%-5px)]"
+                  className="transform active:scale-[0.9] transition-transform cursor-pointer relative overflow-hidden bg-[rgba(117,117,117,0.1)] rounded-[10px] p-[10px] w-[calc(50%-5px)]"
                   key={index}
                   onClick={() => {
                     setSelectedTask(task);
