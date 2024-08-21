@@ -11,10 +11,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 import os
 
 import pymysql
 pymysql.install_as_MySQLdb()
+
+env = environ.Env()
+env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../.env'))
+environ.Env.read_env(env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,11 +29,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-TELEGRAM_BOT_TOKEN = '7327393500:AAG9xQX1QZwdNVM2HpN6lkcNuDvUMsPpMdo'
-SECRET_KEY = 'django-insecure-dshczwtqp=z_mbo2p_#r=x4yo2(-!ycc7q_%kki%&zr-^okh1g'
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -91,12 +96,15 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'traffic_booster',
-        'USER': 'root',
-        'PASSWORD': 'Bilibaben9518!',
-        'HOST': 'localhost',  # Или IP-адрес вашего MySQL сервера
-        'PORT': '3306',  # Порт по умолчанию для MySQL
+        'ENGINE': env('DATABASE_ENGINE'),
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -136,8 +144,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-print(os.path.join(BASE_DIR, '/static'))
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, '/static') ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
