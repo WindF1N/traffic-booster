@@ -96,7 +96,7 @@ const OnboardingSlider = ({ onComplete }) => {
       <div className="relative h-screen">
         <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {slides.map((slide, index) => (
-            <div key={index} className="relative w-[100%] flex-shrink-0 px-[20px]">
+            <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px]">
               {index === 0 && 
                 <div className="rounded-[100%] w-[75.6%] h-[35%] absolute top-[45%] right-[-10%] blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>}
               {index === 1 && 
@@ -121,13 +121,13 @@ const OnboardingSlider = ({ onComplete }) => {
               )}
               <p className="text-[#B0B0B0] text-[16px] leading-[21px]">{slide.description}</p>
               {index === 1 && (
-                <img className="mt-[0.66%] w-[76.9%] mx-auto" src={slide.image} alt="" />
+                <img className="absolute top-[31.86%] left-0 right-0 w-[76.9%] mx-auto" src={slide.image} alt="" />
               )}
               {index === 0 && (
-                <img className="mt-[9.73%] w-[76.9%] mx-auto" src={slide.image} alt="" />
+                <img className="absolute top-[35.33%] left-0 right-0 w-[76.9%] mx-auto" src={slide.image} alt="" />
               )}
               {index === 2 && (
-                <img className="mt-[-3.6%] w-[71.79%] mx-auto" src={slide.image} alt="" />
+                <img className="absolute top-[38%] left-0 right-0 w-[71.79%] mx-auto" src={slide.image} alt="" />
               )}
             </div>
           ))}
