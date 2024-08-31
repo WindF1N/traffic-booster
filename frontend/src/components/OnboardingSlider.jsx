@@ -4,6 +4,7 @@ import slide1Image from '../assets/slide1.png';
 import slide2Image from '../assets/slide2.png';
 import slide3Image from '../assets/slide3.png';
 import forSlide3Image from '../assets/for-slide3.svg';
+import arrowIcon from '../assets/arrow.svg';
 
 const OnboardingSlider = ({ onComplete }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -79,9 +80,20 @@ const OnboardingSlider = ({ onComplete }) => {
     return () => clearTimeout(timer);
   }, [currentSlide]);
 
+  const prevSlide = () => {
+      if (currentSlide > 0) {
+          setCurrentSlide(currentSlide - 1);
+      }
+  }
+  const nextSlide = () => {
+      if (currentSlide < slides.length - 1) {
+          setCurrentSlide(currentSlide + 1);
+      }
+  }
+
   return (
-    <div className="relative w-[100%] mt-[10%]" {...handlers}>
-      <div className="relative">
+    <div className="relative w-[100%] h-screen pt-[2.33%] overflow-hidden" {...handlers}>
+      <div className="relative h-screen">
         <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {slides.map((slide, index) => (
             <div key={index} className="relative w-[100%] flex-shrink-0 px-[20px]">
@@ -90,7 +102,7 @@ const OnboardingSlider = ({ onComplete }) => {
               {index === 1 && 
               <>
                 <div className="rounded-[100%] w-[58%] h-[27%] absolute top-[45%] right-0 blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>
-                <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute top-[92%] right-0 left-0 mx-auto ml-[22%] blur-[15px] z-[-1] bg-[#0C0C0C]"></div>
+                <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute top-[78%] right-0 left-0 mx-auto ml-[22%] blur-[15px] z-[-1] bg-[#0C0C0C]"></div>
               </>}
               {index === 2 && 
               <div className="rounded-[100%] w-[65.61%] h-[29.85%] absolute top-[45%] right-0 left-0 mx-auto blur-[100px] z-[-1] bg-[#6D00AC]"></div>}
@@ -99,25 +111,33 @@ const OnboardingSlider = ({ onComplete }) => {
               )}
               {slide.type === 0 && (
                 <div className="w-[calc(100% + 40px)] ml-[-20px]">
-                  <div className="w-[100%] pr-[20px] h-[3px] bg-gradient-to-r from-[#B331FF] from-[50%] to-[#FFF600] to-[130%] my-[20px]"></div>
+                  <div className="w-[100%] pr-[20px] h-[3px] bg-gradient-to-r from-[#B331FF] from-[50%] to-[#FFF600] to-[130%] my-[2.67%]"></div>
                 </div>
               )}
               {slide.type === 0 ? (
-                <h2 className="text-[24px] leading-[31px] font-[600] mb-[15px]">{slide.title}</h2>
+                <h2 className="text-[24px] leading-[31px] font-[600] mb-[2%]">{slide.title}</h2>
               ) : (
-                <img className="w-[94.87%] ml-auto mb-[20px] mr-[-20px]" src={slide.title} alt="" />
+                <img className="w-[94.87%] ml-auto mb-[2.67%] mr-[-20px]" src={slide.title} alt="" />
               )}
               <p className="text-[#B0B0B0] text-[16px] leading-[21px]">{slide.description}</p>
-              {slide.type === 0 ? (
-                <img className="mb-[8%] mt-[5%] w-[76.9%] mx-auto" src={slide.image} alt="" />
-              ) : (
-                <img className="mb-[1%] mt-[-5%] w-[71.79%] mx-auto" src={slide.image} alt="" />
+              {index === 1 && (
+                <img className="mt-[0.66%] w-[76.9%] mx-auto" src={slide.image} alt="" />
+              )}
+              {index === 0 && (
+                <img className="mt-[9.73%] w-[76.9%] mx-auto" src={slide.image} alt="" />
+              )}
+              {index === 2 && (
+                <img className="mt-[-3.6%] w-[71.79%] mx-auto" src={slide.image} alt="" />
               )}
             </div>
           ))}
         </div>
       </div>
-      <div className="mx-auto px-[20px]">
+      <div className="absolute inset-0 w-[100%] my-auto flex items-center justify-between px-[10px]">
+        <div>{currentSlide > 0 && <img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} />}</div>
+        <div>{currentSlide < slides.length - 1 && <img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} />}</div>
+      </div>
+      <div className="absolute bottom-0 mx-auto px-[20px] w-[100%]">
         {currentSlide === slides.length - 1 && (
             <button
                 onClick={handleComplete}
@@ -129,7 +149,7 @@ const OnboardingSlider = ({ onComplete }) => {
         {slides[currentSlide].type === 0 && (
             <div className="text-center text-[20px] font-[600] leading-[25.8px] mt-auto mx-auto">{slides[currentSlide].afterimage}</div>
         )}
-        <div className="mt-[25px] pb-[25px] flex space-x-[5px] w-[100%] justify-center">
+        <div className="mt-[4%] pb-[6.67%] flex space-x-[5px] w-[100%] justify-center">
             {slides.map((_, index) => (
             <button
                 key={index}

@@ -158,4 +158,5 @@ AUTH_USER_MODEL = 'main.CustomUser'
 CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:5173",
     "http://127.0.0.1:5173",
+    "https://172.18.180.15:5173"
 ]
