@@ -12,12 +12,14 @@ import string
 from django.conf import settings
 import json
 import traceback
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
+from .models import CustomUser, Characters, Tasks, Balances, Farmings, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 from .serializers import (
     CustomUserSerializer, CharactersSerializer, TasksSerializer, BalancesSerializer,
     AdvertisersSerializer, TariffsSerializer, WalletsSerializer, GameKeysSerializer, GamesSerializer,
-    PurchasesCharactersSerializer, CompletedTasksSerializer
+    PurchasesCharactersSerializer, CompletedTasksSerializer, FarmingsSerializer
 )
+from django.utils import timezone
+import datetime
 
 User = get_user_model()
 
@@ -48,6 +50,12 @@ class TelegramAuthView(APIView):
                     standard_character = Characters.objects.get(type='standart')
                     user.character = standard_character
                     user.save()
+                    Farmings.objects.create(
+                        user=user,
+                        amount=1000,
+                        start_date=timezone.now(),
+                        end_date=timezone.now() + datetime.timedelta(hours=4),
+                    )
                 payload = {
                     'user_id': user.id,
                     'telegram_id': user_data['telegram_id'],
@@ -113,6 +121,18 @@ class AccountInfoView(APIView):
 
         balance_serializer = BalancesSerializer(balance)
 
+        try:
+            farming = Farmings.objects.get(user=user)
+        except Farmings.DoesNotExist:
+            farming = Farmings.objects.create(
+                user=user,
+                amount=1000,
+                start_date=timezone.now(),
+                end_date=timezone.now() + datetime.timedelta(hours=4),
+            )
+
+        farming_serializer = FarmingsSerializer(farming)
+
         character = user.character
         character_serializer = CharactersSerializer(character)
 
@@ -128,6 +148,7 @@ class AccountInfoView(APIView):
             'balance': balance_serializer.data,
             'character': character_serializer.data,
             'wallet': wallet_serializer.data,
+            'farming': farming_serializer.data
         }
         return Response(account_info, status=status.HTTP_200_OK)
     
@@ -218,6 +239,42 @@ class SyncBalanceView(APIView):
 
         return Response({'message': 'Balance updated successfully', 'new_balance': balance.amount}, status=status.HTTP_200_OK)
     
+class FarmingView(APIView):
+    def post(self, request):
+        token = request.headers.get('Authorization', '').split(' ')[-1]
+        if not token:
+            return Response({'error': 'Token not provided'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            user = User.objects.get(id=user_id)
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        farming = Farmings.objects.get(user=user)
+        if farming.end_date > timezone.now():
+            return Response({'error': 'Farming is already running'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        balance = Balances.objects.get(user=user)
+        # Обновление баланса пользователя
+        balance.amount += farming.amount * int(user.charaacter.multiplier)
+        balance.save()
+
+        balance_serializer = BalancesSerializer(balance)
+
+        farming.start_date = timezone.now()
+        farming.end_date = timezone.now() + datetime.timedelta(hours=4)
+        farming.save()
+
+        farming_serializer = FarmingsSerializer(farming)
+
+        return Response({'message': f'Баланс увеличен на {int(farming.amount)} монет', 'new_balance': balance_serializer.data, 'new_farming': farming_serializer.data}, status=status.HTTP_200_OK)
+
 class TasksView(APIView):
     def get(self, request):
         token = request.headers.get('Authorization', '').split(' ')[-1]
@@ -265,14 +322,15 @@ class TasksView(APIView):
                 'completed_task': completed_task_serializer.data,
             }, status=status.HTTP_400_BAD_REQUEST)
         except:
+            multiplier = int(user.character.multiplier)
             completed_task = CompletedTasks.objects.create(
                 user=user, 
                 task=task,
-                amount_reward=task.reward,
+                amount_reward=task.reward * multiplier,
                 status="pending" if task.time_to_complete > 0 else "awarded"
             )
             if completed_task.status == "awarded":
-                balance.amount += task.reward
+                balance.amount += task.reward * multiplier
                 balance.save()
             task.limit_count_reserved += 1
             task.save()

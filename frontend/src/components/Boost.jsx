@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import doubleArrowIcon from '../assets/double-arrow.svg';
 import raster3dIcon from '../assets/3d-raster-small.png';
 import BoostPopUp from './BoostPopUp';
@@ -7,6 +8,7 @@ import useAccount from '../hooks/useAccount';
 
 function Boost() {
   const [ isOpen, setIsOpen ] = useState(false);
+  const [ swipeOffset, setSwipeOffset ] = useState(0);
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
   const [ characters, setCharacters ] = useState(null);
@@ -41,15 +43,35 @@ function Boost() {
       setNextCharacterIndex(currentCharacterIndex + 1);
     }
   }, [characters, account]);
+  const handlers = useSwipeable({
+    onSwiping: (eventData) => {
+      if (eventData.dir === 'Right') {
+        if (eventData.deltaX / window.innerWidth * 100 < 58.34) {
+          setSwipeOffset(eventData.deltaX);
+        } else {
+          setIsOpen(true);
+        }
+      }
+    },
+    onSwipedRight: () => {
+      setSwipeOffset(0);
+    },
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
+  const transformStyle = {
+    transform: `translateX(${swipeOffset}px)`,
+    transition: swipeOffset === 0 ? 'transform .3s ease-in-out' : '0s'
+  };
   if (nextCharacter) {
     return (
       <>
-        <div onClick={() => setIsOpen(true)} className="transform active:scale-[0.9] transition-transform cursor-pointer boost overflow-hidden fixed bottom-[110px] left-[20px] right-[20px] flex justify-between bg-[rgba(117,117,117,0.1)] w-[calc(100% - 40px)] h-[50px] rounded-[10px] z-[3] backdrop-blur-[40px]">
-          <div className="flex justify-center items-center px-[10px] py-[13px] text-[16px] font-[600] leading-[20.64px] bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF700] to-[103.28%]">
+        <div {...handlers} className="cursor-pointer boost overflow-hidden fixed bottom-[110px] left-[20px] right-[20px] flex justify-between bg-[rgba(117,117,117,0.1)] w-[calc(100% - 40px)] h-[50px] rounded-[10px] z-[3] backdrop-blur-[40px]">
+          <div className="relative z-1 ml-[-65%] w-[100%] flex justify-end items-center px-[10px] py-[13px] text-[16px] font-[600] leading-[20.64px] bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF700] to-[103.28%]" style={transformStyle}>
             Улучшить
             <img src={doubleArrowIcon} alt="" />
           </div>
-          <div className="py-[6px] px-[10px] flex flex-col justify-between items-end">
+          <div className="z-[-1] absolute right-0 top-0 w-[100%] h-[100%] py-[6px] px-[10px] flex flex-col justify-between items-end">
             {nextCharacter.type == "standart" &&
             <div className="text-[10px] font-[400] leading-[12.9px]">
               След. уровень: <span className="text-[#319BFF]">{nextCharacter.name}</span>

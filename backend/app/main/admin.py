@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
+from .models import CustomUser, Characters, Tasks, Balances, Farmings, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 from django.forms import Textarea, TextInput
 
 # Регистрация моделей с настройками отображения
@@ -50,6 +50,11 @@ class TasksAdmin(admin.ModelAdmin):
 @admin.register(Balances)
 class BalancesAdmin(admin.ModelAdmin):
     list_display = ('user', 'amount')
+    search_fields = ('user__username',)
+
+@admin.register(Farmings)
+class FarmingsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'amount', 'start_date', 'end_date')
     search_fields = ('user__username',)
 
 @admin.register(Advertisers)

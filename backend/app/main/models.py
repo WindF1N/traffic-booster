@@ -71,6 +71,19 @@ class Balances(models.Model):
         verbose_name = "Баланс"
         verbose_name_plural = "Балансы"
 
+class Farmings(models.Model):
+    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество монет")
+    start_date = models.DateTimeField(verbose_name="Дата и время старта")
+    end_date = models.DateTimeField(verbose_name="Дата и время конца")
+
+    def __str__(self):
+        return f"Фарминг для {self.user.username}"
+
+    class Meta:
+        verbose_name = "Фарминг"
+        verbose_name_plural = "Фарминги"
+
 class Advertisers(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
     payment_date = models.DateTimeField(verbose_name="Дата и время оплаты")

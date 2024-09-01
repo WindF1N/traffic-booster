@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Characters, Tasks, Balances, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
+from .models import CustomUser, Characters, Tasks, Balances, Farmings, Advertisers, Tariffs, Wallets, GameKeys, Games, PurchasesCharacters, CompletedTasks, UsedGameKeys
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +43,11 @@ class TasksSerializer(serializers.ModelSerializer):
 class BalancesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Balances
+        fields = '__all__'
+
+class FarmingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Farmings
         fields = '__all__'
 
 class AdvertisersSerializer(serializers.ModelSerializer):

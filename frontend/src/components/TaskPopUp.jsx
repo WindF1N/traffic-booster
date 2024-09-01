@@ -2,11 +2,13 @@ import closeIcon from '../assets/close.svg';
 import raster3dIcon from '../assets/3d-raster-small.png';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
+import useMessages from '../hooks/useMessages';
 
 function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
     const { setAccount } = useAccount();
+    const { addMessage } = useMessages();
     const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
     const startTask = () => {
         fetch(apiUrl+'/tasks/', {
@@ -27,18 +29,37 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
                 if (taskIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
             
                 const updatedTask = data.task;
-                return [
-                    ...prevState.slice(0, taskIndex),
-                    updatedTask,
-                    ...prevState.slice(taskIndex + 1)
-                ];
+                if (updatedTask.status === "awarded") {
+                    return [
+                        ...prevState.filter(task => task.id !== updatedTask.id),
+                    ];
+                } else {
+                    return [
+                        ...prevState.slice(0, taskIndex),
+                        updatedTask,
+                        ...prevState.slice(taskIndex + 1)
+                    ];
+                }
             });
             setSelectedTask(data.task);
     
             // Перенаправляем пользователя по ссылке из задания
             window.open(selectedTask.link, '_blank');
+
+            addMessage({
+                type: 'success',
+                text: 'Задание "'+ data.task.title +'" выполнено',
+                name: 'Успех:'
+            })
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            addMessage({
+                type: 'error',
+                text: error,
+                name: 'Ошибка:'
+            })
+            console.error('Error:', error)
+        });
     }
     return (
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
@@ -72,7 +93,7 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
                     </div>
                     <div className="mt-[5.45%] text-[#646464] text-[16px] font-[400]">Награда</div>
                     <div className="flex items-center text-[#FFD900] text-[28px] font-[600] leading-[36px] mt-[1.82%] z-[4] gap-[5px]">
-                        {Number(selectedTask.reward)}
+                        {Number(selectedTask.reward) * Number(account?.character?.multiplier)}
                         <img
                             className="flex w-[20px] h-[20px] mt-[-3px]"
                             src={raster3dIcon}
