@@ -42,29 +42,6 @@ function Home() {
       setPersonage(bigLeon3Image);
     }
   }, [account])
-  useEffect(() => {
-    if (token) {
-      fetch(apiUrl+'/me/', {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + token
-          }
-      })
-      .then(response => response.json())
-      .then(data => {
-        setAccount(data);
-        if (data.character.type == 'standart') {
-          setPersonage(bigLeon1Image);
-        } else if (data.character.type == 'silver') {
-          setPersonage(bigLeon2Image);
-        } else if (data.character.type == 'gold') {
-          setPersonage(bigLeon3Image);
-        }
-      })
-      .catch(error => console.error('Error:', error));
-    }
-  }, [token]);
   const handleClick = (event) => {
     imgRef.current.classList.add(shakeAnimation);
     if (shakeAnimation === 'shake1') {

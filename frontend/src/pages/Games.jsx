@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
 import useMessages from '../hooks/useMessages';
+import useGames from '../hooks/useGames';
 import keyIcon from '../assets/key.svg';
 import pasteIcon from '../assets/paste.svg';
 import bgImage from '../assets/bg.png';
@@ -13,8 +14,9 @@ function Games() {
   const { setAccount } = useAccount();
   const token = useAuthStore((state) => state.token);
   const messages = useMessages((state) => state.messages);
+  const games = useGames((state) => state.games);
   const { addMessage } = useMessages();
-  const [ games, setGames ] = useState(null);
+  const { setGames } = useGames();
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   const handleBlur = (value, game) => {
     if (value.length === 0) {
@@ -35,16 +37,15 @@ function Games() {
     .then(data => {
       if ('new_balance' in data) {
         setAccount({...account, balance: data.new_balance });
-        setGames(prevState => {
-          const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
-          if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
+        const gameIndex = games.findIndex(game_ => game_.id === game.id);
+        if (gameIndex !== -1) {
           const updatedGame = {...game, keyInput: null, used_keys_count: data.used_game_keys_count || 0};
-          return [
-              ...prevState.slice(0, gameIndex),
-              updatedGame,
-              ...prevState.slice(gameIndex + 1)
-          ];
-        });
+          setGames([
+            ...games.slice(0, gameIndex),
+            updatedGame,
+            ...games.slice(gameIndex + 1)
+        ])
+        }
         addMessage({
           type: 'success',
           text: 'Ключ успешно активирован',
@@ -73,37 +74,33 @@ function Games() {
   const handlePaste = async (game) => {
     try {
       const text = await navigator.clipboard.readText();
-      setGames(prevState => {
-        const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
-        if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
-    
+      const gameIndex = games.findIndex(game_ => game_.id === game.id);
+      if (gameIndex !== -1) {
         const updatedGame = {...game, keyInput: text};
-        return [
-            ...prevState.slice(0, gameIndex),
+        setGames([
+            ...games.slice(0, gameIndex),
             updatedGame,
-            ...prevState.slice(gameIndex + 1)
-        ];
-      });
+            ...games.slice(gameIndex + 1)
+        ])
+      }
       handleBlur(text, game);
     } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
     }
   };
   const handleChange = (value, game) => {
-    setGames(prevState => {
-      const gameIndex = prevState.findIndex(game_ => game_.id === game.id);
-      if (gameIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
-  
+    const gameIndex = games.findIndex(game_ => game_.id === game.id);
+    if (gameIndex !== -1) {
       const updatedGame = {...game, keyInput: value};
-      return [
-          ...prevState.slice(0, gameIndex),
+      setGames([
+          ...games.slice(0, gameIndex),
           updatedGame,
-          ...prevState.slice(gameIndex + 1)
-      ];
-    });
+          ...games.slice(gameIndex + 1)
+      ]);
+    }
   }
   useEffect(() => {
-    if (!games && token) {
+    if (token) {
       fetch(apiUrl+'/games/', {
           method: 'GET',
           headers: {
@@ -117,7 +114,7 @@ function Games() {
       })
       .catch(error => console.error('Error:', error));
     }
-  }, [games, token]);
+  }, [token]);
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
@@ -132,7 +129,7 @@ function Games() {
         <div className="text-[14px] leading-[18.06px] px-[20px] font-[400] mt-[20px]">
           В каждой игре по 3 ключа, активируй их и<br/>получи 1000000 монет.
         </div>
-        {games &&
+        {games.length > 0 &&
         <div className="flex flex-col gap-[15px] px-[20px] mt-[20px]">
           {games.map((game, index) => (
             <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]" key={index}>

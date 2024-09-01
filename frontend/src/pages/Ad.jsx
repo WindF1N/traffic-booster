@@ -17,7 +17,7 @@ function Ad() {
         </div>
         <div className="absolute z-[-1] top-[30.27%] left-0 right-0 mx-auto bg-[#5BC3FD] w-[51.79%] h-[26.93%] rounded-[100%] blur-[100px]"></div>
         <img
-          className="w-[100%] ad-image"
+          className="absolute inset-0 top-[20.27%] mx-auto w-[100%] ad-image"
           src={adImage}
           alt=""
         />

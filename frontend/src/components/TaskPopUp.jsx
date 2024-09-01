@@ -3,12 +3,15 @@ import raster3dIcon from '../assets/3d-raster-small.png';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useMessages from '../hooks/useMessages';
+import useTasks from '../hooks/useTasks';
 
-function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
+function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
+    const tasks = useTasks((state) => state.tasks);
     const { setAccount } = useAccount();
     const { addMessage } = useMessages();
+    const { setTasks } = useTasks();
     const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
     const startTask = () => {
         fetch(apiUrl+'/tasks/', {
@@ -24,23 +27,18 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask, setTasks }) {
         .then(response => response.json())
         .then(data => {
             setAccount({...account, balance: data.new_balance });
-            setTasks(prevState => {
-                const taskIndex = prevState.findIndex(task => task.id === selectedTask.id);
-                if (taskIndex === -1) return prevState; // Если задача не найдена, возвращаем предыдущее состояние
-            
-                const updatedTask = data.task;
-                if (updatedTask.status === "awarded") {
-                    return [
-                        ...prevState.filter(task => task.id !== updatedTask.id),
-                    ];
-                } else {
-                    return [
-                        ...prevState.slice(0, taskIndex),
-                        updatedTask,
-                        ...prevState.slice(taskIndex + 1)
-                    ];
+            if (data.task.status === "awarded") {
+                setTasks([...tasks.filter(task => task.id !== data.task.id)]);
+            } else {
+                const taskIndex = tasks.findIndex(task => task.id === selectedTask.id);
+                if (taskIndex !== -1) {
+                    setTasks([
+                        ...tasks.slice(0, taskIndex),
+                        data.task,
+                        ...tasks.slice(taskIndex + 1)
+                    ])
                 }
-            });
+            }
             setSelectedTask(data.task);
     
             // Перенаправляем пользователя по ссылке из задания

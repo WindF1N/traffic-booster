@@ -8,9 +8,12 @@ import useAuthStore from './hooks/useAuthStore';
 import useAccount from './hooks/useAccount';
 import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
+import { useTonAddress } from '@tonconnect/ui-react';
 
 function App() {
-  const [isTelegram, setIsTelegram] = useState(!"user" in window.Telegram.WebApp.initDataUnsafe);
+  const [isTelegram, setIsTelegram] = useState("user" in window.Telegram?.WebApp?.initDataUnsafe);
+  const userFriendlyAddress = useTonAddress();
+  const rawAddress = useTonAddress(false);
   useEffect(() => {
     if (window.Telegram && window.Telegram?.WebApp) {
         const tg = window.Telegram.WebApp;
@@ -35,6 +38,12 @@ function App() {
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
   useEffect(() => {
+    if (userFriendlyAddress) {
+      alert([userFriendlyAddress, rawAddress])
+    }
+  }, [userFriendlyAddress])
+
+  useEffect(() => {
     if (isLoading) {
       const initData = window.Telegram?.WebApp?.initData || null;
       if (initData) {
@@ -54,6 +63,23 @@ function App() {
       }
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (token) {
+      fetch(apiUrl+'/me/', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        setAccount(data);
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  }, [token]);
 
   useEffect(() => {
     const syncBalance = async () => {

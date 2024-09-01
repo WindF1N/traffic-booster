@@ -5,16 +5,18 @@ import bgImage from '../assets/bg.png';
 import TaskPopUp from '../components/TaskPopUp';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
+import useTasks from '../hooks/useTasks';
 
 function Tasks() {
   const [ isOpen, setIsOpen ] = useState(false);
   const [ selectedTask, setSelectedTask ] = useState(null);
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
-  const [ tasks, setTasks ] = useState(null);
+  const tasks = useTasks((state) => state.tasks);
+  const { setTasks } = useTasks();
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   useEffect(() => {
-    if (!tasks && token) {
+    if (token) {
       fetch(apiUrl+'/tasks/', {
           method: 'GET',
           headers: {
@@ -28,7 +30,7 @@ function Tasks() {
       })
       .catch(error => console.error('Error:', error));
     }
-  }, [tasks, token]);
+  }, [token]);
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
@@ -46,7 +48,7 @@ function Tasks() {
             </div>
           </a>
         </div>
-        {tasks &&
+        {tasks.length > 0 &&
         <div className="flex flex-wrap gap-[10px] px-[20px] pt-[10px] mt-[20px]">
           {tasks.map((task, index) => {
             if (task.limit_type === "limited") {
@@ -123,7 +125,7 @@ function Tasks() {
           })}
         </div>}
       </div>
-      {isOpen && <TaskPopUp setIsOpen={setIsOpen} selectedTask={selectedTask} setSelectedTask={setSelectedTask} setTasks={setTasks}  />}
+      {isOpen && <TaskPopUp setIsOpen={setIsOpen} selectedTask={selectedTask} setSelectedTask={setSelectedTask}  />}
     </>
   );
 }
