@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 import useAuthStore from '../hooks/useAuthStore';
@@ -14,13 +14,20 @@ import leon1Image from '../assets/leon1.png';
 import leon2Image from '../assets/leon2.png';
 import leon3Image from '../assets/leon3.png';
 
+import { useTonAddress, useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
+import { TonClient, fromNano, toNano } from "@ton/ton";
+
 function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacterIndex }) {
     const [currentSlide, setCurrentSlide] = useState(nextCharacterIndex || 0);
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
     const { setAccount } = useAccount();
-    const messages = useMessages((state) => state.messages);
     const { addMessage } = useMessages();
+    const userFriendlyAddress = useTonAddress();
+    const rawAddress = useTonAddress(false);
+    const wallet = useTonWallet();
+    const [tonConnectUI, setOptions] = useTonConnectUI();
+    const [balance, setBalance] = useState(null);
     const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
     const prevSlide = () => {
         if (currentSlide > 0) {
@@ -38,45 +45,69 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
         trackMouse: true,
         trackTouch: true,
     });
+    useEffect(() => {
+        const initTon = async () => {
+          const client = new TonClient({
+            endpoint: import.meta.env.VITE_TON_ENDPOINT || 'https://testnet.toncenter.com/api/v2/jsonRPC',
+          });
+          const balance = await client.getBalance(wallet.account.address);
+          setBalance(fromNano(balance));
+        };
+        if (userFriendlyAddress) {
+          initTon();
+        }
+    }, [userFriendlyAddress])
     const buyCharacter = (currency, character) => {
-        console.log(currency)
-        fetch(apiUrl+'/characters/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ 
-                currency: currency,
-                character_id: character.id
+        if (currency === 'stars') {
+            fetch(apiUrl+'/characters/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ 
+                    currency: currency,
+                    character_id: character.id
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if ('error' in data) {
+            .then(response => response.json())
+            .then(data => {
+                if ('error' in data) {
+                    addMessage({
+                        type: 'error',
+                        text: data.error,
+                        name: 'Ошибка:'
+                    })
+                } else {
+                    setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
+                    setIsOpen(false);
+                    addMessage({
+                        type: 'success',
+                        text: 'Уровень '+ character.name +' получен',
+                        name: 'Успех:'
+                    })
+                }
+            })
+            .catch(error => {
                 addMessage({
                     type: 'error',
-                    text: data.error,
+                    text: error,
                     name: 'Ошибка:'
                 })
-            } else {
-                setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
-                setIsOpen(false);
-                addMessage({
-                    type: 'success',
-                    text: 'Уровень '+ character.name +' получен',
-                    name: 'Успех:'
-                })
+                console.error('Error:', error);
+            });
+        } else if ( currency === 'ton' ) {
+            console.log(toNano(character.price_ton).toString())
+            const transaction = {
+                messages: [
+                    {
+                        address: "0:412410771DA82CBA306A55FA9E0D43C9D245E38133CB58F1457DFB8D5CD8892F", // destination address
+                        amount: toNano(character.price_ton).toString() //Toncoin in nanotons
+                    }
+                ]
             }
-        })
-        .catch(error => {
-            addMessage({
-                type: 'error',
-                text: error,
-                name: 'Ошибка:'
-            })
-            console.error('Error:', error);
-        });
+            tonConnectUI.sendTransaction(transaction)
+        }
     }
     return (
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
@@ -126,7 +157,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                                         />
                                         </div>
                                         <div className="text-[14px] leading-[16px] font-[400] text-[#A7A7A7]">/</div>
-                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]">
+                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]"
+                                         onClick={() => buyCharacter("ton", character)}>
                                         {Number(character.price_ton)}
                                         <img
                                         className="flex w-[16px] h-[16px] mt-[-2.5px]"

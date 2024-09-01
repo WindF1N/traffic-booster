@@ -403,9 +403,6 @@ button:focus-visible {
 }
 
 @media (min-height: 781px) {
-  .ad-image {
-    margin-top: 20%;
-  }
   .boostpopup {
     height: 66%;
   }

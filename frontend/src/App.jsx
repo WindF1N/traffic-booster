@@ -8,19 +8,17 @@ import useAuthStore from './hooks/useAuthStore';
 import useAccount from './hooks/useAccount';
 import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
-import { useTonAddress } from '@tonconnect/ui-react';
+import { useTonAddress, useTonWallet  } from '@tonconnect/ui-react';
+import { TonClient, fromNano } from "@ton/ton";
 
 function App() {
-  const [isTelegram, setIsTelegram] = useState("user" in window.Telegram?.WebApp?.initDataUnsafe);
-  const userFriendlyAddress = useTonAddress();
-  const rawAddress = useTonAddress(false);
   useEffect(() => {
     if (window.Telegram && window.Telegram?.WebApp) {
         const tg = window.Telegram.WebApp;
         // Отключаем вертикальные свайпы
         tg.disableVerticalSwipes(true);
         tg.setHeaderColor("#1A1A1A");
-        tg.setBackgroundColor("#1A1A1A")
+        tg.setBackgroundColor("#1A1A1A");
     }
   }, [window.Telegram, window.Telegram?.WebApp])
   const [isLoading, setIsLoading] = useState(true);
@@ -36,12 +34,6 @@ function App() {
   const localBalance = useLocalBalance((state) => state.localBalance);
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-
-  useEffect(() => {
-    if (userFriendlyAddress) {
-      alert([userFriendlyAddress, rawAddress])
-    }
-  }, [userFriendlyAddress])
 
   useEffect(() => {
     if (isLoading) {
