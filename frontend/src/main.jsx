@@ -9,6 +9,11 @@ import Games from './pages/Games';
 import Ad from './pages/Ad';
 import Airdrop from './pages/Airdrop';
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { Buffer } from 'buffer';
+
+if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
+  window.Buffer = Buffer;
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
