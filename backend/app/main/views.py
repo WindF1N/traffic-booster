@@ -273,7 +273,7 @@ class FarmingView(APIView):
 
         farming_serializer = FarmingsSerializer(farming)
 
-        return Response({'message': f'Баланс увеличен на {int(farming.amount)} монет', 'new_balance': balance_serializer.data, 'new_farming': farming_serializer.data}, status=status.HTTP_200_OK)
+        return Response({'message': f'Баланс увеличен на {int(farming.amount) * int(user.character.multiplier)} монет', 'new_balance': balance_serializer.data, 'new_farming': farming_serializer.data}, status=status.HTTP_200_OK)
 
 class TasksView(APIView):
     def get(self, request):
