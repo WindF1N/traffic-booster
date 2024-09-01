@@ -19,6 +19,7 @@ export default defineConfig({
       // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
+          process: true,
           buffer: true
         })
       ]
@@ -28,7 +29,7 @@ export default defineConfig({
     rollupOptions: {
       plugins: [
         inject({
-          Buffer: ['buffer', 'Buffer'],
+          Buffer: ['Buffer', 'Buffer'],
         }),
       ],
     },
