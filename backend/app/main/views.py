@@ -262,7 +262,7 @@ class FarmingView(APIView):
         
         balance = Balances.objects.get(user=user)
         # Обновление баланса пользователя
-        balance.amount += farming.amount * int(user.charaacter.multiplier)
+        balance.amount += farming.amount * int(user.character.multiplier)
         balance.save()
 
         balance_serializer = BalancesSerializer(balance)
