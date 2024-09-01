@@ -8,8 +8,11 @@ import useAuthStore from './hooks/useAuthStore';
 import useAccount from './hooks/useAccount';
 import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
-import { useTonAddress, useTonWallet  } from '@tonconnect/ui-react';
-import { TonClient, fromNano } from "@ton/ton";
+import { Buffer } from 'buffer';
+
+if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
+  window.Buffer = Buffer;
+}
 
 function App() {
   useEffect(() => {
