@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
+import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,6 +10,12 @@ export default defineConfig({
   envDir: '../',
   server: {
     host: '0.0.0.0',
+  },
+  resolve: {
+    alias: {
+      buffer: 'rollup-plugin-node-polyfills/polyfills/buffer-es6',
+      process: 'rollup-plugin-node-polyfills/polyfills/process-es6'
+    }
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -18,16 +26,21 @@ export default defineConfig({
       // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
-          process: true,
-          buffer: true
-        })
-      ]
-    }
+            process: true,
+            buffer: true
+        }),
+        NodeModulesPolyfillPlugin()
+    ]
+    },
   },
-  resolve: {
-    alias: {
-      buffer: 'rollup-plugin-node-polyfills/polyfills/buffer-es6',
-      process: 'rollup-plugin-node-polyfills/polyfills/process-es6'
+  build: {
+    rollupOptions: {
+        plugins: [
+            // Enable rollup polyfills plugin
+            // used during production bundling
+            // @ts-ignore
+            rollupNodePolyFill(),
+        ]
     }
-  },
+  }
 })
