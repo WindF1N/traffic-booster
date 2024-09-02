@@ -103,7 +103,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                     const transaction = {
                         messages: [
                             {
-                                address: "0:e36a5e8d66561e7d2cf4a986db2982ffe46ee5cdd8b16a60c7717bf7b143f439", // destination address
+                                address: "0:412410771DA82CBA306A55FA9E0D43C9D245E38133CB58F1457DFB8D5CD8892F", // destination address
                                 amount: toNano(character.price_ton / 1000000000).toString() //Toncoin in nanotons
                             }
                         ]
