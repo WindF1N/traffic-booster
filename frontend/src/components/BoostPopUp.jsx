@@ -101,6 +101,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                 const sendTransaction = async () => {
                     console.log(toNano(character.price_ton / 1000000000).toString())
                     const transaction = {
+                        validUntil: Math.floor(new Date() / 1000) + 360,
                         messages: [
                             {
                                 address: "0:b6614d47f305d97a6321b0308b520e5f29bcde326ab35a208e835d9e9c7fbb0b", // destination address
