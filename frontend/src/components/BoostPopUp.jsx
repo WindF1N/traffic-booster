@@ -97,16 +97,24 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                 console.error('Error:', error);
             });
         } else if ( currency === 'ton' ) {
-            console.log(toNano(character.price_ton).toString())
-            const transaction = {
-                messages: [
-                    {
-                        address: "0:412410771DA82CBA306A55FA9E0D43C9D245E38133CB58F1457DFB8D5CD8892F", // destination address
-                        amount: toNano(character.price_ton).toString() //Toncoin in nanotons
+            if (userFriendlyAddress) {
+                const sendTransaction = async () => {
+                    console.log(toNano(character.price_ton / 1000000000).toString())
+                    const transaction = {
+                        messages: [
+                            {
+                                address: "UQDjal6NZlYefSz0qYbbKYL_5G7lzdixamDHcXv3sUP0Od7r", // destination address
+                                amount: toNano(character.price_ton / 1000000000).toString() //Toncoin in nanotons
+                            }
+                        ]
                     }
-                ]
+                    const response = await tonConnectUI.sendTransaction(transaction);
+                    console.log(response)
+                };
+                sendTransaction()
+            } else {
+                document.querySelector('.tonbutton button').click();
             }
-            tonConnectUI.sendTransaction(transaction)
         }
     }
     return (

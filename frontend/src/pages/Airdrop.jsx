@@ -3,7 +3,6 @@ import tonIcon from '../assets/ton.svg';
 import tonImage from '../assets/ton.png';
 import settingsIcon from '../assets/settings.svg';
 import bgImage from '../assets/bg.png';
-import { TonConnectButton } from '@tonconnect/ui-react';
 import { useTonAddress, useTonWallet  } from '@tonconnect/ui-react';
 import { TonClient, fromNano } from "@ton/ton";
 
@@ -32,7 +31,6 @@ function Airdrop() {
           src={bgImage}
           alt=""
         />
-        <TonConnectButton className="tonbutton hidden" />
         {userFriendlyAddress ?
         <div className="relative mt-[10%] mx-[20px] px-[15px] py-[10px] rounded-[10px] bg-[rgba(117,117,117,0.1)] backdrop-blur-[20px]">
           <div className="text-[#F1F1F1] text-[14px] font-[400] leading-[18px]">Баланс кошелька:</div>

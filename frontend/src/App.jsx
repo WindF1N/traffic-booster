@@ -9,6 +9,7 @@ import useAccount from './hooks/useAccount';
 import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
 import { Buffer } from 'buffer';
+import { TonConnectButton } from '@tonconnect/ui-react';
 
 if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
   window.Buffer = Buffer;
@@ -170,6 +171,7 @@ function App() {
           <Menu currentPage={currentPage} />
         </div>
       )}
+      <TonConnectButton className="tonbutton hidden" />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
+import fs from 'fs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,6 +11,10 @@ export default defineConfig({
   envDir: '../',
   server: {
     host: '0.0.0.0',
+    https: {
+      "key": "127.0.0.1-key.pem",
+      "cert": "127.0.0.1.pem"
+    }
   },
   resolve: {
     alias: {
