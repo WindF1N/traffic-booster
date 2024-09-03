@@ -31,6 +31,12 @@ logging.basicConfig(level=logging.INFO)
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
+dp = Dispatcher()
+
+@dp.pre_checkout_query()
+async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery): 
+    print("checkout_process")
+    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 User = get_user_model()
 
