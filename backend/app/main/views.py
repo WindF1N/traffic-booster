@@ -20,6 +20,17 @@ from .serializers import (
 )
 from django.utils import timezone
 import datetime
+import logging
+from aiogram import Bot, Dispatcher, types
+from asgiref.sync import async_to_sync
+
+API_TOKEN = '7327393500:AAG9xQX1QZwdNVM2HpN6lkcNuDvUMsPpMdo'
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Initialize bot and dispatcher
+bot = Bot(token=API_TOKEN)
 
 User = get_user_model()
 
@@ -191,24 +202,44 @@ class CharactersView(APIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         data = json.loads(request.body)
         if data["currency"] == "stars":
-            balance = Balances.objects.get(user=user)
             character = Characters.objects.get(id=data["character_id"])
-            if character.price_stars > balance.amount:
-                return Response({'error': 'Недостаточно монет на балансе'}, status=status.HTTP_400_BAD_REQUEST)
-            balance.amount -= character.price_stars
-            balance.save()
+            if "invoice_link" in data:
+                # transactions = async_to_sync(bot.get_star_transactions)(offset=0, limit=1)
+                # print(transactions)
+                user.character = character
+                user.save()
+                purchase_character = PurchasesCharacters.objects.create(
+                    user=user, 
+                    character=character,
+                    amount_paid=character.price_stars,
+                    currency=data["currency"]
+                )
+                purchase_character_serializer = PurchasesCharactersSerializer(purchase_character)
+                return Response({'purchase': purchase_character_serializer.data}, status=status.HTTP_200_OK)
+            else:
+                link = async_to_sync(bot.create_invoice_link)(
+                    title=character.name,
+                    description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
+                    payload="{}",
+                    provider_token="",
+                    currency="XTR",
+                    prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
+                )
+                return Response({'invoice_link': link}, status=status.HTTP_200_OK)
+        elif data["currency"] == "ton":
+            character = Characters.objects.get(id=data["character_id"])
+            if "boc" not in data:
+                return Response({'error': 'boc not found'}, status=status.HTTP_400_BAD_REQUEST)
             user.character = character
             user.save()
             purchase_character = PurchasesCharacters.objects.create(
                 user=user, 
                 character=character,
-                amount_paid=character.price_stars,
+                amount_paid=character.price_ton,
                 currency=data["currency"]
             )
             purchase_character_serializer = PurchasesCharactersSerializer(purchase_character)
             return Response({'purchase': purchase_character_serializer.data}, status=status.HTTP_200_OK)
-        elif data["currency"] == "ton":
-            return Response({'success': 'Coming soon...'}, status=status.HTTP_200_OK)
         
 class SyncBalanceView(APIView):
     def post(self, request):

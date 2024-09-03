@@ -16,6 +16,7 @@ import leon3Image from '../assets/leon3.png';
 
 import { useTonAddress, useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
 import { TonClient, fromNano, toNano } from "@ton/ton";
+import { Cell, loadTransaction } from "@ton/core";
 
 function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacterIndex }) {
     const [currentSlide, setCurrentSlide] = useState(nextCharacterIndex || 0);
@@ -28,6 +29,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
     const wallet = useTonWallet();
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const [balance, setBalance] = useState(null);
+    const [invoiceLink, setInvoiceLink] = useState(null);
+    const [selectedCharacter, setSelectedCharacter] = useState();
     const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
     const prevSlide = () => {
         if (currentSlide > 0) {
@@ -52,11 +55,27 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
           });
           const balance = await client.getBalance(wallet.account.address);
           setBalance(fromNano(balance));
+          const transactions = await client.getTransactions(wallet.account.address, {inclusive: false});
+          for (let trx in transactions) {
+            console.log(fromNano(transactions[trx].address));
+          }
         };
         if (userFriendlyAddress) {
           initTon();
         }
     }, [userFriendlyAddress])
+    useEffect(() => {
+        if (invoiceLink && window.Telegram?.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.openInvoice(invoiceLink, (status) => {
+                console.log(status)
+                if (status === "paid") {
+                    buyCharacter("stars", selectedCharacter)
+                }
+            });
+        }
+    }, [invoiceLink, window.Telegram?.WebApp])
+    
     const buyCharacter = (currency, character) => {
         if (currency === 'stars') {
             fetch(apiUrl+'/characters/', {
@@ -65,9 +84,13 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify(!invoiceLink ? { 
                     currency: currency,
                     character_id: character.id
+                } : { 
+                    currency: currency,
+                    character_id: character.id,
+                    invoice_link: invoiceLink
                 })
             })
             .then(response => response.json())
@@ -79,13 +102,18 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                         name: 'Ошибка:'
                     })
                 } else {
-                    setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
-                    setIsOpen(false);
-                    addMessage({
-                        type: 'success',
-                        text: 'Уровень '+ character.name +' получен',
-                        name: 'Успех:'
-                    })
+                    if ('purchase' in data) {
+                        setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
+                        setIsOpen(false);
+                        addMessage({
+                            type: 'success',
+                            text: 'Уровень '+ character.name +' получен',
+                            name: 'Успех:'
+                        })
+                    } else {
+                        setInvoiceLink(data.invoice_link);
+                        setSelectedCharacter(character);
+                    }
                 }
             })
             .catch(error => {
@@ -110,7 +138,46 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                         ]
                     }
                     const response = await tonConnectUI.sendTransaction(transaction);
-                    console.log(response)
+                    if (response.boc) {
+                        fetch(apiUrl+'/characters/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({ 
+                                currency: currency,
+                                character_id: character.id,
+                                boc: response.boc
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if ('error' in data) {
+                                addMessage({
+                                    type: 'error',
+                                    text: data.error,
+                                    name: 'Ошибка:'
+                                })
+                            } else {
+                                setAccount({...account, character, balance: {...account.balance, amount: Number(account.balance.amount) - Number(data["purchase"]["amount_paid"])} });
+                                setIsOpen(false);
+                                addMessage({
+                                    type: 'success',
+                                    text: 'Уровень '+ character.name +' получен',
+                                    name: 'Успех:'
+                                })
+                            }
+                        })
+                        .catch(error => {
+                            addMessage({
+                                type: 'error',
+                                text: error,
+                                name: 'Ошибка:'
+                            })
+                            console.error('Error:', error);
+                        });
+                    }
                 };
                 sendTransaction()
             } else {
