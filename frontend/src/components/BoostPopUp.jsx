@@ -128,13 +128,13 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
         } else if ( currency === 'ton' ) {
             if (userFriendlyAddress) {
                 const sendTransaction = async () => {
-                    console.log(toNano(character.price_ton / 1000000000).toString())
+                    console.log(toNano(character.price_ton).toString())
                     const transaction = {
                         validUntil: Math.floor(new Date() / 1000) + 360,
                         messages: [
                             {
-                                address: "0:b6614d47f305d97a6321b0308b520e5f29bcde326ab35a208e835d9e9c7fbb0b", // destination address
-                                amount: toNano(character.price_ton / 1000000000).toString() //Toncoin in nanotons
+                                address: "0:c9b1596c848c266a856e3d88378a1500b0868c4cf77df8e807eebb63f980c01d", // destination address
+                                amount: toNano(character.price_ton).toString() //Toncoin in nanotons
                             }
                         ]
                     }
