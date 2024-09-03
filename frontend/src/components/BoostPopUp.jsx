@@ -69,6 +69,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
             const tg = window.Telegram.WebApp;
             tg.openInvoice(invoiceLink, (status) => {
                 console.log(status)
+                setInvoiceLink(null);
                 if (status === "paid") {
                     buyCharacter("stars", selectedCharacter)
                 }
