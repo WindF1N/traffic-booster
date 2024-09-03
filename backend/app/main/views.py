@@ -20,23 +20,13 @@ from .serializers import (
 )
 from django.utils import timezone
 import datetime
-import logging
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, types
 from asgiref.sync import async_to_sync
 
 API_TOKEN = '7327393500:AAG9xQX1QZwdNVM2HpN6lkcNuDvUMsPpMdo'
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
-
-@dp.pre_checkout_query()
-async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery): 
-    print("checkout_process")
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 User = get_user_model()
 
