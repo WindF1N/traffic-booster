@@ -113,7 +113,7 @@ function Home() {
 }
   return (
     <>
-      <div className="relative flex flex-col h-screen overflow-hidden">
+      <div className="relative flex flex-col h-[100vh] overflow-hidden">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
           src={bgImage}

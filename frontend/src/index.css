@@ -227,6 +227,7 @@
 html {
   scrollbar-width: none; /* Firefox 64+ */
   overflow-y: hidden;
+  max-height: 100vh;
 }
 
 /* Для IE и Edge */
@@ -248,6 +249,7 @@ body {
   user-select: none; /* Standard */
   overflow-x: hidden;
   overflow-y: hidden;
+  max-height: 100vh;
 }
 
 :root {
@@ -263,6 +265,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-height: 100vh;
   overflow-y: hidden;
 }
 
