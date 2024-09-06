@@ -145,7 +145,13 @@ function Home() {
             </div>
             <div className="flex items-center justify-center">
               {new Date(account?.farming?.end_date) < new Date() ?
-              <div onClick={claimFarming} className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#FFD900] flex items-center justify-center text-[#494949] text-[12px] font-[600] leading-[12px]">Забрать</div>
+              <div onClick={claimFarming}onTouchEnd={() => {
+                try {
+                  window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
+                } catch {
+                  console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                }
+              }} className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#FFD900] flex items-center justify-center text-[#494949] text-[12px] font-[600] leading-[12px]">Забрать</div>
               :<div className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#494949] flex items-center justify-center text-[#292929] text-[12px] font-[600] leading-[12px]">Забрать</div>}
             </div>
           </div>
