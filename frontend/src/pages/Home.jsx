@@ -42,6 +42,8 @@ function Home() {
     }
   }, [account])
   const handleClick = (event) => {
+    event.preventDefault();
+    console.log(event)
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
@@ -145,8 +147,8 @@ function Home() {
           className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.2s]"
           src={personage}
           alt=""
-          onTouchStart={handleClick}
-          onMouseDown={handleClick}
+          onTouchEnd={handleClick}
+          onClick={handleClick}
         />
         {plusOnes.map(plusOne => (
           <div 
