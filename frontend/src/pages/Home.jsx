@@ -48,6 +48,7 @@ function Home() {
   }, []);
   const handleClick = (event) => {
     if (isTouchDevice) return; // Если устройство поддерживает касания, ничего не делаем
+    imgRef.current.classList.add("active");
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
@@ -56,6 +57,9 @@ function Home() {
 
     // Увеличение локального баланса
     setLocalBalance(localBalance + Number(account?.character?.multiplier));
+    setTimeout(() => {
+      imgRef.current.classList.remove("active");
+    }, 300)
   };
   const handleTouch = (event) => {
     event.stopPropagation();
@@ -170,7 +174,7 @@ function Home() {
         />
         <img 
           ref={imgRef}
-          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.3s]"
+          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236]"
           src={personage}
           alt=""
           onClick={handleClick}

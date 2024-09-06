@@ -347,7 +347,8 @@ button:focus-visible {
 
 @keyframes scale {
   0% { transform: scale(1.236); }
-  100% { transform: scale(1.15); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1.236); }
 }
 
 .pers.active {
