@@ -379,10 +379,10 @@ button:focus-visible {
 
 @media (max-height: 780px) {
   .tron {
-    bottom: 4%;
+    bottom: -4%;
   }
   .pers {
-    bottom: 22%;
+    bottom: 15%;
   }
   .boostpopup {
     height: 70%;
@@ -390,8 +390,11 @@ button:focus-visible {
 }
 
 @media (max-height: 680px) {
+  .tron {
+    bottom: -8%;
+  }
   .pers {
-    bottom: 24%;
+    bottom: 12%;
   }
   .ad-image {
     width: 75%;

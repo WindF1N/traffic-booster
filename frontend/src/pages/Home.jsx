@@ -41,12 +41,30 @@ function Home() {
       setPersonage(bigLeon3Image);
     }
   }, [account])
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    // Проверка на наличие события ontouchstart для определения типа устройства
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
   const handleClick = (event) => {
-    event.preventDefault();
-    console.log(event)
+    if (isTouchDevice) return; // Если устройство поддерживает касания, ничего не делаем
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
+    const newPlusOne = { x, y, id: Date.now() };
+    setPlusOnes(prevPlusOnes => [...prevPlusOnes, newPlusOne].slice(-10)); // Обрезаем массив до последних 10 элементов
+
+    // Увеличение локального баланса
+    setLocalBalance(localBalance + Number(account?.character?.multiplier));
+  };
+  const handleTouch = (event) => {
+    event.stopPropagation();
+    if ('vibrate' in navigator) {
+      navigator.vibrate(200); // Вибрируем 200 миллисекунд
+    }
+    // Добавление надписи +1 с небольшим случайным смещением
+    const x = event.touches[0].clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
+    const y = event.touches[0].clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
     const newPlusOne = { x, y, id: Date.now() };
     setPlusOnes(prevPlusOnes => [...prevPlusOnes, newPlusOne].slice(-10)); // Обрезаем массив до последних 10 элементов
 
@@ -147,8 +165,8 @@ function Home() {
           className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.2s]"
           src={personage}
           alt=""
-          onTouchEnd={handleClick}
           onClick={handleClick}
+          onTouchStart={handleTouch}
         />
         {plusOnes.map(plusOne => (
           <div 
