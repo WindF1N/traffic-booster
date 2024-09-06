@@ -141,7 +141,7 @@ function App() {
   };
 
   return (
-    <div className="relative flex flex-col h-screen overflow-hidden">
+    <div className="relative flex flex-col h-screen overflow-hidden overflow-y-hidden">
       <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
         {messages.map((msg) => (
           <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
@@ -166,7 +166,7 @@ function App() {
       ) : showOnboarding ? (
         <OnboardingSlider onComplete={handleOnboardingComplete} />
       ) : (
-        <div className="relative flex-1 overflow-auto">
+        <div className="relative flex-1">
           <Outlet />
           <Menu currentPage={currentPage} />
         </div>
