@@ -8,8 +8,7 @@ import arrowIcon from '../assets/arrow.svg';
 
 const OnboardingSlider = ({ onComplete }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const slides = [
+  const [slides] = useState([
     {
       type: 0,
       pretitle: 'Привет, друг!',
@@ -44,7 +43,7 @@ const OnboardingSlider = ({ onComplete }) => {
       ),
       image: slide3Image,
     },
-  ];
+  ]);
 
   const handleDotClick = (index) => {
     setCurrentSlide(index);
