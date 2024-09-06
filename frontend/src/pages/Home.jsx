@@ -166,7 +166,7 @@ function Home() {
           onTouchStart={handleTouch}
           onTouchEnd={() => {
             try {
-              window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+              window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
             } catch {
               console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
             }
