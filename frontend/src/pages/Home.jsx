@@ -165,14 +165,14 @@ function Home() {
           onClick={handleClick}
           onTouchStart={handleTouch}
           onTouchEnd={() => {
-            if (navigator.vibrate) {
+            if (window.navigator.vibrate) {
               try {
-                navigator.vibrate(200); // Вибрируем 200 миллисекунд
+                window.navigator.vibrate(200); // Вибрируем 200 миллисекунд
               } catch (e) {
                 alert(e);
               }
             } else {
-              alert(JSON.stringify(navigator))
+              alert(JSON.stringify(window.navigator))
             }
           }}
         />
