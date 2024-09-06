@@ -60,7 +60,7 @@ function Home() {
   const handleTouch = (event) => {
     event.stopPropagation();
     try {
-      navigator.vibrate(200); // Вибрируем 200 миллисекунд
+      window.navigator.vibrate(200); // Вибрируем 200 миллисекунд
     } catch (e) {
       alert(e);
     }
