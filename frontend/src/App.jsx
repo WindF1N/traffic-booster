@@ -166,7 +166,7 @@ function App() {
       ) : showOnboarding ? (
         <OnboardingSlider onComplete={handleOnboardingComplete} />
       ) : (
-        <div className="relative flex-1">
+        <div className="h-screen relative overflow-y-hidden">
           <Outlet />
           <Menu currentPage={currentPage} />
         </div>

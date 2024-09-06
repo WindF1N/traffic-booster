@@ -226,6 +226,7 @@
 /* Для Firefox */
 html {
   scrollbar-width: none; /* Firefox 64+ */
+  overflow-y: hidden;
 }
 
 /* Для IE и Edge */
