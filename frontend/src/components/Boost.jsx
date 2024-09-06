@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import doubleArrowIcon from '../assets/double-arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.png';
 import BoostPopUp from './BoostPopUp';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
+import useImages from '../hooks/useImages';
 
 function Boost() {
+  const images = useImages((state) => state.images);
   const [ isOpen, setIsOpen ] = useState(false);
   const [ swipeOffset, setSwipeOffset ] = useState(0);
   const token = useAuthStore((state) => state.token);
@@ -69,7 +69,7 @@ function Boost() {
         <div {...handlers} className="cursor-pointer boost overflow-hidden fixed bottom-[110px] left-[20px] right-[20px] flex justify-between bg-[rgba(117,117,117,0.1)] w-[calc(100% - 40px)] h-[50px] rounded-[10px] z-[3] backdrop-blur-[40px]">
           <div className="relative z-1 ml-[-65%] w-[100%] flex justify-end items-center px-[10px] py-[13px] text-[16px] font-[600] leading-[20.64px] bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF700] to-[103.28%]" style={transformStyle}>
             Улучшить
-            <img src={doubleArrowIcon} alt="" />
+            <img src={images['./assets/double-arrow.svg']} alt="" />
           </div>
           <div className="z-[-1] absolute right-0 top-0 w-[100%] h-[100%] py-[6px] px-[10px] flex flex-col justify-between items-end">
             {nextCharacter.type == "standart" &&
@@ -88,7 +88,7 @@ function Boost() {
                 {Number(nextCharacter.price_stars)}
                 <img
                     className="w-[10px] h-[10px] mt-[-2px]"
-                    src={raster3dIcon}
+                    src={images['./assets/3d-raster-small.png']}
                     alt=""
                 />
             </div>

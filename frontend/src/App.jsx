@@ -10,6 +10,8 @@ import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
 import { Buffer } from 'buffer';
 import { TonConnectButton } from '@tonconnect/ui-react';
+import useImages from './hooks/useImages';
+import LoadingSpinner from './components/LoadingSpinner'
 
 if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
   window.Buffer = Buffer;
@@ -34,12 +36,71 @@ function App() {
   const { setToken } = useAuthStore();
   const { setAccount } = useAccount();
   const { setLocalBalance } = useLocalBalance();
+
   const { messages, removeMessage } = useMessages();
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
   const localBalance = useLocalBalance((state) => state.localBalance);
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
+  const { setImages, setIsLoaded } = useImages();
+  const isLoaded = useImages((state) => state.isLoaded);
+  // Динамический импорт картинок
+  const loadImages = async () => {
+    const imagePaths = [
+      './assets/ad.png',
+      './assets/bg.png',
+      './assets/bigleon1.png',
+      './assets/bigleon2.png',
+      './assets/bigleon3.png',
+      './assets/3d-raster-small.png',
+      './assets/tron.png',
+      './assets/settings.svg',
+      './assets/ton.png',
+      './assets/ton.svg',
+      './assets/paste.svg',
+      './assets/key.svg',
+      './assets/tasks-image.png',
+      './assets/slide1.png',
+      './assets/slide2.png',
+      './assets/slide3.png',
+      './assets/for-slide3.svg',
+      './assets/arrow.svg',
+      './assets/home.svg',
+      './assets/home-active.svg',
+      './assets/tasks.svg',
+      './assets/tasks-active.svg',
+      './assets/games.svg',
+      './assets/games-active.svg',
+      './assets/ad.svg',
+      './assets/ad-active.svg',
+      './assets/airdrop.svg',
+      './assets/airdrop-active.svg',
+      './assets/loading.png',
+      './assets/flame.png',
+      './assets/3d-raster.png',
+      './assets/close.svg',
+      './assets/leon1.png',
+      './assets/leon2.png',
+      './assets/leon3.png',
+      './assets/double-arrow.svg'
+    ];
+
+    const loadedImages = {};
+
+    for (const path of imagePaths) {
+      const imageModule = await import(path);
+      loadedImages[path] = imageModule.default;
+    }
+
+    setImages(loadedImages);
+    setIsLoaded(true);
+  };
+
+  useEffect(() => {
+    loadImages();
+  }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -142,40 +203,49 @@ function App() {
     // localStorage.setItem('onboardingComplete', 'true');
   };
 
-  return (
-    <div className="relative flex flex-col h-[100vh] overflow-x-hidden overflow-y-hidden">
-      <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
-        {messages.map((msg) => (
-          <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
-            <div className="flex items-center p-[10px] mb-[10px] text-sm rounded-lg bg-[#282828] border" style={msg.type === "error" ? {borderColor: "#9b1c1c", color: "#f98080"} : {borderColor: "green", color: "#31c48d"}} role="alert">
-              {msg.type === "error" ? 
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd"></path>
-              </svg>
-              :
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd"></path>
-              </svg>}
-              <div className="ml-[10px]">
-                {msg.name && <span className="font-medium">{msg.name}</span>} {msg.text}
+  if (isLoaded) {
+    return (
+      <div className="relative flex flex-col h-[100vh] overflow-x-hidden overflow-y-hidden">
+        <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
+          {messages.map((msg) => (
+            <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
+              <div className="flex items-center p-[10px] mb-[10px] text-sm rounded-lg bg-[#282828] border" style={msg.type === "error" ? {borderColor: "#9b1c1c", color: "#f98080"} : {borderColor: "green", color: "#31c48d"}} role="alert">
+                {msg.type === "error" ? 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd"></path>
+                </svg>
+                :
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd"></path>
+                </svg>}
+                <div className="ml-[10px]">
+                  {msg.name && <span className="font-medium">{msg.name}</span>} {msg.text}
+                </div>
               </div>
-            </div>
-          </CSSTransition>
-        ))}
-      </TransitionGroup>
-      {isLoading ? (
-        <Loading />
-      ) : showOnboarding ? (
-        <OnboardingSlider onComplete={handleOnboardingComplete} />
-      ) : (
-        <div className="h-[100vh] relative overflow-y-hidden">
-          <Outlet />
-          <Menu currentPage={currentPage} />
-        </div>
-      )}
-      <TonConnectButton className="tonbutton hidden" />
-    </div>
-  );
+            </CSSTransition>
+          ))}
+        </TransitionGroup>
+        {isLoading ? (
+          <Loading />
+        ) : showOnboarding ? (
+          <OnboardingSlider onComplete={handleOnboardingComplete} />
+        ) : (
+          <div className="h-[100vh] relative overflow-y-hidden">
+            <Outlet />
+            <Menu currentPage={currentPage} />
+          </div>
+        )}
+        <TonConnectButton className="tonbutton hidden" />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    )
+  }
+  
 }
 
 export default App;

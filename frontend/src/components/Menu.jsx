@@ -1,23 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import homeIcon from '../assets/home.svg';
-import homeActiveIcon from '../assets/home-active.svg';
-import tasksIcon from '../assets/tasks.svg';
-import tasksActiveIcon from '../assets/tasks-active.svg';
-import gamesIcon from '../assets/games.svg';
-import gamesActiveIcon from '../assets/games-active.svg';
-import adIcon from '../assets/ad.svg';
-import adActiveIcon from '../assets/ad-active.svg';
-import airdropIcon from '../assets/airdrop.svg';
-import airdropActiveIcon from '../assets/airdrop-active.svg';
+import useImages from '../hooks/useImages';
 
 function Menu({ currentPage }) {
+  const images = useImages((state) => state.images);
   const menuItems = [
-    { page: 'home', icon: homeIcon, activeIcon: homeActiveIcon, label: 'Главная', path: '/' },
-    { page: 'tasks', icon: tasksIcon, activeIcon: tasksActiveIcon, label: 'Задания', path: '/tasks' },
-    { page: 'games', icon: gamesIcon, activeIcon: gamesActiveIcon, label: 'Игры', path: '/games' },
-    { page: 'ad', icon: adIcon, activeIcon: adActiveIcon, label: 'Реклама', path: '/ad' },
-    { page: 'airdrop', icon: airdropIcon, activeIcon: airdropActiveIcon, label: 'Airdrop', path: '/airdrop' },
+    { page: 'home', icon: images['./assets/home.svg'], activeIcon: images['./assets/home-active.svg'], label: 'Главная', path: '/' },
+    { page: 'tasks', icon: images['./assets/tasks.svg'], activeIcon: images['./assets/tasks-active.svg'], label: 'Задания', path: '/tasks' },
+    { page: 'games', icon: images['./assets/games.svg'], activeIcon: images['./assets/games-active.svg'], label: 'Игры', path: '/games' },
+    { page: 'ad', icon: images['./assets/ad.svg'], activeIcon: images['./assets/ad-active.svg'], label: 'Реклама', path: '/ad' },
+    { page: 'airdrop', icon: images['./assets/airdrop.svg'], activeIcon: images['./assets/airdrop-active.svg'], label: 'Airdrop', path: '/airdrop' },
   ];
 
   return (

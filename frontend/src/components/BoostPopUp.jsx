@@ -4,21 +4,13 @@ import { useSwipeable } from 'react-swipeable';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useMessages from '../hooks/useMessages';
-
-import closeIcon from '../assets/close.svg';
-import tonIcon from '../assets/ton.svg';
-import arrowIcon from '../assets/arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.png';
-
-import leon1Image from '../assets/leon1.png';
-import leon2Image from '../assets/leon2.png';
-import leon3Image from '../assets/leon3.png';
+import useImages from '../hooks/useImages';
 
 import { useTonAddress, useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
 import { TonClient, fromNano, toNano } from "@ton/ton";
-import { Cell, loadTransaction } from "@ton/core";
 
-function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacterIndex }) {
+function BoostPopUp({ setIsOpen, characters, nextCharacterIndex }) {
+    const images = useImages((state) => state.images);
     const [currentSlide, setCurrentSlide] = useState(nextCharacterIndex || 0);
     const token = useAuthStore((state) => state.token);
     const account = useAccount((state) => state.account);
@@ -191,7 +183,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
         <div className="boostpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[61.33%] m-auto overflow-hidden" {...handlers}>
         <div className="bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF600] to-[103.28%] px-[20px] py-[12px]">
         <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Улучшение</div>
-        <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={closeIcon} alt="" onClick={() => setIsOpen(false)} />
+        <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={images['./assets/close.svg']} alt="" onClick={() => setIsOpen(false)} />
         </div>
         <div className="relative w-[100%] h-[100%]">
         <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
@@ -208,17 +200,17 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                         {character.type == "standart" &&
                             <>
                             <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#319BFF]'></div>
-                            <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon1Image} alt="" />
+                            <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={images['./assets/leon1.png']} alt="" />
                             </>}
                             {character.type == "silver" &&
                                 <>
                                 <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#9CFF11]'></div>
-                                <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon2Image} alt="" />
+                                <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={images['./assets/leon2.png']} alt="" />
                                 </>}
                                 {character.type == "gold" &&
                                     <>
                                     <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#FF11DF]'></div>
-                                    <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon3Image} alt="" />
+                                    <img className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={images['./assets/leon3.png']} alt="" />
                                     </>}
                                     {index >= nextCharacterIndex ?
                                         <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
@@ -229,7 +221,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                                         {Number(character.price_stars)}
                                         <img
                                         className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
-                                        src={raster3dIcon}
+                                        src={images['./assets/3d-raster-small.png']}
                                         alt=""
                                         />
                                         </div>
@@ -239,7 +231,7 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                                         {Number(character.price_ton)}
                                         <img
                                         className="flex w-[16px] h-[16px] mt-[-2.5px]"
-                                        src={tonIcon}
+                                        src={images['./assets/ton.svg']}
                                         alt=""
                                         />
                                         </div>
@@ -254,8 +246,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex, setNextCharacte
                                     ))}
                                     </div>
                                     <div className="fixed top-0 bottom-0 left-[20px] right-[20px] m-auto flex items-center justify-between h-[48px]">
-                                    <div>{currentSlide > 0 && <img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} />}</div>
-                                    <div>{currentSlide < characters.length - 1 && <img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} />}</div>
+                                    <div>{currentSlide > 0 && <img src={images['./assets/arrow.svg']} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} />}</div>
+                                    <div>{currentSlide < characters.length - 1 && <img src={images['./assets/arrow.svg']} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} />}</div>
                                     </div>
                                     </div>
                                     </div>

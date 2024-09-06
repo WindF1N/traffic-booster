@@ -1,5 +1,4 @@
 import closeIcon from '../assets/close.svg';
-import raster3dIcon from '../assets/3d-raster-small.png';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useMessages from '../hooks/useMessages';

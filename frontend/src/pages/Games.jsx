@@ -3,12 +3,11 @@ import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
 import useMessages from '../hooks/useMessages';
 import useGames from '../hooks/useGames';
-import keyIcon from '../assets/key.svg';
-import pasteIcon from '../assets/paste.svg';
-import bgImage from '../assets/bg.png';
 import GamePopUp from '../components/GamePopUp';
+import useImages from '../hooks/useImages';
 
 function Games() {
+  const images = useImages((state) => state.images);
   const [ isOpen, setIsOpen ] = useState(false);
   const account = useAccount((state) => state.account);
   const { setAccount } = useAccount();
@@ -120,7 +119,7 @@ function Games() {
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={bgImage}
+          src={images['./assets/bg.png']}
           alt=""
         />
         <div className="text-[24px] leading-[30.96px] mt-[10%] px-[20px] font-[600] text-[#fff]">
@@ -136,7 +135,7 @@ function Games() {
               <div className="flex justify-between items-start">
                 <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">{game.name}</div>
                 <div className="flex items-center gap-[10px]">
-                  <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
+                  <img className="w-[24px] h-[24px]" src={images['./assets/key.svg']} alt="" />
                   <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">{game.used_keys_count}/3</span>
                 </div>
               </div>
@@ -146,7 +145,7 @@ function Games() {
               {game.used_keys_count < 3 &&
               <div className="relative mt-[10px]">
                 <input type="text" name={"inputKey" + game.id} placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={game.keyInput || ""} onChange={(event) => handleChange(event.target.value, game)} onBlur={(event) => handleBlur(event.target.value, game)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] px-[10px] pt-[10px] pb-[9px] w-[100%]" />
-                <img className="cursor-pointer absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={() => handlePaste(game)} />
+                <img className="cursor-pointer absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={images['./assets/paste.svg']} alt="" onClick={() => handlePaste(game)} />
               </div>}
               <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
                 <img

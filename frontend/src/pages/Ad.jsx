@@ -1,12 +1,13 @@
-import bgImage from '../assets/bg.png';
-import adImage from '../assets/ad.png';
+import useImages from '../hooks/useImages';
+
 function Ad() {
+  const images = useImages((state) => state.images);
   return (
     <>
       <div className="relative flex flex-col h-screen overflow-hidden">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={bgImage}
+          src={images['./assets/bg.png']}
           alt=""
         />
         <div className="text-[24px] leading-[30.96px] mt-[10%] px-[20px] font-[600] text-[#fff]">
@@ -18,7 +19,7 @@ function Ad() {
         <div className="absolute z-[-1] top-[30.27%] left-0 right-0 mx-auto bg-[#5BC3FD] w-[51.79%] h-[26.93%] rounded-[100%] blur-[100px]"></div>
         <img
           className="absolute inset-0 top-[20.27%] mx-auto w-[100%] ad-image"
-          src={adImage}
+          src={images['./assets/ad.png']}
           alt=""
         />
       </div>

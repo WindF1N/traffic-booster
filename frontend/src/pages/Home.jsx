@@ -4,16 +4,10 @@ import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useLocalBalance from '../hooks/useLocalBalance';
 import useMessages from '../hooks/useMessages';
-
-import bigLeon1Image from '../assets/bigleon1.png';
-import bigLeon2Image from '../assets/bigleon2.png';
-import bigLeon3Image from '../assets/bigleon3.png';
-
-import raster3dIcon from '../assets/3d-raster-small.png';
-import bgImage from '../assets/bg.png';
-import tronImage from '../assets/tron.png';
+import useImages from '../hooks/useImages';
 
 function Home() {
+  const images = useImages((state) => state.images);
   const imgRef = useRef(null);
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
@@ -24,21 +18,21 @@ function Home() {
   const localBalance = useLocalBalance((state) => state.localBalance);
   const [ personage, setPersonage ] = useState(() => {
     if (account?.character?.type == 'standart') {
-      return bigLeon1Image;
+      return images['./assets/bigleon1.png'];
     } else if (account?.character?.type == 'silver') {
-      return bigLeon2Image;
+      return images['./assets/bigleon2.png'];
     } else if (account?.character?.type == 'gold') {
-      return bigLeon3Image;
+      return images['./assets/bigleon3.png'];
     }
   });
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   useEffect(() => {
     if (account?.character?.type == 'standart') {
-      setPersonage(bigLeon1Image);
+      setPersonage(images['./assets/bigleon1.png']);
     } else if (account?.character?.type == 'silver') {
-      setPersonage(bigLeon2Image);
+      setPersonage(images['./assets/bigleon2.png']);
     } else if (account?.character?.type == 'gold') {
-      setPersonage(bigLeon3Image);
+      setPersonage(images['./assets/bigleon3.png']);
     }
   }, [account])
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -116,7 +110,7 @@ function Home() {
       <div className="relative flex flex-col h-[100vh] overflow-hidden">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={bgImage}
+          src={images['./assets/bg.png']}
           alt=""
         />
         <div className="flex gap-[10px] px-[20px] mt-[5.07%]">
@@ -135,7 +129,7 @@ function Home() {
               {account?.balance?.amount && (Number(account?.balance?.amount) + localBalance).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
               <img
                 className="flex w-[20px] h-[20px] mt-[-4px]"
-                src={raster3dIcon}
+                src={images['./assets/3d-raster-small.png']}
                 alt=""
               />
             </div>
@@ -148,7 +142,7 @@ function Home() {
               {1000 * account?.character?.multiplier}
               <img
                 className="flex w-[12px] h-[12px] mt-[-2px]"
-                src={raster3dIcon}
+                src={images['./assets/3d-raster-small.png']}
                 alt=""
               />
             </div>
@@ -169,7 +163,7 @@ function Home() {
         <div className="absolute left-0 right-0 bottom-[29.06%] mx-auto z-[-1] w-[75.64%] h-[6.4%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
         <img
           className="tron absolute z-[-1] w-[100%] scale-[1.582] bottom-[2%]"
-          src={tronImage}
+          src={images['./assets/tron.png']}
           alt=""
         />
         <img 

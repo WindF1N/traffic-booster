@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import tonIcon from '../assets/ton.svg';
-import tonImage from '../assets/ton.png';
-import settingsIcon from '../assets/settings.svg';
-import bgImage from '../assets/bg.png';
 import { useTonAddress, useTonWallet  } from '@tonconnect/ui-react';
 import { TonClient, fromNano } from "@ton/ton";
+import useImages from '../hooks/useImages';
 
 function Airdrop() {
+  const images = useImages((state) => state.images);
   const userFriendlyAddress = useTonAddress();
   const rawAddress = useTonAddress(false);
   const wallet = useTonWallet();
@@ -28,7 +26,7 @@ function Airdrop() {
       <div className="relative flex flex-col h-screen overflow-hidden">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={bgImage}
+          src={images['./assets/bg.png']}
           alt=""
         />
         {userFriendlyAddress ?
@@ -38,13 +36,13 @@ function Airdrop() {
             {balance || 0} 
             <img
               className="mt-[-4px]"
-              src={tonIcon}
+              src={images['./assets/ton.svg']}
               alt=""
              />
           </div>
           <img
             className="absolute right-[10px] top-[10px]"
-            src={settingsIcon}
+            src={images['./assets/settings.svg']}
             alt=""
            />
         </div>
@@ -53,7 +51,7 @@ function Airdrop() {
           <div className="text-[24px] font-[600] leading-[31px]">
             Привяжите ваш Ton кошелек для будущего Airdrop токена <span className="text-[#FFD900]">$Traff.</span>
           </div>
-          <img className="ton w-[65.14%] mx-auto mt-[30px] pb-[38px]" src={tonImage} alt="" />
+          <img className="ton w-[65.14%] mx-auto mt-[30px] pb-[38px]" src={images['./assets/ton.png']} alt="" />
         </div>}
       </div>
       {!userFriendlyAddress &&

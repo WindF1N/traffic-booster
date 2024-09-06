@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 // import { useSwipeable } from 'react-swipeable';
-import slide1Image from '../assets/slide1.png';
-import slide2Image from '../assets/slide2.png';
-import slide3Image from '../assets/slide3.png';
-import forSlide3Image from '../assets/for-slide3.svg';
-import arrowIcon from '../assets/arrow.svg';
+import useImages from '../hooks/useImages';
 
 const OnboardingSlider = ({ onComplete }) => {
+  const images = useImages((state) => state.images);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slides] = useState([
     {
@@ -18,7 +15,7 @@ const OnboardingSlider = ({ onComplete }) => {
             С нами ты станешь совладельцем бизнеса в сфере <span className="text-[#B331FF]">Web3</span>. Зарабатывай монеты <span className="text-[#FFD900]">$TRAFF</span>, играя в игры и выполняя задания.
         </>
       ),
-      image: slide1Image,
+      image: images['./assets/slide1.png'],
       afterimage: 'Мы рады, что ты теперь с нами!'
     },
     {
@@ -26,7 +23,7 @@ const OnboardingSlider = ({ onComplete }) => {
       pretitle: 'Сейчас идет бета',
       title: 'Выполняй задания и приглашай друзей',
       description: 'Львиная доля полученных от рекламодателей средств будет распределена через airdrop',
-      image: slide2Image,
+      image: images['./assets/slide2.png'],
       afterimage: (
         <>
             Зарабатывай прямо<br/>со смартфона!
@@ -35,13 +32,13 @@ const OnboardingSlider = ({ onComplete }) => {
     },
     {
       type: 1,
-      title: forSlide3Image,
+      title: images['./assets/for-slide3.svg'],
       description: (
         <>
             Обеспеченный деньгами рекламодателей, токен <span className="text-[#FFD900]">$TRAFF</span> будет распределяться среди пользователей. На часть прибыли мы будем выкупать и сжигать токен, обеспечивая его рост.
         </>
       ),
-      image: slide3Image,
+      image: images['./assets/slide3.png'],
     },
   ]);
 
@@ -132,14 +129,14 @@ const OnboardingSlider = ({ onComplete }) => {
         </div>
       </div>
       <div className="absolute inset-0 w-[100%] my-auto flex items-center justify-between px-[10px]">
-        <div>{currentSlide > 0 && <img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} onTouchEnd={() => {
+        <div>{currentSlide > 0 && <img src={images['./assets/arrow.svg']} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} onTouchEnd={() => {
           try {
             window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
           } catch {
             console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
           }
         }} />}</div>
-        <div>{currentSlide < slides.length - 1 && <img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} onTouchEnd={() => {
+        <div>{currentSlide < slides.length - 1 && <img src={images['./assets/arrow.svg']} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} onTouchEnd={() => {
           try {
             window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
           } catch {
