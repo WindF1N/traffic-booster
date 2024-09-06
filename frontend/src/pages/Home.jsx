@@ -59,10 +59,14 @@ function Home() {
   };
   const handleTouch = (event) => {
     event.stopPropagation();
-    try {
-      window.navigator.vibrate(200); // Вибрируем 200 миллисекунд
-    } catch (e) {
-      alert(e);
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate(200); // Вибрируем 200 миллисекунд
+      } catch (e) {
+        alert(e);
+      }
+    } else {
+      alert(navigator)
     }
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.touches[0].clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
