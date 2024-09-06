@@ -47,6 +47,15 @@ function Home() {
     setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
   const handleClick = (event) => {
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate(200); // Вибрируем 200 миллисекунд
+      } catch (e) {
+        alert(e);
+      }
+    } else {
+      alert(navigator)
+    }
     if (isTouchDevice) return; // Если устройство поддерживает касания, ничего не делаем
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
@@ -59,15 +68,6 @@ function Home() {
   };
   const handleTouch = (event) => {
     event.stopPropagation();
-    if (navigator.vibrate) {
-      try {
-        navigator.vibrate(200); // Вибрируем 200 миллисекунд
-      } catch (e) {
-        alert(e);
-      }
-    } else {
-      alert(navigator)
-    }
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.touches[0].clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.touches[0].clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
