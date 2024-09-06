@@ -246,6 +246,7 @@ body {
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 :root {
@@ -261,6 +262,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
 }
 
 a {
