@@ -90,11 +90,11 @@ const OnboardingSlider = ({ onComplete }) => {
   }
 
   return (
-    <div className="relative w-[100%] h-screen pt-[2.33%] overflow-hidden">
+    <div className="relative w-[100%] h-screen overflow-hidden">
       <div className="relative h-screen">
-        <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+        <div className="relative flex duration-300 h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {slides.map((slide, index) => (
-            <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px]">
+            <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px] pt-[2.33%]">
               {index === 0 && 
                 <div className="rounded-[100%] w-[75.6%] h-[35%] absolute top-[45%] right-[-10%] blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>}
               {index === 1 && 
