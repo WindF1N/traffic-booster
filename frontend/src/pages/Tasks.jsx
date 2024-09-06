@@ -43,7 +43,13 @@ function Tasks() {
           <img className="absolute right-0 bottom-0 z-[-1] w-[50%]" src={tasksImage} alt="" />
           <div className="font-[600] text-[20px] leading-[25.8px] text-[#fff] pt-[10%]">Приглашай друзей и получай по 100.000 тыс монет за каждого</div>
           <a className="flex w-[54.35%]" href={"https://t.me/share/url?url=https://t.me/TraffBooster_bot/app?startapp="+account?.user?.referral_code+"&text=Приглашаю тебя вместе со мной принять участие в Traffic Booster"}>
-            <div className="transform active:scale-[0.9] transition-transform cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]">
+            <div className="transform active:scale-[0.9] transition-transform cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]" onTouchEnd={() => {
+              try {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+              } catch {
+                console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+              }
+            }}>
               Пригласить
             </div>
           </a>
@@ -59,6 +65,13 @@ function Tasks() {
                     onClick={() => {
                       setSelectedTask(task);
                       setIsOpen(true);
+                    }}
+                    onTouchEnd={() => {
+                      try {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                      } catch {
+                        console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                      }
                     }}
                   >
                     <div>
@@ -99,6 +112,13 @@ function Tasks() {
                   onClick={() => {
                     setSelectedTask(task);
                     setIsOpen(true);
+                  }}
+                  onTouchEnd={() => {
+                    try {
+                      window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                    } catch {
+                      console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                    }
                   }}
                 >
                   <div className="text-[#646464] text-[10px] font-[400] leading-[12.9px]">{task.category}</div>

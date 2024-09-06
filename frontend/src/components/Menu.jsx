@@ -23,7 +23,13 @@ function Menu({ currentPage }) {
   return (
     <div className="menu fixed bottom-[20px] left-[20px] right-[20px] flex justify-around bg-[#262626] w-[calc(100% - 40px)] h-[80px] rounded-[10px] z-[3]">
       {menuItems.map((item) => (
-        <Link key={item.page} to={item.path} className="flex flex-col justify-center items-center">
+        <Link key={item.page} to={item.path} className="flex flex-col justify-center items-center" onTouchEnd={() => {
+          try {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+          } catch {
+            console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+          }
+        }}>
           <img
             className="w-[24px] h-[24px]"
             src={currentPage === item.page ? item.activeIcon : item.icon}

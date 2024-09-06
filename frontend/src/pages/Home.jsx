@@ -170,7 +170,6 @@ function Home() {
             } catch {
               console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
             }
-            
           }}
         />
         {plusOnes.map(plusOne => (
