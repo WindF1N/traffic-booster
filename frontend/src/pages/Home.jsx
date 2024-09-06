@@ -165,15 +165,12 @@ function Home() {
           onClick={handleClick}
           onTouchStart={handleTouch}
           onTouchEnd={() => {
-            if (window.navigator.vibrate) {
-              try {
-                window.navigator.vibrate(200); // Вибрируем 200 миллисекунд
-              } catch (e) {
-                alert(e);
-              }
-            } else {
-              alert(JSON.stringify(window.navigator))
+            try {
+              window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+            } catch {
+              console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
             }
+            
           }}
         />
         {plusOnes.map(plusOne => (
