@@ -59,6 +59,8 @@ function Home() {
   };
   const handleTouch = (event) => {
     event.stopPropagation();
+    imgRef.current.classList.add("active");
+    
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.touches[0].clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.touches[0].clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
@@ -67,6 +69,9 @@ function Home() {
 
     // Увеличение локального баланса
     setLocalBalance(localBalance + Number(account?.character?.multiplier));
+    setTimeout(() => {
+      imgRef.current.classList.remove("active");
+    }, 300)
   };
   const claimFarming = () => {
     fetch(apiUrl+'/farming/', {
@@ -165,7 +170,7 @@ function Home() {
         />
         <img 
           ref={imgRef}
-          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] hover:scale-[1.15] duration-[0.3s]"
+          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.3s]"
           src={personage}
           alt=""
           onClick={handleClick}

@@ -345,6 +345,15 @@ button:focus-visible {
   pointer-events: none;
 }
 
+@keyframes scale {
+  0% { transform: scale(1.236); }
+  100% { transform: scale(1.15); }
+}
+
+.pers.active {
+  animation: scale 0.3s ease-out forwards;
+}
+
 /* Медиа-запрос для смартфонов */
 @media (max-width: 600px) {
   #root {
