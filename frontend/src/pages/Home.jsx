@@ -159,7 +159,7 @@ function Home() {
         />
         <img 
           ref={imgRef}
-          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.2s]"
+          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.3s]"
           src={personage}
           alt=""
           onClick={handleClick}
