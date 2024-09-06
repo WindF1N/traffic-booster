@@ -49,49 +49,51 @@ function App() {
   // Динамический импорт картинок
   const loadImages = async () => {
     const imagePaths = [
-      './assets/ad.png',
-      './assets/bg.png',
-      './assets/bigleon1.png',
-      './assets/bigleon2.png',
-      './assets/bigleon3.png',
-      './assets/3d-raster-small.png',
-      './assets/tron.png',
-      './assets/settings.svg',
-      './assets/ton.png',
-      './assets/ton.svg',
-      './assets/paste.svg',
-      './assets/key.svg',
-      './assets/tasks-image.png',
-      './assets/slide1.png',
-      './assets/slide2.png',
-      './assets/slide3.png',
-      './assets/for-slide3.svg',
-      './assets/arrow.svg',
-      './assets/home.svg',
-      './assets/home-active.svg',
-      './assets/tasks.svg',
-      './assets/tasks-active.svg',
-      './assets/games.svg',
-      './assets/games-active.svg',
-      './assets/ad.svg',
-      './assets/ad-active.svg',
-      './assets/airdrop.svg',
-      './assets/airdrop-active.svg',
-      './assets/loading.png',
-      './assets/flame.png',
-      './assets/3d-raster.png',
-      './assets/close.svg',
-      './assets/leon1.png',
-      './assets/leon2.png',
-      './assets/leon3.png',
-      './assets/double-arrow.svg'
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bg.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon1.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon2.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon3.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/3d-raster-small.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tron.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/settings.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ton.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ton.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/paste.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/key.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks-image.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide1.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide2.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide3.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/for-slide3.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/arrow.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/home.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/home-active.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks-active.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/games.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/games-active.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad-active.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/airdrop.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/airdrop-active.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/loading.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/flame.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/3d-raster.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/close.svg',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon1.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon2.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon3.png',
+      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/double-arrow.svg'
     ];
 
     const loadedImages = {};
 
     for (const path of imagePaths) {
-      const imageModule = await import(path);
-      loadedImages[path] = imageModule.default;
+      const response = await fetch(path);
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      loadedImages[path] = imageUrl;
     }
 
     setImages(loadedImages);
