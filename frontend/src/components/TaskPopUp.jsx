@@ -102,14 +102,11 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
                             {selectedTask.link.split("//")[1]}
                         </div>
                     </div>
-                    <div className="mt-[6.56%] text-[#646464] text-[16px] font-[400]">Награда</div>
-                    <div className="flex items-center text-[#FFD900] text-[28px] font-[600] leading-[36px] mt-[2.19%] z-[4] gap-[5px]">
+                    <div className="mt-[6.56%] text-[#646464] text-[16px] font-[400]">
+                        Награда
+                    </div>
+                    <div className="text-[#FFD900] text-[26px] font-[600] leading-[34px] mt-[2.19%] z-[4]">
                         {(Number(selectedTask.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                        <img
-                            className="flex w-[20px] h-[20px] mt-[-3px]"
-                            src={raster3dIcon}
-                            alt=""
-                        />
                     </div>
                     <div className="flex mt-auto">
                     {!selectedTask.status ? (

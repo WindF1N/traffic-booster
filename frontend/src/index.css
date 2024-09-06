@@ -432,6 +432,9 @@ button:focus-visible {
     bottom: 8%;
     scale: .9;
   }
+  .taskpopup {
+    height: 90%;
+  }
 }
 
 .message-enter {
