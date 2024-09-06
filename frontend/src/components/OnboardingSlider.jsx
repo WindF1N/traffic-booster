@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSwipeable } from 'react-swipeable';
+// import { useSwipeable } from 'react-swipeable';
 import slide1Image from '../assets/slide1.png';
 import slide2Image from '../assets/slide2.png';
 import slide3Image from '../assets/slide3.png';
@@ -55,29 +55,29 @@ const OnboardingSlider = ({ onComplete }) => {
     onComplete();
   };
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (currentSlide < slides.length - 1) {
-        setCurrentSlide(currentSlide + 1);
-      }
-    },
-    onSwipedRight: () => {
-      if (currentSlide > 0) {
-        setCurrentSlide(currentSlide - 1);
-      }
-    },
-    trackTouch: true,
-  });
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
+  // const handlers = useSwipeable({
+  //   onSwipedLeft: () => {
   //     if (currentSlide < slides.length - 1) {
   //       setCurrentSlide(currentSlide + 1);
   //     }
-  //   }, 10000);
+  //   },
+  //   onSwipedRight: () => {
+  //     if (currentSlide > 0) {
+  //       setCurrentSlide(currentSlide - 1);
+  //     }
+  //   },
+  //   trackTouch: true,
+  // });
 
-  //   return () => clearTimeout(timer);
-  // }, [currentSlide]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentSlide < slides.length - 1) {
+        setCurrentSlide(currentSlide + 1);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [currentSlide]);
 
   const prevSlide = () => {
       if (currentSlide > 0) {
@@ -91,7 +91,7 @@ const OnboardingSlider = ({ onComplete }) => {
   }
 
   return (
-    <div className="relative w-[100%] h-screen pt-[2.33%] overflow-hidden" {...handlers}>
+    <div className="relative w-[100%] h-screen pt-[2.33%] overflow-hidden">
       <div className="relative h-screen">
         <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {slides.map((slide, index) => (

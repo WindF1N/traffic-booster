@@ -26,7 +26,7 @@ function App() {
     }
   }, [window.Telegram, window.Telegram?.WebApp])
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(!localStorage.getItem('onboardingComplete'));
+  const [showOnboarding, setShowOnboarding] = useState(true); // !localStorage.getItem('onboardingComplete')
   const [currentPage, setCurrentPage] = useState('home');
   const location = useLocation();
   const { setToken } = useAuthStore();
@@ -137,7 +137,7 @@ function App() {
 
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
-    localStorage.setItem('onboardingComplete', 'true');
+    // localStorage.setItem('onboardingComplete', 'true');
   };
 
   return (

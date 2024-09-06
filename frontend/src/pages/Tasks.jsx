@@ -42,7 +42,7 @@ function Tasks() {
         <div className="relative min-h-[206px] px-[20px] bg-[rgba(117,117,117,0.1)] backdrop-blur-[40px] overflow-hidden flex flex-col justify-end">
           <img className="absolute right-0 bottom-0 z-[-1] w-[50%]" src={tasksImage} alt="" />
           <div className="font-[600] text-[20px] leading-[25.8px] text-[#fff] pt-[10%]">Приглашай друзей и получай по 100.000 тыс монет за каждого</div>
-          <a className="flex w-[54.35%]" href={"https://t.me/share/url?url=https://t.me/traffic_booster_dev_bot/dev?startapp="+account?.user?.referral_code+"&text=Приглашаю тебя вместе со мной принять участие в Traffic Booster"}>
+          <a className="flex w-[54.35%]" href={"https://t.me/share/url?url=https://t.me/TraffBooster_bot/app?startapp="+account?.user?.referral_code+"&text=Приглашаю тебя вместе со мной принять участие в Traffic Booster"}>
             <div className="transform active:scale-[0.9] transition-transform cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]">
               Пригласить
             </div>
@@ -66,7 +66,7 @@ function Tasks() {
                       <div className="text-[16px] font-[500] leading-[20.64px] text-[#fff] pb-[3px]">{task.title}</div>
                     </div>
                     <div className="text-[#FFD900] font-[600] text-[28px] leading-[36.12px] flex items-center gap-[5px]">
-                      {Number(task.reward) * Number(account?.character?.multiplier)}
+                      {(Number(task.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       <img
                         className="w-[20px] h-[20px] mt-[-4px]"
                         src={raster3dIcon}
@@ -103,7 +103,7 @@ function Tasks() {
                 >
                   <div className="text-[#646464] text-[10px] font-[400] leading-[12.9px]">{task.category}</div>
                   <div className="text-[#FFD900] font-[600] text-[14px] leading-[18.06px] flex items-center mt-[5px] gap-[3px]">
-                    {Number(task.reward) * Number(account?.character?.multiplier)}
+                    {(Number(task.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     <img
                       className="w-[10px] h-[10px] mt-[-2px]"
                       src={raster3dIcon}

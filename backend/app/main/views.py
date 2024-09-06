@@ -23,10 +23,8 @@ import datetime
 from aiogram import Bot, types
 from asgiref.sync import async_to_sync
 
-API_TOKEN = '7327393500:AAG9xQX1QZwdNVM2HpN6lkcNuDvUMsPpMdo'
-
 # Initialize bot and dispatcher
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 User = get_user_model()
 

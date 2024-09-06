@@ -17,7 +17,6 @@ function Home() {
   const imgRef = useRef(null);
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
-  const [ shakeAnimation, setShakeAnimation ] = useState("shake1");
   const [ plusOnes, setPlusOnes ] = useState([]);
   const { setAccount } = useAccount();
   const { setLocalBalance } = useLocalBalance();
@@ -43,18 +42,6 @@ function Home() {
     }
   }, [account])
   const handleClick = (event) => {
-    imgRef.current.classList.add(shakeAnimation);
-    if (shakeAnimation === 'shake1') {
-      setShakeAnimation('shake2');
-    } else if (shakeAnimation === 'shake2') {
-      setShakeAnimation('shake3');
-    } else if (shakeAnimation === 'shake3') {
-      setShakeAnimation('shake1');
-    }
-    setTimeout(() => {
-      imgRef.current.classList.remove(shakeAnimation);
-    }, 200); // 200ms соответствует длительности анимации
-
     // Добавление надписи +1 с небольшим случайным смещением
     const x = event.clientX + (Math.random() - 0.5) * 200; // Случайное смещение по x
     const y = event.clientY + (Math.random() - 0.5) * 200; // Случайное смещение по y
@@ -155,10 +142,11 @@ function Home() {
         />
         <img 
           ref={imgRef}
-          className="pers absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236]"
+          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236] active:scale-[1.15] duration-[0.2s]"
           src={personage}
           alt=""
-          onClick={handleClick}
+          onTouchStart={handleClick}
+          onMouseDown={handleClick}
         />
         {plusOnes.map(plusOne => (
           <div 

@@ -42,8 +42,12 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
             setSelectedTask(data.task);
     
             // Перенаправляем пользователя по ссылке из задания
-            window.open(selectedTask.link, '_blank');
-
+            if ( selectedTask.link.includes('https://t.me') ) {
+                window.Telegram?.WebApp?.openTelegramLink(selectedTask.link);
+            } else {
+                window.Telegram?.WebApp?.openLink(selectedTask.link);
+            }
+            
             addMessage({
                 type: 'success',
                 text: 'Задание "'+ data.task.title +'" выполнено',
@@ -61,7 +65,7 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
     }
     return (
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
-            <div className="taskpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[61.33%] m-auto overflow-hidden">
+            <div className="taskpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[73.33%] m-auto overflow-hidden">
                 <div className="bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF600] to-[103.28%] px-[20px] py-[12px]">
                     <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Задание №{selectedTask.id}</div>
                     <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={closeIcon} alt="" onClick={() => setIsOpen(false)} />
@@ -78,20 +82,29 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
                     <div className="text-[#646464] text-[16px] font-[400] leading-[21px]">
                         {selectedTask.category}
                     </div>
-                    <div className="text-[24px] font-[600] text-[#fff] leading-[31px] mt-[3.09%] pb-[3.64%] border-b border-dashed border-[#646464]">
+                    <div className="text-[24px] font-[600] text-[#fff] leading-[31px] mt-[3.72%] pb-[4.38%] border-b border-dashed border-[#646464]">
                         {selectedTask.title}
                     </div>
-                    <ol className="list-decimal text-[16px] font-[400] text-[#fff] leading-[21px] mt-[3.64%] z-[4] pl-[20px]">
+                    <ol className="list-decimal text-[16px] font-[400] text-[#fff] leading-[21px] mt-[3.28%] z-[4] pl-[20px]">
                         {selectedTask.description.split("\r\n").map((item, index) => (
-                            <li key={index} style={index !== 0 ? {marginTop: "1.82%"} : null}>{item}</li>
+                            <li key={index} style={index !== 0 ? {marginTop: "2.19%"} : null}>{item}</li>
                         ))}
                     </ol>
-                    <div className="flex">
-                        <a href={selectedTask.link} target="_blank" className="mt-[3.64%] text-[#1DFFFF] text-[16px] font-[400] underline underline-offset-2 z-[4]">{selectedTask.link.split("//")[1]}</a>
+                    <div className="flex max-w-[60%] overflow-hidden text-ellipsis">
+                        <div className="mt-[4.38%] text-[#1DFFFF] text-[16px] font-[400] underline underline-offset-2 z-[4] whitespace-nowrap text-ellipsis overflow-hidden"
+                             onClick={() => {
+                                if ( selectedTask.link.includes('https://t.me') ) {
+                                    window.Telegram?.WebApp?.openTelegramLink(selectedTask.link);
+                                } else {
+                                    window.Telegram?.WebApp?.openLink(selectedTask.link);
+                                }
+                             }}>
+                            {selectedTask.link.split("//")[1]}
+                        </div>
                     </div>
-                    <div className="mt-[5.45%] text-[#646464] text-[16px] font-[400]">Награда</div>
-                    <div className="flex items-center text-[#FFD900] text-[28px] font-[600] leading-[36px] mt-[1.82%] z-[4] gap-[5px]">
-                        {Number(selectedTask.reward) * Number(account?.character?.multiplier)}
+                    <div className="mt-[6.56%] text-[#646464] text-[16px] font-[400]">Награда</div>
+                    <div className="flex items-center text-[#FFD900] text-[28px] font-[600] leading-[36px] mt-[2.19%] z-[4] gap-[5px]">
+                        {(Number(selectedTask.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         <img
                             className="flex w-[20px] h-[20px] mt-[-3px]"
                             src={raster3dIcon}
@@ -126,7 +139,9 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
                     )}
                     </div>
                     <div className="absolute z-[3] bottom-[-7.09%] right-[-10.29%] w-[60.28%] h-[45.87%] rounded-[100%] blur-[100px]" style={{background: selectedTask.picture_color}}></div>
-                    <img className="absolute z-[4] w-[62.86%] bottom-[-7.09%] right-[-12.86%]" src={apiUrl+selectedTask.picture} alt="" />
+                    {selectedTask.link === 'https://t.me/TraffVPN_bot' ? 
+                    <img className="absolute z-[3] w-[81.14%] bottom-[-12.25%] right-[-19.71%]" src={apiUrl+selectedTask.picture} alt="" />
+                    : <img className="absolute z-[3] w-[60.57%] bottom-[-8.42%] right-[-10.57%]" src={apiUrl+selectedTask.picture} alt="" />}
                 </div>
             </div>
         </div>

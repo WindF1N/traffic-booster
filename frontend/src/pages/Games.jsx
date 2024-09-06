@@ -154,7 +154,7 @@ function Games() {
                   src={apiUrl + game.picture}
                   alt=""
                 />
-                <div onClick={() => window.open(game.link, '_blank')} className="transform active:scale-[0.9] transition-transform cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
+                <div onClick={() => window.Telegram?.WebApp?.openLink(game.link)} className="transform active:scale-[0.9] transition-transform cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
                   Играть
                 </div>
               </div>
