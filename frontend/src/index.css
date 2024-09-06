@@ -375,9 +375,6 @@ button:focus-visible {
   .boostpopup {
     height: 66%;
   }
-  .taskpopup {
-    height: 62%;
-  }
 }
 
 @media (max-height: 780px) {
@@ -388,9 +385,6 @@ button:focus-visible {
     bottom: 22%;
   }
   .boostpopup {
-    height: 70%;
-  }
-  .taskpopup {
     height: 70%;
   }
 }
