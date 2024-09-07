@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import tasksImage from '../assets/tasks-image.png';
+import raster3dIcon from '../assets/3d-raster-small.png';
+import bgImage from '../assets/bg.png';
 import TaskPopUp from '../components/TaskPopUp';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';
 import useTasks from '../hooks/useTasks';
-import useImages from '../hooks/useImages';
 
 function Tasks() {
-  const images = useImages((state) => state.images);
   const [ isOpen, setIsOpen ] = useState(false);
   const [ selectedTask, setSelectedTask ] = useState(null);
   const token = useAuthStore((state) => state.token);
@@ -35,11 +36,11 @@ function Tasks() {
       <div className="relative flex flex-col h-screen overflow-x-hidden pb-[120px]">
         <img
           className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={images['./assets/bg.png']}
+          src={bgImage}
           alt=""
         />
         <div className="relative min-h-[206px] px-[20px] bg-[rgba(117,117,117,0.1)] backdrop-blur-[40px] overflow-hidden flex flex-col justify-end">
-          <img className="absolute right-0 bottom-0 z-[-1] w-[50%]" src={images['./assets/tasks-image.png']} alt="" />
+          <img className="absolute right-0 bottom-0 z-[-1] w-[50%]" src={tasksImage} alt="" />
           <div className="font-[600] text-[20px] leading-[25.8px] text-[#fff] pt-[10%]">Приглашай друзей и получай по 100.000 тыс монет за каждого</div>
           <a className="flex w-[54.35%]" href={"https://t.me/share/url?url=https://t.me/TraffBooster_bot/app?startapp="+account?.user?.referral_code+"&text=Приглашаю тебя вместе со мной принять участие в Traffic Booster"}>
             <div className="transform active:scale-[0.9] transition-transform cursor-pointer mb-[20px] mt-[8%] drop-shadow-2xl font-[600] text-[20px] leading-[25.8px] text-[#fff] h-[85px] w-[100%] flex justify-center items-center bg-gradient-to-br from-[#00C0E7] from-[10.37%] to-[#0070B0] to-[109.67%] rounded-[10px]" onTouchEnd={() => {
@@ -81,7 +82,7 @@ function Tasks() {
                       {(Number(task.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       <img
                         className="w-[20px] h-[20px] mt-[-4px]"
-                        src={images['./assets/3d-raster-small.png']}
+                        src={raster3dIcon}
                         alt=""
                       />
                     </div>
@@ -125,7 +126,7 @@ function Tasks() {
                     {(Number(task.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     <img
                       className="w-[10px] h-[10px] mt-[-2px]"
-                      src={images['./assets/3d-raster-small.png']}
+                      src={raster3dIcon}
                       alt=""
                     />
                   </div>

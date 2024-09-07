@@ -4,10 +4,24 @@ import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useLocalBalance from '../hooks/useLocalBalance';
 import useMessages from '../hooks/useMessages';
-import useImages from '../hooks/useImages';
+
+import bigLeon1Image from '../assets/bigleon1.png';
+import bigLeon2Image from '../assets/bigleon2.png';
+import bigLeon3Image from '../assets/bigleon3.png';
+
+import raster3dIcon from '../assets/3d-raster-small.png';
+import bgImage from '../assets/bg.png';
+import tronImage from '../assets/tron.png';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Home() {
-  const images = useImages((state) => state.images);
+  const [loading, setLoading] = useState(true);
+  const [loadedImagesCount, setLoadedImagesCount] = useState(0)
+  useEffect(() => {
+    if (loadedImagesCount == 7 && loading) {
+      setLoading(false);
+    }
+  }, [loadedImagesCount, loading])
   const imgRef = useRef(null);
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
@@ -18,21 +32,21 @@ function Home() {
   const localBalance = useLocalBalance((state) => state.localBalance);
   const [ personage, setPersonage ] = useState(() => {
     if (account?.character?.type == 'standart') {
-      return images['./assets/bigleon1.png'];
+      return bigLeon1Image;
     } else if (account?.character?.type == 'silver') {
-      return images['./assets/bigleon2.png'];
+      return bigLeon2Image;
     } else if (account?.character?.type == 'gold') {
-      return images['./assets/bigleon3.png'];
+      return bigLeon3Image;
     }
   });
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   useEffect(() => {
     if (account?.character?.type == 'standart') {
-      setPersonage(images['./assets/bigleon1.png']);
+      setPersonage(bigLeon1Image);
     } else if (account?.character?.type == 'silver') {
-      setPersonage(images['./assets/bigleon2.png']);
+      setPersonage(bigLeon2Image);
     } else if (account?.character?.type == 'gold') {
-      setPersonage(images['./assets/bigleon3.png']);
+      setPersonage(bigLeon3Image);
     }
   }, [account])
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -107,91 +121,101 @@ function Home() {
 }
   return (
     <>
-      <div className="relative flex flex-col h-[100vh] overflow-hidden">
-        <img
-          className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
-          src={images['./assets/bg.png']}
-          alt=""
-        />
-        <div className="flex gap-[10px] px-[20px] mt-[5.07%]">
-          <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] backdrop-blur-[40px]">
-            <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Уровень:</div>
-            {account?.character?.type == "standart" &&
-            <div className="text-[20px] leading-[25.8px] font-[600] text-[#319BFF] mt-[11px]">{account?.character?.name}</div>}
-            {account?.character?.type == "silver" &&
-            <div className="text-[20px] leading-[25.8px] font-[600] text-[#9CFF11] mt-[11px]">{account?.character?.name}</div>}
-            {account?.character?.type == "gold" &&
-            <div className="text-[20px] leading-[25.8px] font-[600] text-[#FF11DF] mt-[11px]">{account?.character?.name}</div>}
-          </div>
-          <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] w-[100%] backdrop-blur-[40px]">
-            <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Баланс:</div>
-            <div className="text-[28px] leading-[36.12px] font-[600] text-[#FFD900] mt-[6px] flex items-center gap-[5px]">
-              {account?.balance?.amount && (Number(account?.balance?.amount) + localBalance).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-              <img
-                className="flex w-[20px] h-[20px] mt-[-4px]"
-                src={images['./assets/3d-raster-small.png']}
-                alt=""
-              />
+      <div style={loading ? { display: "none"} : null}>
+        <div className="relative flex flex-col h-[100vh] overflow-hidden">
+          <img
+            className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
+            src={bgImage}
+            alt=""
+            onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+          />
+          <div className="flex gap-[10px] px-[20px] mt-[5.07%]">
+            <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] backdrop-blur-[40px]">
+              <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Уровень:</div>
+              {account?.character?.type == "standart" &&
+              <div className="text-[20px] leading-[25.8px] font-[600] text-[#319BFF] mt-[11px]">{account?.character?.name}</div>}
+              {account?.character?.type == "silver" &&
+              <div className="text-[20px] leading-[25.8px] font-[600] text-[#9CFF11] mt-[11px]">{account?.character?.name}</div>}
+              {account?.character?.type == "gold" &&
+              <div className="text-[20px] leading-[25.8px] font-[600] text-[#FF11DF] mt-[11px]">{account?.character?.name}</div>}
+            </div>
+            <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] w-[100%] backdrop-blur-[40px]">
+              <div className="text-[14px] leading-[18.06px] text-[#F1F1F1] font-[400]">Баланс:</div>
+              <div className="text-[28px] leading-[36.12px] font-[600] text-[#FFD900] mt-[6px] flex items-center gap-[5px]">
+                {account?.balance?.amount && (Number(account?.balance?.amount) + localBalance).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                <img
+                  className="flex w-[20px] h-[20px] mt-[-4px]"
+                  src={raster3dIcon}
+                  alt=""
+                  onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+                />
+              </div>
             </div>
           </div>
+          <div className="px-[20px] mt-[10px] z-[3]">
+            <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] backdrop-blur-[40px] flex items-center justify-center">
+              <div className="flex text-[14px] font-[400] leading-[18px] text-[#F1F1F1]">Доход каждые 4 часа:</div>
+              <div className="ml-[10px] mr-[20px] flex items-center gap-[5px] text-[14px] font-[600] leading-[18px] text-[#FFD900]">
+                {1000 * account?.character?.multiplier}
+                <img
+                  className="flex w-[12px] h-[12px] mt-[-2px]"
+                  src={raster3dIcon}
+                  alt=""
+                  onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+                />
+              </div>
+              <div className="flex items-center justify-center">
+                {new Date(account?.farming?.end_date) < new Date() ?
+                <div onClick={claimFarming}onTouchEnd={() => {
+                  try {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
+                  } catch {
+                    console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                  }
+                }} className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#FFD900] flex items-center justify-center text-[#494949] text-[12px] font-[600] leading-[12px]">Забрать</div>
+                :<div className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#494949] flex items-center justify-center text-[#292929] text-[12px] font-[600] leading-[12px]">Забрать</div>}
+              </div>
+            </div>
+          </div>
+          <div className="absolute left-0 right-0 bottom-[65.33%] mx-auto z-[-1] w-[53.84%] h-[10%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
+          <div className="absolute left-0 right-0 bottom-[29.06%] mx-auto z-[-1] w-[75.64%] h-[6.4%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
+          <img
+            className="tron absolute z-[-1] w-[100%] scale-[1.582] bottom-[2%]"
+            src={tronImage}
+            alt=""
+            onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+          />
+          <img 
+            ref={imgRef}
+            className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236]"
+            src={personage}
+            alt=""
+            onClick={handleClick}
+            onTouchStart={handleTouch}
+            onTouchEnd={() => {
+              try {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
+              } catch {
+                console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+              }
+            }}
+            onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+          />
+          {plusOnes.map(plusOne => (
+            <div 
+              key={plusOne.id}
+              className="plusOne"
+              style={{ left: `${plusOne.x}px`, top: `${plusOne.y}px` }}
+            >
+              +{Number(account?.character?.multiplier)}
+            </div>
+          ))}
         </div>
-        <div className="px-[20px] mt-[10px] z-[3]">
-          <div className="p-[10px] bg-[rgba(117,117,117,0.1)] rounded-[10px] backdrop-blur-[40px] flex items-center justify-center">
-            <div className="flex text-[14px] font-[400] leading-[18px] text-[#F1F1F1]">Доход каждые 4 часа:</div>
-            <div className="ml-[10px] mr-[20px] flex items-center gap-[5px] text-[14px] font-[600] leading-[18px] text-[#FFD900]">
-              {1000 * account?.character?.multiplier}
-              <img
-                className="flex w-[12px] h-[12px] mt-[-2px]"
-                src={images['./assets/3d-raster-small.png']}
-                alt=""
-              />
-            </div>
-            <div className="flex items-center justify-center">
-              {new Date(account?.farming?.end_date) < new Date() ?
-              <div onClick={claimFarming}onTouchEnd={() => {
-                try {
-                  window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
-                } catch {
-                  console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
-                }
-              }} className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#FFD900] flex items-center justify-center text-[#494949] text-[12px] font-[600] leading-[12px]">Забрать</div>
-              :<div className="transform active:scale-[0.9] transition-transform cursor-pointer px-[12px] py-[6px] rounded-[5px] bg-[#494949] flex items-center justify-center text-[#292929] text-[12px] font-[600] leading-[12px]">Забрать</div>}
-            </div>
-          </div>
-        </div>
-        <div className="absolute left-0 right-0 bottom-[65.33%] mx-auto z-[-1] w-[53.84%] h-[10%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
-        <div className="absolute left-0 right-0 bottom-[29.06%] mx-auto z-[-1] w-[75.64%] h-[6.4%] bg-[#B331FF] rounded-[100%] blur-[50px]"></div>
-        <img
-          className="tron absolute z-[-1] w-[100%] scale-[1.582] bottom-[2%]"
-          src={images['./assets/tron.png']}
-          alt=""
-        />
-        <img 
-          ref={imgRef}
-          className="pers cursor-pointer absolute z-[0] bottom-[21.06%] w-[100%] scale-[1.236]"
-          src={personage}
-          alt=""
-          onClick={handleClick}
-          onTouchStart={handleTouch}
-          onTouchEnd={() => {
-            try {
-              window.Telegram.WebApp.HapticFeedback.impactOccurred('light')
-            } catch {
-              console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
-            }
-          }}
-        />
-        {plusOnes.map(plusOne => (
-          <div 
-            key={plusOne.id}
-            className="plusOne"
-            style={{ left: `${plusOne.x}px`, top: `${plusOne.y}px` }}
-          >
-            +{Number(account?.character?.multiplier)}
-          </div>
-        ))}
+        <Boost setLoadedImagesCount={setLoadedImagesCount} />
       </div>
-      <Boost />
+      <div className="relative w-[100%] h-screen overflow-hidden flex items-center justify-center" style={loading ? null : { display: "none"}}>
+        <LoadingSpinner />
+      </div>
     </>
   );
 }

@@ -10,14 +10,21 @@ import useLocalBalance from './hooks/useLocalBalance';
 import useMessages from './hooks/useMessages';
 import { Buffer } from 'buffer';
 import { TonConnectButton } from '@tonconnect/ui-react';
-import useImages from './hooks/useImages';
-import LoadingSpinner from './components/LoadingSpinner'
+import LoadingSpinner from './components/LoadingSpinner';
 
 if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
   window.Buffer = Buffer;
 }
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const [loadedImagesCount, setLoadedImagesCount] = useState(0)
+  useEffect(() => {
+    console.log(loadedImagesCount)
+    if (loadedImagesCount >= 13 && loading) {
+      setLoading(false);
+    }
+  }, [loadedImagesCount, loading])
   useEffect(() => {
     if (window.Telegram && window.Telegram?.WebApp) {
         const tg = window.Telegram.WebApp;
@@ -36,7 +43,6 @@ function App() {
   const { setToken } = useAuthStore();
   const { setAccount } = useAccount();
   const { setLocalBalance } = useLocalBalance();
-
   const { messages, removeMessage } = useMessages();
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
@@ -44,69 +50,9 @@ function App() {
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
-  const { setImages, setIsLoaded } = useImages();
-  const isLoaded = useImages((state) => state.isLoaded);
-  // Динамический импорт картинок
-  const loadImages = async () => {
-    const imagePaths = [
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bg.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon1.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon2.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/bigleon3.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/3d-raster-small.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tron.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/settings.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ton.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ton.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/paste.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/key.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks-image.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide1.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide2.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/slide3.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/for-slide3.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/arrow.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/home.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/home-active.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/tasks-active.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/games.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/games-active.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/ad-active.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/airdrop.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/airdrop-active.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/loading.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/flame.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/3d-raster.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/close.svg',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon1.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon2.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/leon3.png',
-      (import.meta.env.VITE_URL || "https://traff-booster.ru") + '/assets/double-arrow.svg'
-    ];
-
-    const loadedImages = {};
-
-    for (const path of imagePaths) {
-      const response = await fetch(path);
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      loadedImages[path] = imageUrl;
-    }
-
-    setImages(loadedImages);
-    setIsLoaded(true);
-  };
-
   useEffect(() => {
-    loadImages();
-  }, []);
-
-  useEffect(() => {
-    if (isLoading) {
-      const initData = window.Telegram?.WebApp?.initData || "user=%7B%22id%22%3A453500861%2C%22first_name%22%3A%22object%20nss%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22thecreatxr%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&chat_instance=8547400648840118369&chat_type=private&auth_date=1725645494&hash=78cfd31443239c6f46c4f14975d582c4accacebf3f79d761212e9228514b1283";
+    if (isLoading && !loading) {
+      const initData = window.Telegram?.WebApp?.initData;
       if (initData) {
         fetch(apiUrl + '/auth/telegram/', {
             method: 'POST',
@@ -117,13 +63,12 @@ function App() {
         })
         .then(response => response.json())
         .then(data => {
-            setIsLoading(false);
             setToken(data.token);
         })
         .catch(error => console.error('Error:', error));
       }
     }
-  }, [isLoading]);
+  }, [isLoading, loading]);
 
   useEffect(() => {
     if (token) {
@@ -137,6 +82,7 @@ function App() {
       .then(response => response.json())
       .then(data => {
         setAccount(data);
+        setIsLoading(false);
       })
       .catch(error => console.error('Error:', error));
     }
@@ -144,7 +90,7 @@ function App() {
 
   useEffect(() => {
     const syncBalance = async () => {
-      if (localBalance > 0) {
+      if (localBalance > 0 && token && account) {
         try {
           const response = await fetch(apiUrl+'/sync_balance/', {
             method: 'POST',
@@ -205,49 +151,45 @@ function App() {
     // localStorage.setItem('onboardingComplete', 'true');
   };
 
-  if (isLoaded) {
-    return (
-      <div className="relative flex flex-col h-[100vh] overflow-x-hidden overflow-y-hidden">
-        <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
-          {messages.map((msg) => (
-            <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
-              <div className="flex items-center p-[10px] mb-[10px] text-sm rounded-lg bg-[#282828] border" style={msg.type === "error" ? {borderColor: "#9b1c1c", color: "#f98080"} : {borderColor: "green", color: "#31c48d"}} role="alert">
-                {msg.type === "error" ? 
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd"></path>
-                </svg>
-                :
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd"></path>
-                </svg>}
-                <div className="ml-[10px]">
-                  {msg.name && <span className="font-medium">{msg.name}</span>} {msg.text}
-                </div>
+  return (
+    <div className="relative flex flex-col h-[100vh] overflow-x-hidden overflow-y-hidden">
+      <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
+        {messages.map((msg) => (
+          <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
+            <div className="flex items-center p-[10px] mb-[10px] text-sm rounded-lg bg-[#282828] border" style={msg.type === "error" ? {borderColor: "#9b1c1c", color: "#f98080"} : {borderColor: "green", color: "#31c48d"}} role="alert">
+              {msg.type === "error" ? 
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd"></path>
+              </svg>
+              :
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-[1.25rem] h-[1.25rem]">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd"></path>
+              </svg>}
+              <div className="ml-[10px]">
+                {msg.name && <span className="font-medium">{msg.name}</span>} {msg.text}
               </div>
-            </CSSTransition>
-          ))}
-        </TransitionGroup>
-        {isLoading ? (
-          <Loading />
-        ) : showOnboarding ? (
-          <OnboardingSlider onComplete={handleOnboardingComplete} />
-        ) : (
-          <div className="h-[100vh] relative overflow-y-hidden">
-            <Outlet />
-            <Menu currentPage={currentPage} />
+            </div>
+          </CSSTransition>
+        ))}
+      </TransitionGroup>
+      <div style={loading ? { display: "none"} : null}>
+          <div style={isLoading ? null : { display: "none"}} >
+            <Loading setLoadedImagesCount={setLoadedImagesCount} />
           </div>
-        )}
-        <TonConnectButton className="tonbutton hidden" />
+          <div style={isLoading || !showOnboarding ? {display: "none"} : null}>
+            <OnboardingSlider onComplete={handleOnboardingComplete} setLoadedImagesCount={setLoadedImagesCount} loading={loading} />
+          </div>
+          <div className="sex h-[100vh] relative overflow-y-hidden" style={isLoading || showOnboarding ? {display: "none"} : null}>
+            <Outlet />
+            <Menu currentPage={currentPage} setLoadedImagesCount={setLoadedImagesCount} />
+          </div>
       </div>
-    );
-  } else {
-    return (
-      <div>
+      <div className="relative w-[100%] h-screen overflow-hidden flex items-center justify-center" style={loading ? null : { display: "none"}}>
         <LoadingSpinner />
       </div>
-    )
-  }
-  
+      <TonConnectButton className="tonbutton hidden" />
+    </div>
+  );
 }
 
 export default App;
