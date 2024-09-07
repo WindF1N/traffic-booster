@@ -13,8 +13,12 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
       type: 0,
       pretitle: 'Привет, друг!',
       title: 'Это не очередная тапалка!',
-      description: null,
-      image: slide1Image,
+      description: (
+        <>
+            С нами ты станешь совладельцем бизнеса в сфере <span className="text-[#B331FF]">Web3</span>. Зарабатывай монеты <span className="text-[#FFD900]">$TRAFF</span>, играя в игры и выполняя задания.
+        </>
+      ),
+      image: null,
       afterimage: 'Мы рады, что ты теперь с нами!'
     },
     {
@@ -22,14 +26,22 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
       pretitle: 'Сейчас идет бета',
       title: 'Выполняй задания и приглашай друзей',
       description: 'Львиная доля полученных от рекламодателей средств будет распределена через airdrop',
-      image: slide2Image,
-      afterimage: null
+      image: null,
+      afterimage: (
+        <>
+            Зарабатывай прямо<br/>со смартфона!
+        </>
+      )
     },
     {
       type: 1,
-      title: forSlide3Image,
-      description: null,
-      image: slide3Image,
+      title: null,
+      description: (
+        <>
+            Обеспеченный деньгами рекламодателей, токен <span className="text-[#FFD900]">$TRAFF</span> будет распределяться среди пользователей. На часть прибыли мы будем выкупать и сжигать токен, обеспечивая его рост.
+        </>
+      ),
+      image: null,
     },
   ]);
 
