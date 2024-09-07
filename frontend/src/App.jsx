@@ -151,7 +151,7 @@ function App() {
   };
 
   return (
-    <div className="relative flex flex-col h-[100vh] overflow-x-hidden overflow-y-hidden">
+    <div className="relative flex flex-col h-[100%] overflow-x-hidden overflow-y-hidden">
       <TransitionGroup className="fixed z-[5] top-[20px] left-[20px] w-[calc(100%-40px)] pointer-events-none">
         {messages.map((msg) => (
           <CSSTransition key={msg.id} timeout={300} classNames="message" onEntered={() => setTimeout(() => removeMessage(msg.id), 5000)}>
