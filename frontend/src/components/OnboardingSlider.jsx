@@ -98,15 +98,15 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
           <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
             {slides.map((slide, index) => (
               <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px] pt-[2.33%]">
-                {/* {index === 0 && 
-                  <div className="rounded-[100%] w-[75.6%] h-[35%] absolute top-[45%] right-[-10%] blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>}
+                {index === 0 && 
+                  <div className="rounded-[100%] w-[75.6%] h-[35%] absolute top-[45%] right-[-10%] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>}
                 {index === 1 && 
                 <>
-                  <div className="rounded-[100%] w-[58%] h-[27%] absolute top-[45%] right-0 blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>
-                  <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute top-[78%] right-0 left-0 mx-auto ml-[22%] blur-[15px] z-[-1] bg-[#0C0C0C]"></div>
+                  <div className="rounded-[100%] w-[58%] h-[27%] absolute top-[45%] right-0 z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%]"></div>
+                  <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute top-[78%] right-0 left-0 mx-auto ml-[22%] z-[-1] bg-[#0C0C0C]"></div>
                 </>}
                 {index === 2 && 
-                <div className="rounded-[100%] w-[65.61%] h-[29.85%] absolute top-[45%] right-0 left-0 mx-auto blur-[100px] z-[-1] bg-[#6D00AC]"></div>} */}
+                <div className="rounded-[100%] w-[65.61%] h-[29.85%] absolute top-[45%] right-0 left-0 mx-auto z-[-1] bg-[#6D00AC]"></div>}
                 {slide.type === 0 && (
                   <h3 className="text-[36px] text-[#3E3E3E] font-[600] leading-none">{slide.pretitle}</h3>
                 )}
