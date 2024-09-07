@@ -178,7 +178,7 @@ function App() {
           <div style={isLoading || !showOnboarding ? {display: "none"} : null}>
             <OnboardingSlider onComplete={handleOnboardingComplete} setLoadedImagesCount={setLoadedImagesCount} loading={loading} />
           </div>
-          <div className="sex h-[100%] relative overflow-y-hidden" style={isLoading || showOnboarding ? {display: "none"} : null}>
+          <div className="h-[100%] relative overflow-y-hidden" style={isLoading || showOnboarding ? {display: "none"} : null}>
             <Outlet />
             <Menu currentPage={currentPage} setLoadedImagesCount={setLoadedImagesCount} />
           </div>

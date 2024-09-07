@@ -129,7 +129,7 @@ function Home() {
 }
   return (
     <>
-      <div style={loading ? { display: "none"} : null}>
+      <div className="relative h-screen w-[100%]" style={loading ? { display: "none"} : null}>
         <div className="relative flex flex-col h-[100%] overflow-hidden">
           <img
             className="absolute z-[-1] opacity-[0.1] rotate-[-30deg] scale-[2.49] inset-0 m-auto blur-lg"
