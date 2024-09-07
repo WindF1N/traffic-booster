@@ -21,7 +21,7 @@ function App() {
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
   useEffect(() => {
     if (loadedImagesCount >= 13 && loading) {
-      setLoading(false);
+      // setLoading(false);
     }
   }, [loadedImagesCount, loading])
   useEffect(() => {
@@ -183,7 +183,7 @@ function App() {
             <Menu currentPage={currentPage} setLoadedImagesCount={setLoadedImagesCount} />
           </div>
       </div>
-      <div className="relative w-[100%] h-screen overflow-hidden flex items-center justify-center" style={loading ? null : { display: "none"}}>
+      <div className="relative w-[100%] h-[100%] overflow-hidden flex items-center justify-center" style={loading ? null : { display: "none"}}>
         <LoadingSpinner />
       </div>
       <TonConnectButton className="tonbutton hidden" />
