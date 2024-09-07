@@ -103,7 +103,7 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
                 {index === 1 && 
                 <>
                   <div className="rounded-[100%] w-[58%] h-[27%] absolute top-[45%] right-0 blur-[100px] z-[-1] bg-gradient-to-r from-[#B331FF] from-[25%] to-[#FFF600] to-[130%] will-change-transform"></div>
-                  <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute top-[78%] right-0 left-0 mx-auto ml-[22%] blur-[15px] z-[-1] bg-[#0C0C0C] will-change-transform"></div>
+                  <div className="rounded-[100%] rotate-[14.43deg] w-[45.6%] h-[5%] absolute bottom-[19.27%] right-0 left-0 mx-auto ml-[22%] blur-[15px] z-[-1] bg-[#0C0C0C] will-change-transform"></div>
                 </>}
                 {index === 2 && 
                 <div className="rounded-[100%] w-[65.61%] h-[29.85%] absolute top-[45%] right-0 left-0 mx-auto blur-[100px] z-[-1] bg-[#6D00AC] will-change-transform"></div>}
