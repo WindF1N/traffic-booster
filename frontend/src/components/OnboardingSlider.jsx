@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-// import { useSwipeable } from 'react-swipeable';
+import { useSwipeable } from 'react-swipeable';
 import slide1Image from '../assets/slide1.png';
 import slide2Image from '../assets/slide2.png';
 import slide3Image from '../assets/slide3.png';
