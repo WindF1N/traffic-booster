@@ -27,8 +27,8 @@ function App() {
   useEffect(() => {
     if (window.Telegram && window.Telegram?.WebApp) {
         const tg = window.Telegram.WebApp;
-        tg.ready();
         tg.expand();
+        tg.ready();
         // Отключаем вертикальные свайпы
         tg.disableVerticalSwipes(true);
         tg.setHeaderColor("#1A1A1A");
