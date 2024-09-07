@@ -4,6 +4,7 @@ import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
 import useLocalBalance from '../hooks/useLocalBalance';
 import useMessages from '../hooks/useMessages';
+import useLoadedPages from '../hooks/useLoadedPages';
 
 import bigLeon1Image from '../assets/bigleon1.png';
 import bigLeon2Image from '../assets/bigleon2.png';
@@ -15,11 +16,18 @@ import tronImage from '../assets/tron.png';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function Home() {
-  const [loading, setLoading] = useState(true);
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
+  const { addLoadedPage } = useLoadedPages();
+  const loading = useLoadedPages((state) => {
+    if ('Home' in state.loadedPages) {
+      return state.loadedPages['Home'];
+    } else {
+      return true
+    }
+  });
   useEffect(() => {
     if (loadedImagesCount >= 5 && loading) {
-      setLoading(false);
+      addLoadedPage('Home');
     }
   }, [loadedImagesCount, loading])
   const imgRef = useRef(null);

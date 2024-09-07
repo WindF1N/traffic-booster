@@ -20,7 +20,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
   useEffect(() => {
-    console.log(loadedImagesCount)
     if (loadedImagesCount >= 13 && loading) {
       setLoading(false);
     }

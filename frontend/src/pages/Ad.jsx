@@ -2,13 +2,20 @@ import { useState, useEffect } from 'react';
 import bgImage from '../assets/bg.png';
 import adImage from '../assets/ad.png';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useLoadedPages from '../hooks/useLoadedPages';
 function Ad() {
-  const [loading, setLoading] = useState(true);
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
+  const { addLoadedPage } = useLoadedPages();
+  const loading = useLoadedPages((state) => {
+    if ('Ad' in state.loadedPages) {
+      return state.loadedPages['Ad'];
+    } else {
+      return true
+    }
+  });
   useEffect(() => {
-    console.log(loadedImagesCount)
     if (loadedImagesCount >= 2 && loading) {
-      setLoading(false);
+      addLoadedPage('Ad');
     }
   }, [loadedImagesCount, loading])
   return (

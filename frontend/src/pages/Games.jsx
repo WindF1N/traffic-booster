@@ -7,13 +7,13 @@ import keyIcon from '../assets/key.svg';
 import pasteIcon from '../assets/paste.svg';
 import bgImage from '../assets/bg.png';
 import GamePopUp from '../components/GamePopUp';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Games() {
   const [ isOpen, setIsOpen ] = useState(false);
   const account = useAccount((state) => state.account);
   const { setAccount } = useAccount();
   const token = useAuthStore((state) => state.token);
-  const messages = useMessages((state) => state.messages);
   const games = useGames((state) => state.games);
   const { addMessage } = useMessages();
   const { setGames } = useGames();
