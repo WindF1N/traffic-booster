@@ -95,7 +95,7 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
     <>
       <div className="relative w-[100%] h-screen overflow-hidden">
         <div className="relative h-screen">
-          <div className="relative flex duration-300 h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          <div className="relative flex duration-300 h-[100%] overflow-x-visible" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
             {slides.map((slide, index) => (
               <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px] pt-[2.33%]">
                 {index === 0 && 
@@ -149,6 +149,44 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
               console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
             }
           }} />}</div>
+        </div>
+        <div className="absolute bottom-0 mx-auto px-[20px] w-[100%]">
+          {currentSlide === slides.length - 1 && (
+              <button
+                  onClick={handleComplete}
+                  className="w-[100%] py-[20px] bg-[#B331FF] text-[24px] text-white rounded-[10px] leading-none"
+                  onTouchEnd={() => {
+                    try {
+                      window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                    } catch {
+                      console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                    }
+                  }}
+              >
+              Let's Rock
+              </button>
+          )}
+          {slides[currentSlide].type === 0 && (
+              <div className="text-center text-[20px] font-[600] leading-[25.8px] mt-auto mx-auto">{slides[currentSlide].afterimage}</div>
+          )}
+          <div className="mt-[4%] pb-[6.67%] flex space-x-[5px] w-[100%] justify-center">
+              {slides.map((_, index) => (
+              <button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  className={`w-[15px] h-[15px] p-0 rounded-[0] hover:outline-0 focus:outline-0 border-0 ${
+                  currentSlide === index ? 'bg-white' : 'bg-[#4E4E4E]'
+                  }`}
+                  onTouchEnd={() => {
+                    try {
+                      window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')
+                    } catch {
+                      console.error('Telegram.WebApp.HapticFeedback.impactOccurred is not defined')
+                    }
+                  }}
+              />
+              ))}
+          </div>
         </div>
       </div>
     </>
