@@ -21,7 +21,7 @@ function Tasks() {
   });
   useEffect(() => {
     console.log([loadedImagesCount, loading])
-    if (loadedImagesCount >= 3 && loading) {
+    if (loadedImagesCount >= 2 && loading) {
       addLoadedPage('Tasks');
     }
   }, [loadedImagesCount, loading])
@@ -73,7 +73,7 @@ function Tasks() {
               </div>
             </a>
           </div>
-          {tasks.length > 0 &&
+          {tasks.length > 0 ?
           <div className="flex flex-wrap gap-[10px] px-[20px] pt-[10px] mt-[20px]">
             {tasks.map((task, index) => {
               if (task.limit_type === "limited") {
@@ -164,6 +164,10 @@ function Tasks() {
               }
               return null;
             })}
+          </div>
+          : 
+          <div className="w-[100%] flex justify-center py-[15%] scale-[.8]">
+            <LoadingSpinner />
           </div>}
         </div>
         {isOpen && <TaskPopUp setIsOpen={setIsOpen} selectedTask={selectedTask} setSelectedTask={setSelectedTask}  />}

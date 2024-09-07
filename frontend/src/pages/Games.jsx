@@ -44,7 +44,7 @@ function Games() {
             ...games.slice(0, gameIndex),
             updatedGame,
             ...games.slice(gameIndex + 1)
-        ])
+          ])
         }
         addMessage({
           type: 'success',
@@ -129,7 +129,7 @@ function Games() {
         <div className="text-[14px] leading-[18.06px] px-[20px] font-[400] mt-[20px]">
           В каждой игре по 3 ключа, активируй их и<br/>получи 1000000 монет.
         </div>
-        {games.length > 0 &&
+        {games.length > 0 ?
         <div className="flex flex-col gap-[15px] px-[20px] mt-[20px]">
           {games.map((game, index) => (
             <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]" key={index}>
@@ -160,6 +160,10 @@ function Games() {
               </div>
             </div>
           ))}
+        </div>
+        :
+        <div className="w-[100%] flex justify-center py-[15%] scale-[.8]">
+          <LoadingSpinner />
         </div>}
       </div>
       {isOpen && <GamePopUp setIsOpen={setIsOpen} />}

@@ -32,10 +32,9 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex }) {
     const { setAccount } = useAccount();
     const { addMessage } = useMessages();
     const userFriendlyAddress = useTonAddress();
-    const rawAddress = useTonAddress(false);
     const wallet = useTonWallet();
-    const [tonConnectUI, setOptions] = useTonConnectUI();
-    const [balance, setBalance] = useState(null);
+    const [tonConnectUI] = useTonConnectUI();
+    const [setBalance] = useState(null);
     const [invoiceLink, setInvoiceLink] = useState(null);
     const [selectedCharacter, setSelectedCharacter] = useState();
     const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/";
@@ -204,74 +203,74 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex }) {
                     <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
                     {characters.map((character, index) => (
                         <div className="relative overflow-hidden h-[100%] w-[100%] flex-shrink-0" key={index}>
-                        {character.type == "standart" &&
-                        <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#319BFF]">{character.name}</span></div>}
-                        {character.type == "silver" &&
-                        <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#9CFF11]">{character.name}</span></div>}
-                        {character.type == "gold" &&
-                        <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#FF11DF]">{character.name}</span></div>}
-                        {Number(character.multiplier) !== 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Зарабатывай со всех заданий в {Number(character.multiplier)} раза больше!</div>}
-                        {Number(character.multiplier) === 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Стандартный персонаж, стандартный заработок...</div>}
-                        {character.type == "standart" &&
-                            <>
-                                <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#319BFF]'></div>
-                                <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon1Image} alt="" />
-                            </>}
-                        {character.type == "silver" &&
-                            <>
-                                <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#9CFF11]'></div>
-                                <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon2Image} alt="" />
-                            </>}
-                        {character.type == "gold" &&
-                            <>
-                                <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#FF11DF]'></div>
-                                <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon3Image} alt="" />
-                            </>}
-                        {index >= nextCharacterIndex ?
-                            <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
-                                <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Улучшить за:</div>
-                                <div className="flex gap-[7px] items-center">
-                                <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#FFD900] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#262626] rounded-[10px] border border-[#FFD900]"
-                                     onClick={() => buyCharacter("stars", character)}>
-                                    {Number(character.price_stars)}
-                                    <img
-                                        className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
-                                        src={raster3dIcon}
-                                        alt=""
-                                        onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
-                                    />
+                            {character.type == "standart" &&
+                            <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#319BFF]">{character.name}</span></div>}
+                            {character.type == "silver" &&
+                            <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#9CFF11]">{character.name}</span></div>}
+                            {character.type == "gold" &&
+                            <div className="px-[20px] mt-[20px] text-[16px] font-[400] leading-[21px] text-[#fff]">Уровень: <span className="text-[#FF11DF]">{character.name}</span></div>}
+                            {Number(character.multiplier) !== 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Зарабатывай со всех заданий в {Number(character.multiplier)} раза больше!</div>}
+                            {Number(character.multiplier) === 1 && <div className="px-[20px] mt-[10px] text-[14px] font-[400] leading-[18px] text-[#ADADAD]">Стандартный персонаж, стандартный заработок...</div>}
+                            {character.type == "standart" &&
+                                <>
+                                    <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#319BFF]'></div>
+                                    <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon1Image} alt="" />
+                                </>}
+                            {character.type == "silver" &&
+                                <>
+                                    <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#9CFF11]'></div>
+                                    <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon2Image} alt="" />
+                                </>}
+                            {character.type == "gold" &&
+                                <>
+                                    <div className='w-[36%] h-[32.18%] rounded-[100%] absolute inset-0 m-auto blur-[75px] z-[0] bg-[#FF11DF]'></div>
+                                    <img onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} className="z-[1] w-[58.57%] absolute inset-0 m-auto" src={leon3Image} alt="" />
+                                </>}
+                            {index >= nextCharacterIndex ?
+                                <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
+                                    <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Улучшить за:</div>
+                                    <div className="flex gap-[7px] items-center">
+                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#FFD900] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#262626] rounded-[10px] border border-[#FFD900]"
+                                            onClick={() => buyCharacter("stars", character)}>
+                                            {Number(character.price_stars)}
+                                            <img
+                                                className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
+                                                src={raster3dIcon}
+                                                alt=""
+                                                onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+                                            />
+                                        </div>
+                                        <div className="text-[14px] leading-[16px] font-[400] text-[#A7A7A7]">/</div>
+                                        <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]"
+                                            onClick={() => buyCharacter("ton", character)}>
+                                            {Number(character.price_ton)}
+                                            <img
+                                                className="flex w-[16px] h-[16px] mt-[-2.5px]"
+                                                src={tonIcon}
+                                                alt=""
+                                                onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="text-[14px] leading-[16px] font-[400] text-[#A7A7A7]">/</div>
-                                <div className="transform active:scale-[0.9] transition-transform cursor-pointer flex gap-[5px] justify-center text-[#0088CC] font-[600] text-[16px] leading-[17px] items-center min-w-[80px] min-h-[40px] pt-[2px] bg-[#fff] rounded-[10px] border border-[#fff]"
-                                     onClick={() => buyCharacter("ton", character)}>
-                                    {Number(character.price_ton)}
-                                    <img
-                                        className="flex w-[16px] h-[16px] mt-[-2.5px]"
-                                        src={tonIcon}
-                                        alt=""
-                                        onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
-                                    />
+                            : (index === nextCharacterIndex - 1 &&
+                                <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
+                                    <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Используется</div>
                                 </div>
-                            </div>
-                            </div>
-                        : (index === nextCharacterIndex - 1 &&
-                        <div className="absolute bottom-[10px] left-[10px] right-[10px] p-[10px] border border-[#4B4B4B] rounded-[10px] backdrop-blur-[20px] bg-[rgba(117,117,117,0.1)] flex gap-[15px] items-center justify-around">
-                            <div className="text-[16px] font-[600] leading-[21px] text-[#fff]">Используется</div>
-                        </div>
-                    )}
+                            )}
                     </div>
-                ))}
+                    ))}
                 </div>
                 <div className="fixed top-0 bottom-0 left-[20px] right-[20px] m-auto flex items-center justify-between h-[48px]">
                     <div><img src={arrowIcon} className="cursor-pointer rotate-[180deg] w-[48px]" alt="" onClick={prevSlide} onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} style={currentSlide > 0 ? null : {display: "none"}} /></div>
                     <div><img src={arrowIcon} className="cursor-pointer w-[48px]" alt="" onClick={nextSlide} onLoad={() => setLoadedImagesCount(prevState => prevState + 1)} style={currentSlide < characters.length - 1 ? null : {display: "none"}} /></div>
                 </div>
+                </div>
             </div>
-            <div className="" style={loading ? null : { display: "none"}}>
+            <div className="w-[100%] h-[100%] flex items-center justify-center" style={loading ? null : { display: "none"}}>
                 <LoadingSpinner />
             </div>
         </div>
-    </div>
     );
 }
                             
