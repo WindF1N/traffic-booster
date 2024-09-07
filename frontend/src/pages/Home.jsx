@@ -27,7 +27,7 @@ function Home() {
   });
   useEffect(() => {
     if (loadedImagesCount >= 5 && loading) {
-      addLoadedPage('Home');
+      // addLoadedPage('Home');
     }
   }, [loadedImagesCount, loading])
   const imgRef = useRef(null);
