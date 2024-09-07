@@ -54,19 +54,19 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
     onComplete();
   };
 
-  // const handlers = useSwipeable({
-  //   onSwipedLeft: () => {
-  //     if (currentSlide < slides.length - 1) {
-  //       setCurrentSlide(currentSlide + 1);
-  //     }
-  //   },
-  //   onSwipedRight: () => {
-  //     if (currentSlide > 0) {
-  //       setCurrentSlide(currentSlide - 1);
-  //     }
-  //   },
-  //   trackTouch: true,
-  // });
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (currentSlide < slides.length - 1) {
+        setCurrentSlide(currentSlide + 1);
+      }
+    },
+    onSwipedRight: () => {
+      if (currentSlide > 0) {
+        setCurrentSlide(currentSlide - 1);
+      }
+    },
+    trackTouch: true,
+  });
 
   useEffect(() => {
     if (!loading) {
@@ -95,7 +95,7 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
     <>
       <div className="relative w-[100%] h-screen overflow-hidden">
         <div className="relative w-[100%] h-screen">
-          <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }} {...handlers}>
             {slides.map((slide, index) => (
               <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px] pt-[2.33%] oveflow-hidden">
                 {index === 0 && 
