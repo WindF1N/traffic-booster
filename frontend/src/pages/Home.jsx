@@ -18,7 +18,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
   useEffect(() => {
-    if (loadedImagesCount == 7 && loading) {
+    if (loadedImagesCount >= 5 && loading) {
       setLoading(false);
     }
   }, [loadedImagesCount, loading])
