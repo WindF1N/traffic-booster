@@ -6,7 +6,7 @@ import useAccount from '../hooks/useAccount';
 import useMessages from '../hooks/useMessages';
 
 import closeIcon from '../assets/close.svg';
-import tonIcon from '../assets/ton.svg';
+import tonIcon from '../assets/ton-icon.png';
 import arrowIcon from '../assets/arrow.svg';
 import raster3dIcon from '../assets/3d-raster-small.png';
 
