@@ -54,14 +54,14 @@ function Airdrop() {
             <div className="flex items-center gap-[5px] text-[28px] leading-[36px] font-[600] text-[#08C] mt-[6px]">
               {balance || 0} 
               <img
-                className="mt-[-4px]"
+                className="mt-[-4px] w-[20px] h-[20px]"
                 src={tonIcon}
                 alt=""
                 onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
               />
             </div>
             <img
-              className="absolute right-[10px] top-[10px]"
+              className="absolute right-[10px] top-[10px] w-[20px] h-[20px]"
               src={settingsIcon}
               alt=""
               onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
