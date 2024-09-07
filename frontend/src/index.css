@@ -266,6 +266,7 @@ body {
   user-select: none; /* Standard */
   overflow-x: hidden;
   overflow-y: hidden;
+  touch-action: none !important;
 }
 
 :root {
