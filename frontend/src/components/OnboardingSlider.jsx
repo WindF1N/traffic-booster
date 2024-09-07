@@ -95,7 +95,7 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
     <>
       <div className="relative w-[100%] h-screen overflow-hidden">
         <div className="relative h-screen">
-          <div className="relative flex duration-300 h-[100%] overflow-x-visible" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+          <div className="relative flex transition-transform duration-300 ease-in-out h-[100%]" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
             {slides.map((slide, index) => (
               <div key={index} className="relative h-screen w-[100%] flex-shrink-0 px-[20px] pt-[2.33%]">
                 {index === 0 && 
