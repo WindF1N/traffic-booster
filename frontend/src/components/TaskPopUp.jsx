@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import closeIcon from '../assets/close.svg';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
@@ -62,6 +63,11 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
             console.error('Error:', error)
         });
     }
+    useEffect(() => {
+        if (tasks.findIndex(task => task.id === selectedTask.id) === -1) {
+            setSelectedTask(prevState => ({...prevState, status: "awarded"}))
+        }
+    }, [tasks])
     return (
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
             <div className="taskpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[73.33%] m-auto overflow-hidden">

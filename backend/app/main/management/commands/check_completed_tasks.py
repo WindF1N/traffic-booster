@@ -27,7 +27,8 @@ class Command(BaseCommand):
                             cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                                 "type": "success",
                                 "text": f'+{completed_task.task.reward * int(completed_task.user.character.multiplier)} за выполненное задание "{completed_task.task.title}"',
-                                "name": "Награда:"
+                                "name": "Награда:",
+                                "awarded_task": completed_task.task.id
                             }, timeout=60*60)
                             completed_task.status = 'awarded'
                             completed_task.save()
@@ -47,8 +48,9 @@ class Command(BaseCommand):
             cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                 "type": "success",
                 "text": f'+{completed_task.task.reward * int(completed_task.user.character.multiplier)} за выполненное задание "{completed_task.task.title}"',
-                "name": "Награда:"
-            }, timeout=60*60)
+                "name": "Награда:",
+                "awarded_task": completed_task.task.id
+            }, timeout=60*10)
             self.stdout.write(f'ID: {completed_task.id}, Task: {completed_task.task.title}, User: {completed_task.user.username}, Status: {completed_task.status}\nThe task is paid')
             completed_task.status = 'awarded'
             completed_task.save()

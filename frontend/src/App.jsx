@@ -11,6 +11,7 @@ import useMessages from './hooks/useMessages';
 import { Buffer } from 'buffer';
 import { TonConnectButton } from '@tonconnect/ui-react';
 import LoadingSpinner from './components/LoadingSpinner';
+import useTasks from './hooks/useTasks';
 
 if (typeof window !== 'undefined' && typeof window.Buffer === 'undefined') {
   window.Buffer = Buffer;
@@ -46,6 +47,8 @@ function App() {
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
   const localBalance = useLocalBalance((state) => state.localBalance);
+  const tasks = useTasks((state) => state.tasks);
+  const { setTasks } = useTasks();
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -140,7 +143,12 @@ function App() {
               setAccount({ ...account, balance: { ...account.balance, amount: data.new_balance } });
             }
             if ('messages' in data) {
-              data.messages.forEach(message => addMessage(message));
+              data.messages.forEach(message => {
+                addMessage(message);
+                if ('awarded_task' in message) {
+                  setTasks(tasks.filter(task => task.id !== message.awarded_task));
+                }
+              });
             }
           } else {
             console.error(data.message);
