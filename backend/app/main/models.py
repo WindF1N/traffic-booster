@@ -16,6 +16,11 @@ class CustomUser(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+        indexes = [
+            models.Index(fields=['telegram_id']),
+            models.Index(fields=['referral_code']),
+        ]
+
 class Characters(models.Model):
     TYPE_CHOICES = [
         ('standart', 'Новичок'),
@@ -34,6 +39,10 @@ class Characters(models.Model):
     class Meta:
         verbose_name = "Персонаж"
         verbose_name_plural = "Персонажи"
+        
+        indexes = [
+            models.Index(fields=['type']),
+        ]
 
 class Tasks(models.Model):
     LIMIT_TYPE_CHOICES = [
@@ -62,6 +71,7 @@ class Tasks(models.Model):
         verbose_name_plural = "Задания"
 
         indexes = [
+            models.Index(fields=['limit_type']),
             models.Index(fields=['link']),
         ]
 
@@ -76,6 +86,10 @@ class Balances(models.Model):
         verbose_name = "Баланс"
         verbose_name_plural = "Балансы"
 
+        indexes = [
+            models.Index(fields=['user']),
+        ]
+
 class Farmings(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество монет")
@@ -88,6 +102,10 @@ class Farmings(models.Model):
     class Meta:
         verbose_name = "Фарминг"
         verbose_name_plural = "Фарминги"
+
+        indexes = [
+            models.Index(fields=['user']),
+        ]
 
 class Advertisers(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -114,6 +132,10 @@ class Tariffs(models.Model):
         verbose_name = "Тариф"
         verbose_name_plural = "Тарифы"
 
+        indexes = [
+            models.Index(fields=['name']),
+        ]
+
 class Wallets(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
     address = models.CharField(max_length=255, verbose_name="Адрес кошелька")
@@ -124,6 +146,10 @@ class Wallets(models.Model):
     class Meta:
         verbose_name = "Кошелек"
         verbose_name_plural = "Кошельки"
+
+        indexes = [
+            models.Index(fields=['user']),
+        ]
 
 class Games(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
@@ -136,6 +162,11 @@ class Games(models.Model):
     class Meta:
         verbose_name = "Игра"
         verbose_name_plural = "Игры"
+
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['link']),
+        ]
 
 class GameKeys(models.Model):
     game = models.ForeignKey('Games', on_delete=models.CASCADE, verbose_name="Игра")
@@ -150,6 +181,12 @@ class GameKeys(models.Model):
         verbose_name = "Игровой ключ"
         verbose_name_plural = "Игровые ключи"
 
+        indexes = [
+            models.Index(fields=['value']),
+            models.Index(fields=['game']),
+            models.Index(fields=['used']),
+        ]
+
 class UsedGameKeys(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
     game_key = models.ForeignKey('GameKeys', on_delete=models.CASCADE, verbose_name="Игровой ключ")
@@ -161,6 +198,11 @@ class UsedGameKeys(models.Model):
     class Meta:
         verbose_name = "Использованный ключ"
         verbose_name_plural = "Использованные ключи"
+
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['game_key']),
+        ]
 
 class PurchasesCharacters(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
@@ -175,6 +217,11 @@ class PurchasesCharacters(models.Model):
     class Meta:
         verbose_name = "Покупка персонажа"
         verbose_name_plural = "Покупки персонажей"
+
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['character']),
+        ]
 
 class CompletedTasks(models.Model):
     STATUS_CHOICES = [
@@ -195,6 +242,8 @@ class CompletedTasks(models.Model):
         verbose_name_plural = "Выполненные задания"
 
         indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['task']),
             models.Index(fields=['status']),
         ]
 
