@@ -451,11 +451,12 @@ class MessagesView(APIView):
 
         balance = Balances.objects.get(user=user)
         messages = []
-        keys = cache.keys(f'message_{user_id}_*')
+        keys = cache.keys(f'message_{user.telegram_id}_*')
         if keys:
             for key in keys:
                 message = cache.get(key)
                 messages.append(message)
+                cache.delete(key)
         return Response({'messages': messages, 'new_balance': balance.amount}, status=status.HTTP_200_OK)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
