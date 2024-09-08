@@ -5,7 +5,7 @@ from main.views import (
     CustomUserViewSet, CharactersViewSet, TasksViewSet, BalancesViewSet,
     AdvertisersViewSet, TariffsViewSet, WalletsViewSet, GameKeysViewSet, 
     GamesViewSet, TelegramAuthView, AccountInfoView, CharactersView, SyncBalanceView, 
-    TasksView, GamesView, CheckKeyView, FarmingView, MessagesView
+    TasksView, GamesView, CheckKeyView, FarmingView, MessagesView, CheckVPNPayment
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -33,6 +33,7 @@ urlpatterns = [
     path('farming/', FarmingView.as_view(), name='farming'),
     path('check_key/', CheckKeyView.as_view(), name='check_key'),
     path('get_messages/', MessagesView.as_view(), name='get_messages'),
+    path('check_vpn_payment/', CheckVPNPayment.as_view(), name='check_vpn_payment'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

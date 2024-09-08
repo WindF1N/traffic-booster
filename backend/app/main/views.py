@@ -458,6 +458,28 @@ class MessagesView(APIView):
                 messages.append(message)
                 cache.delete(key)
         return Response({'messages': messages, 'new_balance': balance.amount}, status=status.HTTP_200_OK)
+    
+class CheckVPNPayment(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        user_id = data["user_id"]
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            completed_task = CompletedTasks.objects.get(user=user, status='pending', task__link='https://t.me/TraffVPN_bot')
+        except CompletedTasks.DoesNotExist:
+            return Response({'error': 'CompletedTask not found'}, status=status.HTTP_404_NOT_FOUND)
+        completed_task.status = 'awarded'
+        completed_task.save()
+        cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
+            "type": "success",
+            "text": f'+{completed_task.task.reward * int(completed_task.user.character.multiplier)} за выполненное задание "{completed_task.task.title}"',
+            "name": "Награда:",
+            "awarded_task": completed_task.task.id
+        }, timeout=60*60)
+        return Response({'message': 'success'}, status=status.HTTP_200_OK)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
