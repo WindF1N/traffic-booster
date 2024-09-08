@@ -26,7 +26,7 @@ class Command(BaseCommand):
                         if chat_member.status in ['member', 'creator', 'administrator']:
                             cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                                 "type": "success",
-                                "text": f'+{completed_task.task.reward} за выполненное задание "{completed_task.task.title}"',
+                                "text": f'+{completed_task.task.reward * int(completed_task.user.character.multiplier)} за выполненное задание "{completed_task.task.title}"',
                                 "name": "Награда:"
                             }, timeout=60*60)
                             completed_task.status = 'awarded'
@@ -46,7 +46,7 @@ class Command(BaseCommand):
         if timezone.now() >= completed_task.complete_date + timedelta(hours=completed_task.task.time_to_complete):
             cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                 "type": "success",
-                "text": f'+{completed_task.task.reward} за выполненное задание "{completed_task.task.title}"',
+                "text": f'+{completed_task.task.reward * int(completed_task.user.character.multiplier)} за выполненное задание "{completed_task.task.title}"',
                 "name": "Награда:"
             }, timeout=60*60)
             self.stdout.write(f'ID: {completed_task.id}, Task: {completed_task.task.title}, User: {completed_task.user.username}, Status: {completed_task.status}\nThe task is paid')
