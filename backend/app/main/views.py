@@ -464,7 +464,7 @@ class CheckVPNPayment(APIView):
         data = json.loads(request.body)
         user_id = data["user_id"]
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(telegram_id=user_id)
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         try:
