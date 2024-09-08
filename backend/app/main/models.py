@@ -61,6 +61,10 @@ class Tasks(models.Model):
         verbose_name = "Задание"
         verbose_name_plural = "Задания"
 
+        indexes = [
+            models.Index(fields=['link']),
+        ]
+
 class Balances(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, verbose_name="Пользователь")
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество монет")
@@ -189,6 +193,10 @@ class CompletedTasks(models.Model):
     class Meta:
         verbose_name = "Выполненное задание"
         verbose_name_plural = "Выполненные задания"
+
+        indexes = [
+            models.Index(fields=['status']),
+        ]
 
 @receiver(pre_save, sender=CompletedTasks)
 def save_old_status(sender, instance, **kwargs):
