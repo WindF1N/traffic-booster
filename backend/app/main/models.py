@@ -50,6 +50,7 @@ class Tasks(models.Model):
     advertiser = models.ForeignKey('Advertisers', on_delete=models.CASCADE, verbose_name="Рекламодатель")
     category = models.CharField(max_length=255, verbose_name="Категория")
     link = models.CharField(max_length=255, verbose_name="Ссылка")
+    chat_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="Чат ID (для tg)")
     picture = models.ImageField(upload_to='tasks/', verbose_name="Иконка")
     picture_color = models.CharField(max_length=10, verbose_name="Цвет тени иконки")
 
