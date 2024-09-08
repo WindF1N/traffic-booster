@@ -1,7 +1,7 @@
 import os
 import django
 import sys
-sys.path.append('/home/creatxr/traffic-booster/backend/app')
+sys.path.append('/home/traffic-booster/backend/app')
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 django.setup()
