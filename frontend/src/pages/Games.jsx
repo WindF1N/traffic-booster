@@ -132,32 +132,37 @@ function Games() {
         {games.length > 0 ?
         <div className="flex flex-col gap-[15px] px-[20px] mt-[20px]">
           {games.map((game, index) => (
-            <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px]" key={index}>
-              <div className="flex justify-between items-start">
-                <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">{game.name}</div>
-                <div className="flex items-center gap-[10px]">
-                  <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
-                  <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">{game.used_keys_count}/3</span>
+            <div className="relative bg-[rgba(117,117,117,0.1)] p-[10px] rounded-[10px] backdrop-blur-[40px] overflow-hidden" key={index}>
+              {!game.is_developing &&
+              <div className="mb-[10px]">
+                <div className="flex justify-between items-start">
+                  <div className="text-[#fff] font-[600] text-[16px] leading-[20.64px]">{game.name}</div>
+                  <div className="flex items-center gap-[10px]">
+                    <img className="w-[24px] h-[24px]" src={keyIcon} alt="" />
+                    <span className="text-[#FFD900] text-[16px] font-[600] leading-[20.64px]">{game.used_keys_count}/3</span>
+                  </div>
                 </div>
-              </div>
-              <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
-                <div className="h-[100%] w-[100%] rounded-[26px] bg-[#FFD900]" style={{ transition: ".3s", transform: `translateX(-${100 * (3 - game.used_keys_count) / 3}%)` }}></div>
-              </div>
-              {game.used_keys_count < 3 &&
-              <div className="relative mt-[10px]">
-                <input type="text" name={"inputKey" + game.id} placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={game.keyInput || ""} onChange={(event) => handleChange(event.target.value, game)} onBlur={(event) => handleBlur(event.target.value, game)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] px-[10px] pt-[10px] pb-[9px] w-[100%]" />
-                <img className="cursor-pointer absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={() => handlePaste(game)} />
+                <div className="bg-[#464646] h-[5px] w-[100%] rounded-[26px] mt-[6px] overflow-hidden">
+                  <div className="h-[100%] w-[100%] rounded-[26px] bg-[#FFD900]" style={{ transition: ".3s", transform: `translateX(-${100 * (3 - game.used_keys_count) / 3}%)` }}></div>
+                </div>
+                {game.used_keys_count < 3 &&
+                <div className="relative mt-[10px]">
+                  <input type="text" name={"inputKey" + game.id} placeholder="ВСТАВЬТЕ КЛЮЧ СЮДА" value={game.keyInput || ""} onChange={(event) => handleChange(event.target.value, game)} onBlur={(event) => handleBlur(event.target.value, game)} className="placeholder:text-[#646464] placeholder:font-[400] placeholder:font-['TT Firs Neue'] outline-0 bg-inherit border-[1px] border-dashed border-[#646464] rounded-[10px] text-[14px] leading-[18.06px] font-[400] px-[10px] pt-[10px] pb-[9px] w-[100%]" />
+                  <img className="cursor-pointer absolute p-[10px] right-0 top-0 bottom-0 my-auto" src={pasteIcon} alt="" onClick={() => handlePaste(game)} />
+                </div>}
               </div>}
-              <div className="mt-[10px] rounded-[10px] overflow-hidden relative">
+              <div className="rounded-[10px] overflow-hidden relative">
                 <img
                   className="w-[100%]"
                   src={apiUrl + game.picture}
                   alt=""
                 />
+                {game.link &&
                 <div onClick={() => window.Telegram?.WebApp?.openLink(game.link)} className="transform active:scale-[0.9] transition-transform cursor-pointer absolute bottom-[10px] right-[10px] text-[#494949] text-[20px] leading-[20px] font-[600] rounded-[10px] bg-[#fff] px-[22px] pt-[15px] pb-[15px]">
                   Играть
-                </div>
+                </div>}
               </div>
+              {game.is_developing && <div className="w-[100%] h-[100%] absolute top-0 left-0 bg-[rgba(117,117,117,0.1)] backdrop-blur-[2px] flex items-center justify-center text-[#fff] font-[600] text-[20px]">В разработке...</div>}
             </div>
           ))}
         </div>

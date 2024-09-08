@@ -158,7 +158,7 @@ function App() {
         }
       }
     };
-    const interval = setInterval(getMessages, 5000);
+    const interval = setInterval(getMessages, 15000);
     return () => {
       clearInterval(interval);
     };

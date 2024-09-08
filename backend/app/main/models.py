@@ -154,7 +154,8 @@ class Wallets(models.Model):
 class Games(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     picture = models.ImageField(upload_to='games/', verbose_name="Картинка")
-    link = models.CharField(max_length=255, verbose_name="Ссылка")
+    link = models.CharField(max_length=255, null=True, blank=True, verbose_name="Ссылка")
+    is_developing = models.BooleanField(default=False, verbose_name="В разработке")
 
     def __str__(self):
         return self.name
