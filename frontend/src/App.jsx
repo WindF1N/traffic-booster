@@ -42,7 +42,7 @@ function App() {
   const { setToken } = useAuthStore();
   const { setAccount } = useAccount();
   const { setLocalBalance } = useLocalBalance();
-  const { messages, removeMessage } = useMessages();
+  const { messages, removeMessage, addMessage } = useMessages();
   const token = useAuthStore((state) => state.token);
   const account = useAccount((state) => state.account);
   const localBalance = useLocalBalance((state) => state.localBalance);
@@ -122,6 +122,39 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [localBalance, account, token]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      if (token && account) {
+        try {
+          const response = await fetch(apiUrl+'/get_messages/', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+          });
+          const data = await response.json();
+          if (response.ok) {
+            if ('new_balance' in data) {
+              setAccount({ ...account, balance: { ...account.balance, amount: data.new_balance } });
+            }
+            if ('messages' in data) {
+              data.messages.forEach(message => addMessage(message));
+            }
+          } else {
+            console.error(data.message);
+          }
+        } catch (error) {
+          console.error('Server error', error);
+        }
+      }
+    };
+    const interval = setInterval(getMessages, 5000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [account, token]);
 
   useEffect(() => {
     switch (location.pathname) {

@@ -22,6 +22,7 @@ from django.utils import timezone
 import datetime
 from aiogram import Bot, types
 from asgiref.sync import async_to_sync
+from django.core.cache import cache
 
 # Initialize bot and dispatcher
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
@@ -430,6 +431,30 @@ class CheckKeyView(APIView):
             "new_balance": balance_serializer.data,
             "used_game_keys_count": used_game_keys.count()
         }, status=status.HTTP_200_OK)
+
+class MessagesView(APIView):
+    def get(self, request):
+        token = request.headers.get('Authorization', '').split(' ')[-1]
+        if not token:
+            return Response({'error': 'Token not provided'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            user = User.objects.get(id=user_id)
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        messages = cache.get(f'messages_{user_id}', [])
+        balance = Balances.objects.get(user=user)
+
+        cache.delete(f'messages_{user_id}')
+
+        return Response({'messages': messages, 'new_balance': balance.amount}, status=status.HTTP_200_OK)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()

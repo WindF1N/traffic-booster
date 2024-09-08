@@ -66,7 +66,7 @@ function TaskPopUp({ setIsOpen, selectedTask, setSelectedTask }) {
         <div className="fixed flex flex-col h-[100%] w-[100%] max-w-[420px] mx-auto bg-[rgba(0,0,0,0.8)] left-0 right-0 top-0 z-[4]">
             <div className="taskpopup relative flex flex-col bg-[#282828] rounded-[10px] w-[calc(100%-40px)] h-[73.33%] m-auto overflow-hidden">
                 <div className="bg-gradient-to-tr from-[#B331FF] from-[33.32%] to-[#FFF600] to-[103.28%] px-[20px] py-[12px]">
-                    <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Задание №{selectedTask.id}</div>
+                    <div className="text-[#fff] text-[28px] leading-[36px] font-[600]">Задание</div>
                     <img className="cursor-pointer absolute z-[4] right-[15px] top-[15px] w-[32px] h-[32px] brightness-0" src={closeIcon} alt="" onClick={() => setIsOpen(false)} onTouchEnd={() => {
                         try {
                             window.Telegram.WebApp.HapticFeedback.impactOccurred('soft')

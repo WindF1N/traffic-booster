@@ -68,17 +68,17 @@ const OnboardingSlider = ({ onComplete, setLoadedImagesCount, loading }) => {
     trackTouch: true,
   });
 
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => {
-        if (currentSlide < slides.length - 1) {
-          setCurrentSlide(currentSlide + 1);
-        }
-      }, 5000);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     const timer = setTimeout(() => {
+  //       if (currentSlide < slides.length - 1) {
+  //         setCurrentSlide(currentSlide + 1);
+  //       }
+  //     }, 5000);
   
-      return () => clearTimeout(timer);
-    }
-  }, [currentSlide, loading]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [currentSlide, loading]);
 
   const prevSlide = () => {
       if (currentSlide > 0) {

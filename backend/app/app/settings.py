@@ -160,3 +160,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "https://172.18.180.15:5173"
 ]
+
+# settings.py
+
+# Настройки кэша
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # Адрес Redis сервера и номер базы данных
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# Настройки сессий (опционально)
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+# Настройки сообщений (опционально)
+MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
