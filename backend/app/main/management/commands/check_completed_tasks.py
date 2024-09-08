@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     try:
                         chat_member = async_to_sync(bot.get_chat_member)(chat_id=completed_task.task.chat_id, user_id=user_id)
                         if chat_member.status in ['member', 'creator', 'administrator']:
-                            cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp * 1000}', {
+                            cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                                 "type": "success",
                                 "text": f'+{completed_task.task.reward} за выполненное задание "{completed_task.task.title}"',
                                 "name": "Награда:"
@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
     def award_completed_task(self, completed_task):
         if timezone.now() >= completed_task.complete_date + timedelta(hours=completed_task.task.time_to_complete):
-            cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp * 1000}', {
+            cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                 "type": "success",
                 "text": f'+{completed_task.task.reward} за выполненное задание "{completed_task.task.title}"',
                 "name": "Награда:"
