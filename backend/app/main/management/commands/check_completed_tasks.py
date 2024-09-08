@@ -6,6 +6,7 @@ from datetime import timedelta
 from aiogram import Bot
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
+import asyncio
 
 class Command(BaseCommand):
     help = 'Выводит все завершенные задачи'
@@ -21,7 +22,7 @@ class Command(BaseCommand):
                     # Проверка подписки пользователя на канал или группу
                     user_id = completed_task.user.telegram_id
                     try:
-                        chat_member = async_to_sync(bot.get_chat_member)(chat_id=completed_task.task.chat_id, user_id=user_id)
+                        chat_member = async_to_sync(self.check_chat_member)(bot, completed_task.task.chat_id, user_id)
                         if chat_member.status in ['member', 'creator', 'administrator']:
                             cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp() * 1000}', {
                                 "type": "success",
@@ -51,3 +52,7 @@ class Command(BaseCommand):
             self.stdout.write(f'ID: {completed_task.id}, Task: {completed_task.task.title}, User: {completed_task.user.username}, Status: {completed_task.status}\nThe task is paid')
             completed_task.status = 'awarded'
             completed_task.save()
+
+    async def check_chat_member(self, bot, chat_id, user_id):
+        async with bot:
+            return await bot.get_chat_member(chat_id=chat_id, user_id=user_id)
