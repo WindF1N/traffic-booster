@@ -449,11 +449,14 @@ class MessagesView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        messages = cache.get(f'messages_{user_id}', [])
         balance = Balances.objects.get(user=user)
-
-        cache.delete(f'messages_{user_id}')
-
+        messages = []
+        keys = cache.keys(f'messages_{user_id}_*')
+        if keys:
+            for key in keys:
+                message = cache.get(key)
+                messages.append(message)
+                cache.delete(key)
         return Response({'messages': messages, 'new_balance': balance.amount}, status=status.HTTP_200_OK)
 
 class CustomUserViewSet(viewsets.ModelViewSet):

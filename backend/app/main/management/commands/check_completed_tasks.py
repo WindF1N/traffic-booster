@@ -40,11 +40,9 @@ class Command(BaseCommand):
         if timezone.now() >= completed_task.complete_date + timedelta(hours=completed_task.task.time_to_complete):
             completed_task.status = 'awarded'
             completed_task.save()
-            messages = cache.get(f'messages_{completed_task.user.telegram_id}', [])
-            messages.append({
+            cache.set(f'message_{completed_task.user.telegram_id}_{timezone.now().timestamp * 1000}', {
                 "type": "success",
                 "text": f'+{completed_task.task.reward} за выполненное задание "{completed_task.task.title}"',
                 "name": "Награда:"
-            })
-            cache.set(f'messages_{completed_task.user.telegram_id}', messages, timeout=60*60)
+            }, timeout=60*60)
             self.stdout.write(f'ID: {completed_task.id}, Task: {completed_task.task.title}, User: {completed_task.user.username}, Status: {completed_task.status}\nThe task is paid')
