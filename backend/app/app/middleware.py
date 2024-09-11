@@ -12,7 +12,7 @@ class WireGuardMiddleware:
             client_ip = request.META.get('REMOTE_ADDR')
 
             if not any(self.ip_in_range(client_ip, ip_range) for ip_range in allowed_ips):
-                return HttpResponseForbidden("Доступ запрещен")
+                return HttpResponseForbidden("Доступ запрещен для IP-адреса %s" % client_ip)
 
         response = self.get_response(request)
         return response
