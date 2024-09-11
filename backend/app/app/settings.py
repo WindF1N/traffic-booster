@@ -181,3 +181,6 @@ SESSION_CACHE_ALIAS = "default"
 
 # Настройки сообщений (опционально)
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

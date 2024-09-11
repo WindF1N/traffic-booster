@@ -9,7 +9,7 @@ class WireGuardMiddleware:
         # Проверяем, является ли текущий путь частью админской панели
         if resolve(request.path_info).app_name == 'admin':
             allowed_ips = ['10.0.0.0/24']  # Разрешенные IP-адреса из VPN-сети
-            client_ip = request.META.get('REMOTE_ADDR')
+            client_ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
 
             if not any(self.ip_in_range(client_ip, ip_range) for ip_range in allowed_ips):
                 return HttpResponseForbidden("Доступ запрещен для IP-адреса %s" % client_ip)
