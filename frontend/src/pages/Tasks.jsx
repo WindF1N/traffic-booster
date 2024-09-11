@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import tasksImage from '../assets/tasks-image.png';
-import raster3dIcon from '../assets/3d-raster-small.png';
-import bgImage from '../assets/bg.png';
+import tasksImage from '../assets/tasks-image.webp';
+import raster3dIcon from '../assets/3d-raster-small.webp';
+import bgImage from '../assets/bg.webp';
 import TaskPopUp from '../components/TaskPopUp';
 import useAccount from '../hooks/useAccount';
 import useAuthStore from '../hooks/useAuthStore';

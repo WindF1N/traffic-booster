@@ -6,13 +6,13 @@ import useAccount from '../hooks/useAccount';
 import useMessages from '../hooks/useMessages';
 
 import closeIcon from '../assets/close.svg';
-import tonIcon from '../assets/ton-icon.png';
+import tonIcon from '../assets/ton-icon.webp';
 import arrowIcon from '../assets/arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.png';
+import raster3dIcon from '../assets/3d-raster-small.webp';
 
-import leon1Image from '../assets/leon1.png';
-import leon2Image from '../assets/leon2.png';
-import leon3Image from '../assets/leon3.png';
+import leon1Image from '../assets/leon1.webp';
+import leon2Image from '../assets/leon2.webp';
+import leon3Image from '../assets/leon3.webp';
 
 import { useTonAddress, useTonWallet, useTonConnectUI } from '@tonconnect/ui-react';
 import { TonClient, fromNano, toNano } from "@ton/ton";

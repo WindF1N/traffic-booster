@@ -6,13 +6,13 @@ import useLocalBalance from '../hooks/useLocalBalance';
 import useMessages from '../hooks/useMessages';
 import useLoadedPages from '../hooks/useLoadedPages';
 
-import bigLeon1Image from '../assets/bigleon1.png';
-import bigLeon2Image from '../assets/bigleon2.png';
-import bigLeon3Image from '../assets/bigleon3.png';
+import bigLeon1Image from '../assets/bigleon1.webp';
+import bigLeon2Image from '../assets/bigleon2.webp';
+import bigLeon3Image from '../assets/bigleon3.webp';
 
-import raster3dIcon from '../assets/3d-raster-small.png';
-import bgImage from '../assets/bg.png';
-import tronImage from '../assets/tron.png';
+import raster3dIcon from '../assets/3d-raster-small.webp';
+import bgImage from '../assets/bg.webp';
+import tronImage from '../assets/tron.webp';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 function Home() {

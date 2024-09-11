@@ -5,7 +5,7 @@ import useMessages from '../hooks/useMessages';
 import useGames from '../hooks/useGames';
 import keyIcon from '../assets/key.svg';
 import pasteIcon from '../assets/paste.svg';
-import bgImage from '../assets/bg.png';
+import bgImage from '../assets/bg.webp';
 import GamePopUp from '../components/GamePopUp';
 import LoadingSpinner from '../components/LoadingSpinner';
 

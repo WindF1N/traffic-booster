@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import bgImage from '../assets/bg.png';
-import adImage from '../assets/ad.png';
+import bgImage from '../assets/bg.webp';
+import adImage from '../assets/ad.webp';
 import LoadingSpinner from '../components/LoadingSpinner';
 import useLoadedPages from '../hooks/useLoadedPages';
 function Ad() {

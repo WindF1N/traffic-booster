@@ -1,5 +1,5 @@
 import closeIcon from '../assets/close.svg';
-import raster3dImage from '../assets/3d-raster.png';
+import raster3dImage from '../assets/3d-raster.webp';
 
 function GamePopUp({ setIsOpen }) {
   return (

@@ -1,6 +1,6 @@
-import flameImage from '../assets/flame.png';
-import bgImage from '../assets/bg.png';
-import loadingImage from '../assets/loading.png';
+import flameImage from '../assets/flame.webp';
+import bgImage from '../assets/bg.webp';
+import loadingImage from '../assets/loading.webp';
 
 function Loading({setLoadedImagesCount}) {
   return (

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import tonIcon from '../assets/ton-icon.png';
-import tonImage from '../assets/ton.png';
+import tonIcon from '../assets/ton-icon.webp';
+import tonImage from '../assets/ton.webp';
 import settingsIcon from '../assets/settings.svg';
-import bgImage from '../assets/bg.png';
+import bgImage from '../assets/bg.webp';
 import { useTonAddress, useTonWallet  } from '@tonconnect/ui-react';
 import { TonClient, fromNano } from "@ton/ton";
 import useLoadedPages from '../hooks/useLoadedPages';

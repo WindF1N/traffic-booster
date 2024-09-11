@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import doubleArrowIcon from '../assets/double-arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.png';
+import raster3dIcon from '../assets/3d-raster-small.webp';
 import BoostPopUp from './BoostPopUp';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
