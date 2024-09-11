@@ -9,17 +9,17 @@ from main.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponseForbidden
+import ipaddress
 
-# router = DefaultRouter()
-# router.register(r'users', CustomUserViewSet)
-# router.register(r'characters', CharactersViewSet)
-# router.register(r'tasks', TasksViewSet)
-# router.register(r'balances', BalancesViewSet)
-# router.register(r'advertisers', AdvertisersViewSet)
-# router.register(r'tariffs', TariffsViewSet)
-# router.register(r'wallets', WalletsViewSet)
-# router.register(r'gamekeys', GameKeysViewSet)
-# router.register(r'games', GamesViewSet)
+def check_ip(request):
+    allowed_ips = ['10.0.0.0/24']  # Разрешенные IP-адреса из VPN-сети
+    client_ip = request.META.get('REMOTE_ADDR')
+
+    if not any(ipaddress.ip_address(client_ip) in ipaddress.ip_network(ip_range) for ip_range in allowed_ips):
+        return HttpResponseForbidden("Доступ запрещен")
+
+    return None
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,3 +37,5 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+admin.site.check_ip = check_ip
