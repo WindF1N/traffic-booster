@@ -11,7 +11,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('L7dBLlMQZjlLFx2Y9yNTCIMmKgkMSavd9e8t1pMDPMWXL62jkktkD4D49jNQm5wE/', admin.site.urls),
     # path('api/', include(router.urls)),
     path('auth/telegram/', TelegramAuthView.as_view(), name='telegram_auth'),
     path('me/', AccountInfoView.as_view(), name='account_info'),
