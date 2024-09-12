@@ -33,10 +33,9 @@ TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -54,7 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'app.middleware.WireGuardMiddleware',
+    # 'app.middleware.WireGuardMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -181,6 +180,3 @@ SESSION_CACHE_ALIAS = "default"
 
 # Настройки сообщений (опционально)
 MESSAGE_STORAGE = 'django.contrib.messages.storage.fallback.FallbackStorage'
-
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
