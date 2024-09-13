@@ -32,30 +32,6 @@ bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 User = get_user_model()
 
-def asyncio_run(future, as_task=True):
-    """
-    A better implementation of `asyncio.run`.
-
-    :param future: A future or task or call of an async method.
-    :param as_task: Forces the future to be scheduled as task (needed for e.g. aiohttp).
-    """
-
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:  # no event loop running:
-        loop = asyncio.new_event_loop()
-        nest_asyncio.apply(loop)
-        return loop.run_until_complete(_to_task(future, as_task, loop))
-    else:
-        nest_asyncio.apply(loop)
-        return asyncio.run(_to_task(future, as_task, loop))
-
-
-def _to_task(future, as_task, loop):
-    if not as_task or isinstance(future, asyncio.Task):
-        return future
-    return loop.create_task(future)
-
 async def create_invoice_link_async(bot, character):
     return await bot.create_invoice_link(
         title=character.name,
@@ -67,7 +43,7 @@ async def create_invoice_link_async(bot, character):
     )
 
 def create_invoice_link_sync(bot, character):
-    return asyncio_run(create_invoice_link_async(bot, character))
+    return async_to_sync(create_invoice_link_async)(bot, character)
 
 class TelegramAuthView(APIView):
     def post(self, request):
