@@ -8,7 +8,7 @@ import useMessages from '../hooks/useMessages';
 import closeIcon from '../assets/close.svg';
 import tonIcon from '../assets/ton-icon.webp';
 import arrowIcon from '../assets/arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.webp';
+import TelegramPremiumIcon from '../assets/telegram_premium_star.svg';
 
 import leon1Image from '../assets/leon1.webp';
 import leon2Image from '../assets/leon2.webp';
@@ -234,8 +234,8 @@ function BoostPopUp({ setIsOpen, characters, nextCharacterIndex }) {
                                             onClick={() => buyCharacter("stars", character)}>
                                             {Number(character.price_stars)}
                                             <img
-                                                className="flex w-[16px] h-[16px] mt-[-2px] mr-[-4px]"
-                                                src={raster3dIcon}
+                                                className="flex w-[16px] h-[16px] mt-[-3px] mr-[-4px]"
+                                                src={TelegramPremiumIcon}
                                                 alt=""
                                                 onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
                                             />

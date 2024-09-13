@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import doubleArrowIcon from '../assets/double-arrow.svg';
-import raster3dIcon from '../assets/3d-raster-small.webp';
+import TelegramPremiumIcon from '../assets/telegram_premium_star.svg';
 import BoostPopUp from './BoostPopUp';
 import useAuthStore from '../hooks/useAuthStore';
 import useAccount from '../hooks/useAccount';
@@ -87,8 +87,8 @@ function Boost({setLoadedImagesCount}) {
             <div className="text-[#FFD900] text-[10px] font-[400] leading-[12.9px] flex items-center gap-[3px]">
                 {Number(nextCharacter.price_stars)}
                 <img
-                    className="w-[10px] h-[10px] mt-[-2px]"
-                    src={raster3dIcon}
+                    className="w-[10px] h-[10px] mt-[-3px]"
+                    src={TelegramPremiumIcon}
                     alt=""
                     onLoad={() => setLoadedImagesCount(prevState => prevState + 1)}
                 />

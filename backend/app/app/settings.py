@@ -40,6 +40,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_two_factor.apps.TwoStepVerificationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +83,9 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'myproject.asgi.application'
+ASGI_APPLICATION = 'app.asgi.application'
+
+ADMIN_TWO_FACTOR_NAME = 'traffic-booster-admin'
 
 CHANNEL_LAYERS = {
     'default': {
