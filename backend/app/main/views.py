@@ -53,7 +53,7 @@ def create_invoice_link_sync(bot, character):
 
     future = asyncio.run_coroutine_threadsafe(create_invoice_link_async(bot, character), loop)
     try:
-        result = future.result(timeout=10)  # Укажите таймаут, если необходимо
+        result = future.result()  # Укажите таймаут, если необходимо
     except asyncio.TimeoutError:
         print("Operation timed out")
         result = None
