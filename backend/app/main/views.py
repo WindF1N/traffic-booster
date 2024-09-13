@@ -32,6 +32,16 @@ bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 User = get_user_model()
 
+async def create_invoice_link_async(bot, character):
+    return await bot.create_invoice_link(
+        title=character.name,
+        description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
+        payload=f"character_{character.id}",
+        provider_token="",
+        currency="XTR",
+        prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
+    )
+
 def create_invoice_link_sync(bot, character):
     try:
         loop = asyncio.get_event_loop()
@@ -39,14 +49,7 @@ def create_invoice_link_sync(bot, character):
         loop = asyncio.new_event_loop()
     nest_asyncio.apply(loop)
     asyncio.set_event_loop(loop)
-    return asyncio.run(bot.create_invoice_link(
-        title=character.name,
-        description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
-        payload=f"character_{character.id}",
-        provider_token="",
-        currency="XTR",
-        prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
-    ))
+    return asyncio.run_coroutine_threadsafe(create_invoice_link_async(bot, character))
 
 class TelegramAuthView(APIView):
     def post(self, request):
