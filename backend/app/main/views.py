@@ -47,8 +47,18 @@ def create_invoice_link_sync(bot, character):
         loop = asyncio.get_event_loop()
     except RuntimeError:  # no event loop running:
         loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
     nest_asyncio.apply(loop)
-    return asyncio.run_coroutine_threadsafe(create_invoice_link_async(bot, character), loop)
+
+    future = asyncio.run_coroutine_threadsafe(create_invoice_link_async(bot, character), loop)
+    try:
+        result = future.result(timeout=10)  # Укажите таймаут, если необходимо
+    except asyncio.TimeoutError:
+        print("Operation timed out")
+        result = None
+
+    return result
 
 class TelegramAuthView(APIView):
     def post(self, request):
