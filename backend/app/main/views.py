@@ -20,45 +20,14 @@ from .serializers import (
 )
 from django.utils import timezone
 import datetime
-from aiogram import Bot, types
-import asyncio
-from asgiref.sync import async_to_sync
 from django.core.cache import cache
 import uuid
-import nest_asyncio
+import telebot
+from telebot import types
 
-# Initialize bot and dispatcher
-bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
+bot = telebot.TeleBot(settings.TELEGRAM_BOT_TOKEN)
 
 User = get_user_model()
-
-async def create_invoice_link_async(bot, character):
-    return await bot.create_invoice_link(
-        title=character.name,
-        description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
-        payload=f"character_{character.id}",
-        provider_token="",
-        currency="XTR",
-        prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
-    )
-
-def create_invoice_link_sync(bot, character):
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:  # no event loop running:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-    nest_asyncio.apply(loop)
-
-    future = asyncio.run_coroutine_threadsafe(create_invoice_link_async(bot, character), loop)
-    try:
-        result = future.result()  # Укажите таймаут, если необходимо
-    except asyncio.TimeoutError:
-        print("Operation timed out")
-        result = None
-
-    return result
 
 class TelegramAuthView(APIView):
     def post(self, request):
@@ -232,7 +201,14 @@ class CharactersView(APIView):
                 character = Characters.objects.get(id=data["character_id"])
             except Characters.DoesNotExist:
                 return Response({'error': 'Character not found'}, status=status.HTTP_404_NOT_FOUND)
-            link = create_invoice_link_sync(bot, character)
+            link = bot.create_invoice_link(
+                        title=character.name,
+                        description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
+                        payload=f"character_{character.id}",
+                        provider_token="",
+                        currency="XTR",
+                        prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
+            )
             return Response({'invoice_link': link}, status=status.HTTP_200_OK)
 
 class SyncBalanceView(APIView):
