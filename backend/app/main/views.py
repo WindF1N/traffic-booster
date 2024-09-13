@@ -46,7 +46,6 @@ def asyncio_run(future, as_task=True):
         loop = asyncio.new_event_loop()
         return loop.run_until_complete(_to_task(future, as_task, loop))
     else:
-        nest_asyncio.apply(loop)
         return asyncio.run(_to_task(future, as_task, loop))
 
 
