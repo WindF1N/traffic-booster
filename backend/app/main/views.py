@@ -21,13 +21,35 @@ from .serializers import (
 from django.utils import timezone
 import datetime
 from aiogram import Bot, types
+import asyncio
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
+import uuid
+import nest_asyncio
 
 # Initialize bot and dispatcher
 bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 
 User = get_user_model()
+
+async def create_invoice_link_async(bot, character):
+    return await bot.create_invoice_link(
+        title=character.name,
+        description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
+        payload=f"character_{character.id}",
+        provider_token="",
+        currency="XTR",
+        prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
+    )
+
+def create_invoice_link_sync(bot, character):
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:  # no event loop running:
+        loop = asyncio.new_event_loop()
+    nest_asyncio.apply(loop)
+    asyncio.set_event_loop(loop)
+    return loop.run_until_complete(create_invoice_link_async(bot, character))
 
 class TelegramAuthView(APIView):
     def post(self, request):
@@ -197,45 +219,13 @@ class CharactersView(APIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         data = json.loads(request.body)
         if data["currency"] == "stars":
-            character = Characters.objects.get(id=data["character_id"])
-            if "invoice_link" in data:
-                # transactions = async_to_sync(bot.get_star_transactions)(offset=0, limit=1)
-                # print(transactions)
-                user.character = character
-                user.save()
-                purchase_character = PurchasesCharacters.objects.create(
-                    user=user, 
-                    character=character,
-                    amount_paid=character.price_stars,
-                    currency=data["currency"]
-                )
-                purchase_character_serializer = PurchasesCharactersSerializer(purchase_character)
-                return Response({'purchase': purchase_character_serializer.data}, status=status.HTTP_200_OK)
-            else:
-                link = async_to_sync(bot.create_invoice_link)(
-                    title=character.name,
-                    description=f"Зарабатывай со всех заданий в {int(character.multiplier)} раза больше!",
-                    payload="{}",
-                    provider_token="",
-                    currency="XTR",
-                    prices=[types.LabeledPrice(label='Оплатить', amount=int(character.price_stars)),]
-                )
-                return Response({'invoice_link': link}, status=status.HTTP_200_OK)
-        elif data["currency"] == "ton":
-            character = Characters.objects.get(id=data["character_id"])
-            if "boc" not in data:
-                return Response({'error': 'boc not found'}, status=status.HTTP_400_BAD_REQUEST)
-            user.character = character
-            user.save()
-            purchase_character = PurchasesCharacters.objects.create(
-                user=user, 
-                character=character,
-                amount_paid=character.price_ton,
-                currency=data["currency"]
-            )
-            purchase_character_serializer = PurchasesCharactersSerializer(purchase_character)
-            return Response({'purchase': purchase_character_serializer.data}, status=status.HTTP_200_OK)
-        
+            try:
+                character = Characters.objects.get(id=data["character_id"])
+            except Characters.DoesNotExist:
+                return Response({'error': 'Character not found'}, status=status.HTTP_404_NOT_FOUND)
+            link = create_invoice_link_sync(bot, character)
+            return Response({'invoice_link': link}, status=status.HTTP_200_OK)
+
 class SyncBalanceView(APIView):
     def post(self, request):
         token = request.headers.get('Authorization', '').split(' ')[-1]
@@ -480,6 +470,48 @@ class CheckVPNPayment(APIView):
             "awarded_task": completed_task.task.id
         }, timeout=60*60)
         return Response({'message': 'success'}, status=status.HTTP_200_OK)
+    
+class TonInvoiceView(APIView):
+    def post(self, request):
+        token = request.headers.get('Authorization', '').split(' ')[-1]
+        if not token:
+            return Response({'error': 'Token not provided'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            user = User.objects.get(id=user_id)
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.InvalidTokenError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = json.loads(request.body)
+        try:
+            character = Characters.objects.get(id=data["character_id"])
+        except Characters.DoesNotExist:
+            return Response({'error': 'Character not found'}, status=status.HTTP_404_NOT_FOUND)
+        comment = None
+        keys = cache.keys(f'ton-invoice_*')
+        if keys:
+            for key in keys:
+                invoice = cache.get(key)
+                if not invoice:
+                    continue
+                if "telegram_id" not in invoice and "character_id" not in invoice:
+                    continue
+                if invoice["telegram_id"] == user.telegram_id:
+                    if invoice["character_id"] == character.id:
+                        comment = key.split("_")[1]
+                        break
+                    else:
+                        cache.delete(key)
+        if not comment:
+            comment = str(uuid.uuid4())
+            cache.set(f'ton-invoice_{comment}', {"telegram_id": user.telegram_id, "character_id": character.id}, timeout=60*60)
+        return Response({'comment': comment}, status=status.HTTP_200_OK)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()

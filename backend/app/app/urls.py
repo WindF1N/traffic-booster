@@ -5,7 +5,7 @@ from main.views import (
     CustomUserViewSet, CharactersViewSet, TasksViewSet, BalancesViewSet,
     AdvertisersViewSet, TariffsViewSet, WalletsViewSet, GameKeysViewSet, 
     GamesViewSet, TelegramAuthView, AccountInfoView, CharactersView, SyncBalanceView, 
-    TasksView, GamesView, CheckKeyView, FarmingView, MessagesView, CheckVPNPayment
+    TasksView, GamesView, CheckKeyView, FarmingView, MessagesView, CheckVPNPayment, TonInvoiceView
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -24,6 +24,7 @@ urlpatterns = [
     path('check_key/', CheckKeyView.as_view(), name='check_key'),
     path('get_messages/', MessagesView.as_view(), name='get_messages'),
     path('check_vpn_payment/', CheckVPNPayment.as_view(), name='check_vpn_payment'),
+    path('ton_invoice/', TonInvoiceView.as_view(), name='ton_invoice'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

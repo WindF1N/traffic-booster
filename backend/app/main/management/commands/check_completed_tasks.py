@@ -6,7 +6,6 @@ from datetime import timedelta
 from aiogram import Bot
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
-import asyncio
 
 class Command(BaseCommand):
     help = 'Выводит все завершенные задачи'

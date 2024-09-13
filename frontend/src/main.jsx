@@ -12,7 +12,7 @@ import { TonConnectUIProvider } from '@tonconnect/ui-react';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <TonConnectUIProvider manifestUrl="https://traff-booster.ru/tonconnect-manifest.json">
+    <TonConnectUIProvider manifestUrl="https://traff-booster.ru/tonconnect-manifest.json" actionsConfiguration={{twaReturnUrl: 'https://t.me/TraffBooster_bot/app'}}>
       <Router>
         <Routes>
           <Route path="/" element={<App />}>

@@ -148,6 +148,9 @@ function App() {
                 if ('awarded_task' in message) {
                   setTasks(tasks.filter(task => task.id !== message.awarded_task));
                 }
+                if ('new_character' in message) {
+                  setAccount({ ...account, character: message.new_character });
+                }
               });
             }
           } else {
@@ -158,7 +161,7 @@ function App() {
         }
       }
     };
-    const interval = setInterval(getMessages, 15000);
+    const interval = setInterval(getMessages, 10000);
     return () => {
       clearInterval(interval);
     };
