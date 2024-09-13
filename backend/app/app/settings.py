@@ -89,7 +89,10 @@ ADMIN_TWO_FACTOR_NAME = 'traffic-booster-admin'
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # Адрес и порт Redis
+        },
     },
 }
 
