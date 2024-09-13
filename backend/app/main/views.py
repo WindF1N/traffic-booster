@@ -49,7 +49,11 @@ def create_invoice_link_sync(bot, character):
         loop = asyncio.new_event_loop()
     nest_asyncio.apply(loop)
     asyncio.set_event_loop(loop)
-    return loop.run_until_complete(create_invoice_link_async(bot, character))
+    try:
+        result = loop.run_until_complete(create_invoice_link_async(bot, character))
+    finally:
+        loop.close()
+    return result
 
 class TelegramAuthView(APIView):
     def post(self, request):
