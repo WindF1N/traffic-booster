@@ -32,7 +32,7 @@ User = get_user_model()
 @dp.message(Command('start'))
 async def start_command(message: types.Message):
     buttons = [
-        [types.InlineKeyboardButton(text="Начать зарабатывать", url="https://t.me/traffic_booster_dev_bot/dev")],
+        [types.InlineKeyboardButton(text="Начать зарабатывать", url="https://t.me/TraffBooster_bot/app")],
         [types.InlineKeyboardButton(text="Перейти в сообщество", url="https://t.me/Traffbooster_community")]
     ]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
