@@ -424,7 +424,7 @@ button:focus-visible {
     margin-left: auto;
     margin-right: auto;
   }
-  .taskpopup, .boostpopup {
+  .boostpopup {
     height: 78%;
   }
 }
@@ -436,7 +436,7 @@ button:focus-visible {
   .pers {
     bottom: 12%;
   }
-  .taskpopup, .boostpopup {
+  .boostpopup {
     height: 85%;
   }
 }
@@ -446,8 +446,12 @@ button:focus-visible {
     bottom: 8%;
     scale: .9;
   }
-  .taskpopup, .boostpopup {
+  .boostpopup {
     height: 90%;
+  }
+  .taskpopup ol {
+    font-size: 15px;
+    line-height: 17.2px;
   }
 }
 

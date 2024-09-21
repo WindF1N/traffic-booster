@@ -167,8 +167,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://172.18.180.15:5173"
 ]
 
-# settings.py
-
 # Настройки кэша
 CACHES = {
     "default": {

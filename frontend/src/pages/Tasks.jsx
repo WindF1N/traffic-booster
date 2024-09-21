@@ -97,7 +97,7 @@ function Tasks() {
                         <div className="text-[10px] font-[400] leading-[12.9px] text-[#646464] mb-[3px]">{task.category}</div>
                         <div className="text-[16px] font-[500] leading-[20.64px] text-[#fff] pb-[3px]">{task.title}</div>
                       </div>
-                      <div className="text-[#FFD900] font-[600] text-[28px] leading-[36.12px] flex items-center gap-[5px]">
+                      <div className="text-[#FFD900] font-[600] text-[28px] leading-[36.12px] flex items-center gap-[5px] flex-shrink-0">
                         {(Number(task.reward) * Number(account?.character?.multiplier)).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         <img
                           className="w-[20px] h-[20px] mt-[-4px]"
